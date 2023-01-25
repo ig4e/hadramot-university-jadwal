@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+
+
+model Teacher {
+  id       Int                @id @default(autoincrement())
+  name     String
+  subjects Subject[]
+  workDays TeacherOnWorkDay[]
+}
+
+model Subject {
+  id       Int       @id @default(autoincrement())
+  name     String
+  teachers Teacher[]
+}
+
+model TeacherOnWorkDay {
+  id        String  @id @default(uuid())
+  teacher   Teacher @relation(fields: [teacherId], references: [id])
+  day       WorkDay @relation(fields: [workDayId], references: [id])
+  comesAt   Decimal
+  leavesAt  Decimal
+  teacherId Int
+  workDayId String
+}
+
+model WorkDay {
+  id               String             @id @default(uuid())
+  name             String
+  TeacherOnWorkDay TeacherOnWorkDay[]
+}

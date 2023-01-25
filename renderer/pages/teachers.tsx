@@ -2,15 +2,15 @@ import React from "react";
 import Header from "../components/ui/Header";
 import P from "../components/ui/P";
 
-function Index() {
+function Teachers() {
 	return (
 		<div>
 			<div className="space-y-2">
-				<Header>الجداول</Header>
-				<P size="lg">هنا يوجد جميع الجداول</P>
+				<Header>المعلمين</Header>
+				<P size="lg">هنا يوجد جميع المعلمين</P>
 			</div>
 		</div>
 	);
 }
 
-export default Index;
+export default Teachers;

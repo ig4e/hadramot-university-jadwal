@@ -5,7 +5,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 	return (
 		<div className="flex text-white" dir="rtl">
             <SideBar />
-			<div>{children}</div>
+			<div className="text-neutral-900 mx-6 mt-6">{children}</div>
 		</div>
 	);
 }

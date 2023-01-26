@@ -13,6 +13,8 @@ import dayjs from "dayjs";
 import { TimePicker } from "antd";
 
 import arAZ from "antd/locale/ar_EG";
+import { useRouter } from "next/router";
+import { useNotificationsStore } from "../../../stores/notificationsStore";
 
 const DAYS_ARRAY: { value: DaysEnum; title: string }[] = [
 	{ value: "SUNDAY", title: "الأحد" },
@@ -27,10 +29,11 @@ const DAYS_ARRAY: { value: DaysEnum; title: string }[] = [
 const format = "h:mm A";
 
 function Index() {
-    
+	const notificationsStore = useNotificationsStore();
+	const router = useRouter();
 	const teacherStore = useNewTeacherStore();
 	const allSubjects = trpc.subject.list.useQuery({ limit: 250 });
-    const createTeacherHook = trpc.teacher.create.useMutation()
+	const createTeacherHook = trpc.teacher.create.useMutation();
 	const avalabileSubjects = useMemo(() => {
 		return (
 			allSubjects.data?.items.filter(
@@ -47,9 +50,27 @@ function Index() {
 		teacherStore.clear();
 	}, []);
 
-    function teacherSubmit() {
-        const teacher = await createTeacherHook({ })
-    }
+	async function teacherSubmit() {
+		try {
+			const teacher = await createTeacherHook.mutateAsync({
+				name: teacherStore.name,
+				subjects: teacherStore.subjects,
+				workDays: teacherStore.workDays,
+			});
+			notificationsStore.notify({
+				success: true,
+				title: "تم أضافة معلم جديد بنجاح!",
+				description: `تم أضافة ${teacher.name} بنجاح.`,
+			});
+			router.push("/teachers")
+		} catch {
+			notificationsStore.notify({
+				success: true,
+				title: "تعذر أضافة معلم جديد!",
+				description: `تعذر أضافة معلم جديد لسبب مجهول`,
+			});
+		}
+	}
 
 	return (
 		<form onSubmit={(e) => e.preventDefault()}>
@@ -69,7 +90,7 @@ function Index() {
 					</Button>
 				</Link>
 			</div>
-			<div className=" grid xl:grid-cols-2 gap-4">
+			<div className=" grid gap-4">
 				<div className="flex flex-col w-full gap-4 mt-8">
 					<div className="space-y-4">
 						<Header size="sm">معلومات المعلم</Header>
@@ -189,7 +210,8 @@ function Index() {
 									<div className="space-y-1">
 										<Header size="sm">يوم {title}</Header>
 										<P size="sm">
-											هنا يمكن تحديد توافر المعلم فى يوم {title}
+											هنا يمكن تحديد توافر المعلم فى يوم{" "}
+											{title}
 										</P>
 										<P size="sm">
 											فى حالة عدم تواجد المعلم فى هذه
@@ -300,13 +322,14 @@ function Index() {
 				<Button
 					size="lg"
 					className="w-full"
-					onClick={() =>
+					onClick={() => {
 						console.log(
 							teacherStore.name,
 							teacherStore.subjects,
 							teacherStore.workDays,
-						)
-					}
+						);
+						teacherSubmit();
+					}}
 				>
 					أضافة المعلم
 				</Button>

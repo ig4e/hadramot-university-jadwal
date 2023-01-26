@@ -57,7 +57,7 @@ model Major {
 model Teacher {
   id       Int                @id @default(autoincrement())
   name     String             @unique
-  subjects Subject[]
+  subjects SubjectOnTeacher[]
   workDays TeacherOnWorkDay[]
   tables   TableDaySubjects[]
 
@@ -65,10 +65,19 @@ model Teacher {
   createdAt DateTime @default(now())
 }
 
+model SubjectOnTeacher {
+  teacher   Teacher @relation(fields: [teacherId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  teacherId Int // relation scalar field (used in the `@relation` attribute above)
+  subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  subjectId Int // relation scalar field (used in the `@relation` attribute above)
+
+  @@id([teacherId, subjectId])
+}
+
 model Subject {
   id       Int                @id @default(autoincrement())
   name     String             @unique
-  teachers Teacher[]
+  teachers SubjectOnTeacher[]
   tables   TableDaySubjects[]
 
   updatedAt DateTime @updatedAt
@@ -79,7 +88,7 @@ model TeacherOnWorkDayHours {
   id                 Int              @id @default(autoincrement())
   startAt            Decimal
   endAt              Decimal
-  teacherOnWorkDay   TeacherOnWorkDay @relation(fields: [teacherOnWorkDayId], references: [id])
+  teacherOnWorkDay   TeacherOnWorkDay @relation(fields: [teacherOnWorkDayId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   teacherOnWorkDayId Int
 
   updatedAt DateTime @updatedAt
@@ -88,8 +97,8 @@ model TeacherOnWorkDayHours {
 
 model TeacherOnWorkDay {
   id        Int                     @id @default(autoincrement())
-  teacher   Teacher                 @relation(fields: [teacherId], references: [id])
-  day       WorkDay                 @relation(fields: [workDayId], references: [id])
+  teacher   Teacher                 @relation(fields: [teacherId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  day       WorkDay                 @relation(fields: [workDayId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   dates     TeacherOnWorkDayHours[]
   teacherId Int
   workDayId String

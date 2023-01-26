@@ -37,12 +37,13 @@ model TableDaySubjects {
   id Int @id @default(autoincrement())
 
   time    String
-  subject String
+  subject Subject @relation(fields: [subjectId], references: [id])
   teacher Teacher @relation(fields: [teacherId], references: [id])
 
   TableDay   TableDay @relation(fields: [tableDayId], references: [id])
   tableDayId Int
   teacherId  Int
+  subjectId  Int
 }
 
 model Major {
@@ -65,9 +66,10 @@ model Teacher {
 }
 
 model Subject {
-  id       Int       @id @default(autoincrement())
+  id       Int                @id @default(autoincrement())
   name     String
   teachers Teacher[]
+  tables   TableDaySubjects[]
 
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())

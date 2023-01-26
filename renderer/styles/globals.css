@@ -16,6 +16,10 @@
 	* {
 		font-family: Inter, Cairo, sans-serif;
 	}
+
+	body {
+		@apply bg-slate-50
+	}
 }
 
 @layer components {

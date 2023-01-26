@@ -12,6 +12,9 @@ const rtlCache = createEmotionCache({
 	key: "mantine-rtl",
 	stylisPlugins: [rtlPlugin],
 });
+import { ContextModalProps, ModalsProvider } from "@mantine/modals";
+import P from "../components/ui/P";
+import Button from "../components/ui/Button";
 
 function MyApp({ Component, pageProps }: AppProps) {
 	return (

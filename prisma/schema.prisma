@@ -48,7 +48,7 @@ model TableDaySubjects {
 
 model Major {
   id        Int      @id @default(autoincrement())
-  name      String
+  name      String   @unique
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
   tables    Table[]
@@ -56,7 +56,7 @@ model Major {
 
 model Teacher {
   id       Int                @id @default(autoincrement())
-  name     String
+  name     String             @unique
   subjects Subject[]
   workDays TeacherOnWorkDay[]
   tables   TableDaySubjects[]
@@ -67,7 +67,7 @@ model Teacher {
 
 model Subject {
   id       Int                @id @default(autoincrement())
-  name     String
+  name     String             @unique
   teachers Teacher[]
   tables   TableDaySubjects[]
 

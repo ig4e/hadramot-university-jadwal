@@ -41,7 +41,7 @@ export const teacherRouter = router({
 		.input(
 			z.object({
 				name: z.string(),
-				subjects: z.object({ id: z.number() }).array().nullable(),
+				subjects: z.object({ id: z.number() }).array(),
 				workDays: z
 					.object({
 						day: daysEnum,
@@ -59,7 +59,6 @@ export const teacherRouter = router({
 			const createdTeacher = await prisma.teacher.create({
 				data: {
 					name: input.name,
-					subjects: { connect: input.subjects || undefined },
 				},
 				include: {
 					workDays: {
@@ -71,7 +70,21 @@ export const teacherRouter = router({
 				},
 			});
 
+			const createdSubjects = [];
 			const createdWorkDays = [];
+
+			for (let subject of input.subjects) {
+				createdSubjects.push(
+					await prisma.subjectOnTeacher.create({
+						data: {
+							subject: { connect: { id: subject.id } },
+							teacher: { connect: { id: createdTeacher.id } },
+						},
+					}),
+				);
+
+				//subjects: { connect: [{ teacherId_subjectId: { subjectId: } }] },
+			}
 
 			for (let workDay of input.workDays) {
 				createdWorkDays.push(
@@ -90,7 +103,11 @@ export const teacherRouter = router({
 				);
 			}
 
-			return { ...createdTeacher, workDays: createdWorkDays };
+			return {
+				...createdTeacher,
+				workDays: createdWorkDays,
+				subjects: createdSubjects,
+			};
 		}),
 
 	list: procedure

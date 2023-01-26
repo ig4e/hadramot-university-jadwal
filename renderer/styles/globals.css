@@ -12,15 +12,41 @@
 	src: url("../public/fonts/Inter-VariableFont_slnt,wght.ttf");
 }
 
+.ant-picker-ok > button {
+	@apply !bg-blue-600 !text-white
+}
+
 @layer base {
 	* {
-		font-family: Inter, Cairo, sans-serif;
+		font-family: Inter, Cairo, sans-serif !important;
 	}
 
 	body {
-		@apply bg-slate-50
+		@apply bg-slate-50;
 	}
+
+	/* width */
+	::-webkit-scrollbar {
+		@apply w-2;
+	}
+
+	/* Track */
+	::-webkit-scrollbar-track {
+		@apply bg-slate-50;
+	}
+
+	/* Handle */
+	::-webkit-scrollbar-thumb {
+		@apply bg-blue-600/70 rounded-md;
+	}
+
+	/* Handle on hover */
+	::-webkit-scrollbar-thumb:hover {
+		@apply bg-blue-600;
+	}
+
 }
 
 @layer components {
+	
 }

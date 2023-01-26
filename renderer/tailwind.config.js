@@ -5,7 +5,11 @@ module.exports = {
 		"./renderer/components/**/*.{js,ts,jsx,tsx}",
 	],
 	theme: {
-		extend: {},
+		extend: {
+			fontFamily: {
+				"body": "Inter, Cairo, sans-serif"
+			}
+		},
 	},
 	plugins: [],
 };

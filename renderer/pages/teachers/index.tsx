@@ -1,12 +1,11 @@
 import { Loader, Table } from "@mantine/core";
 import { Pencil1Icon, PlusIcon, TrashIcon } from "@radix-ui/react-icons";
-import Button from "../components/ui/Button";
-import Header from "../components/ui/Header";
-import P from "../components/ui/P";
-import { trpc } from "../utils/trpc";
-import AddTeacherModal from "../components/teachers/AddTeacherModal";
-import EditTeacherModal from "../components/teachers/EditTeacherModal";
-import { useNotificationsStore } from "../stores/notificationsStore";
+import Button from "../../components/ui/Button";
+import Header from "../../components/ui/Header";
+import P from "../../components/ui/P";
+import { trpc } from "../../utils/trpc";
+import { useNotificationsStore } from "../../stores/notificationsStore";
+import Link from "next/link";
 
 function Teacher() {
 	const teacher = trpc.teacher.list.useQuery({ limit: 250 });
@@ -21,18 +20,15 @@ function Teacher() {
 					<P size="lg">هنا يوجد جميع المعلمين</P>
 				</div>
 
-				<AddTeacherModal
-					onComplete={() => teacher.refetch()}
-					trigger={
-						<Button
-							size="lg"
-							className="flex items-center gap-2 min-w-max self-end"
-						>
-							<PlusIcon className="w-5 h-5 stroke-white stroke-[0.5]"></PlusIcon>
-							<span>أنشئ معلم جديد</span>
-						</Button>
-					}
-				></AddTeacherModal>
+				<Link href={"/teachers/create"}>
+					<Button
+						size="lg"
+						className="flex items-center gap-2 min-w-max self-end"
+					>
+						<PlusIcon className="w-5 h-5 stroke-white stroke-[0.5]"></PlusIcon>
+						<span>أنشئ معلم جديد</span>
+					</Button>
+				</Link>
 			</div>
 
 			<Table className="bg-slate-800 rounded-md">
@@ -99,21 +95,16 @@ function Teacher() {
 												<TrashIcon></TrashIcon>
 												<span>حذف</span>
 											</Button>
-											<EditTeacherModal
-												onComplete={() =>
-													teacher.refetch()
-												}
-												teacherId={id}
-												trigger={
-													<Button
-														size="sm"
-														className="flex items-center gap-2"
-													>
-														<Pencil1Icon></Pencil1Icon>
-														<span>تعديل</span>
-													</Button>
-												}
-											></EditTeacherModal>
+
+											<Link href={"/teachers/edit/" + id}>
+												<Button
+													size="sm"
+													className="flex items-center gap-2"
+												>
+													<Pencil1Icon></Pencil1Icon>
+													<span>تعديل</span>
+												</Button>
+											</Link>
 										</div>
 									</td>
 								</tr>

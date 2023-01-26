@@ -64,7 +64,17 @@ const EditSubjectModal = ({
 
 	return (
 		<>
-			<Modal trigger={trigger}>
+			<Modal
+				trigger={trigger}
+				rootProps={{
+					onOpenChange: (open) => {
+						if (open === false) {
+							setSubmitDisabled(true);
+							setInputValue("");
+						}
+					},
+				}}
+			>
 				<form
 					className="bg-slate-50 min-w-[20rem] w-full max-w-xl p-4 rounded-md space-y-4"
 					onSubmit={(e) => e.preventDefault()}

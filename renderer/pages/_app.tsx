@@ -15,6 +15,9 @@ const rtlCache = createEmotionCache({
 import { ContextModalProps, ModalsProvider } from "@mantine/modals";
 import P from "../components/ui/P";
 import Button from "../components/ui/Button";
+import { ConfigProvider, TimePicker } from "antd";
+
+import arAZ from "antd/locale/ar_EG";
 
 function MyApp({ Component, pageProps }: AppProps) {
 	return (
@@ -40,9 +43,11 @@ function MyApp({ Component, pageProps }: AppProps) {
 			}}
 			emotionCache={rtlCache}
 		>
-			<Layout>
-				<Component {...pageProps} />
-			</Layout>
+			<ConfigProvider locale={arAZ} direction={"rtl"}>
+				<Layout>
+					<Component {...pageProps} />
+				</Layout>
+			</ConfigProvider>
 		</MantineProvider>
 	);
 }

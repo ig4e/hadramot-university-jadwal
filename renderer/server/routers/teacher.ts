@@ -6,16 +6,26 @@ import { prisma } from "../prisma";
 import Fuse from "fuse.js";
 
 const daysEnum = z.enum([
+	"SUNDAY",
 	"MONDAY",
 	"TUESDAY",
 	"WEDNESDAY",
 	"THURSDAY",
 	"FRIDAY",
 	"SATURDAY",
-	"SUNDAY",
 ]);
 
 type DaysEnum = z.infer<typeof daysEnum>;
+
+const DAYS_ARRAY: DaysEnum[] = [
+	"SUNDAY",
+	"MONDAY",
+	"TUESDAY",
+	"WEDNESDAY",
+	"THURSDAY",
+	"FRIDAY",
+	"SATURDAY",
+];
 
 const defaultTeacherSelect = Prisma.validator<Prisma.TeacherSelect>()({
 	id: true,

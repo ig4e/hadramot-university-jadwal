@@ -21,7 +21,7 @@ const AddMajorModal = ({
 	const createMajorHook = trpc.major.create.useMutation();
 
 	useEffect(() => {
-		setSubmitDisabled(!!!inputValue.trim());
+		setSubmitDisabled(!(inputValue.trim().length > 0));
 	}, [inputValue]);
 
 	const createMajor = async () => {
@@ -56,7 +56,17 @@ const AddMajorModal = ({
 
 	return (
 		<>
-			<Modal trigger={trigger}>
+			<Modal
+				trigger={trigger}
+				rootProps={{
+					onOpenChange: (open) => {
+						if (open === false) {
+							setSubmitDisabled(true);
+							setInputValue("");
+						}
+					},
+				}}
+			>
 				<form
 					className="bg-slate-50 min-w-[20rem] w-full max-w-xl p-4 rounded-md space-y-4"
 					onSubmit={(e) => e.preventDefault()}

@@ -20,10 +20,10 @@ type DaysEnum = z.infer<typeof daysEnum>;
 const defaultTeacherSelect = Prisma.validator<Prisma.TeacherSelect>()({
 	id: true,
 	name: true,
-	subjects: true,
-	workDays: true,
 	createdAt: true,
 	updatedAt: true,
+	subjects: true,
+	workDays: { include: { dates: true, day: true } },
 });
 
 export const teacherRouter = router({

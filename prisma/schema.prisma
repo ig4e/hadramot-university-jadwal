@@ -11,43 +11,43 @@ datasource db {
 }
 
 model Table {
-  id       Int   @id @default(autoincrement())
+  id       String @id @default(uuid())
   type     Int
-  major    Major @relation(fields: [majorId], references: [id])
+  major    Major  @relation(fields: [majorId], references: [id])
   level    Int
   semester Int
 
   days TableDay[]
 
-  majorId   Int
+  majorId   String
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 }
 
 model TableDay {
-  id Int @id @default(autoincrement())
+  id String @id @default(uuid())
 
   subjects TableDaySubjects[]
 
-  table   Table @relation(fields: [tableId], references: [id])
-  tableId Int
+  table   Table  @relation(fields: [tableId], references: [id])
+  tableId String
 }
 
 model TableDaySubjects {
-  id Int @id @default(autoincrement())
+  id String @id @default(uuid())
 
   time    String
   subject Subject @relation(fields: [subjectId], references: [id])
   teacher Teacher @relation(fields: [teacherId], references: [id])
 
-  TableDay   TableDay @relation(fields: [tableDayId], references: [id])
-  tableDayId Int
-  teacherId  Int
-  subjectId  Int
+  tableDay   TableDay @relation(fields: [tableDayId], references: [id])
+  tableDayId String
+  teacherId  String
+  subjectId  String
 }
 
 model Major {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   name      String   @unique
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
@@ -55,7 +55,7 @@ model Major {
 }
 
 model Teacher {
-  id       Int                @id @default(autoincrement())
+  id       String             @id @default(uuid())
   name     String             @unique
   subjects SubjectOnTeacher[]
   workDays TeacherOnWorkDay[]
@@ -67,15 +67,15 @@ model Teacher {
 
 model SubjectOnTeacher {
   teacher   Teacher @relation(fields: [teacherId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  teacherId Int // relation scalar field (used in the `@relation` attribute above)
+  teacherId String // relation scalar field (used in the `@relation` attribute above)
   subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  subjectId Int // relation scalar field (used in the `@relation` attribute above)
+  subjectId String // relation scalar field (used in the `@relation` attribute above)
 
   @@id([teacherId, subjectId])
 }
 
 model Subject {
-  id       Int                @id @default(autoincrement())
+  id       String             @id @default(uuid())
   name     String             @unique
   teachers SubjectOnTeacher[]
   tables   TableDaySubjects[]
@@ -85,22 +85,22 @@ model Subject {
 }
 
 model TeacherOnWorkDayHours {
-  id                 Int              @id @default(autoincrement())
+  id                 String           @id @default(uuid())
   startAt            Decimal
   endAt              Decimal
   teacherOnWorkDay   TeacherOnWorkDay @relation(fields: [teacherOnWorkDayId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  teacherOnWorkDayId Int
+  teacherOnWorkDayId String
 
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 }
 
 model TeacherOnWorkDay {
-  id        Int                     @id @default(autoincrement())
+  id        String                  @id @default(uuid())
   teacher   Teacher                 @relation(fields: [teacherId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   day       WorkDay                 @relation(fields: [workDayId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   dates     TeacherOnWorkDayHours[]
-  teacherId Int
+  teacherId String
   workDayId String
 
   updatedAt DateTime @updatedAt
@@ -110,7 +110,7 @@ model TeacherOnWorkDay {
 model WorkDay {
   id               String             @id @default(uuid())
   name             String             @unique
-  TeacherOnWorkDay TeacherOnWorkDay[]
+  teacherOnWorkDay TeacherOnWorkDay[]
 
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())

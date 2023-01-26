@@ -172,7 +172,7 @@ function Index() {
 								type="button"
 								size="md"
 								className="min-w-max max-h-min mt-auto"
-								onClick={teacherStore.addSubject}
+								onClick={() => teacherStore.addSubject()}
 							>
 								أضف مادة
 							</Button>
@@ -221,7 +221,7 @@ function Index() {
 									{dayData.dates.map(
 										({ endAt, inputId, startAt }) => {
 											return (
-												<div className="flex gap-2">
+												<div key={inputId} className="flex gap-2">
 													<TimePicker.RangePicker
 														placeholder={[
 															"من",

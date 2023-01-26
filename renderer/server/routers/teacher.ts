@@ -182,7 +182,10 @@ export const teacherRouter = router({
 		.query(async ({ input }) => {
 			const Teacher = await prisma.teacher.findUnique({
 				where: { id: input.id },
-				select: defaultTeacherSelect,
+				include: {
+					workDays: { include: { dates: true, day: true }},
+					subjects: { include: { subject: true } },
+				},
 			});
 
 			return Teacher;

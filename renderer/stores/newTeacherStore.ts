@@ -55,11 +55,11 @@ interface newTeacherState {
 }
 
 interface newTeacherActions {
-	addSubject: () => void;
+	addSubject: (subject?: SubjectInput) => void;
 	editSubject: (inputId: string, subject: SubjectInput) => void;
 	removeSubject: (subject: Subject) => void;
 
-	addWorkDayDate: (day: DaysEnum) => void;
+	addWorkDayDate: (day: DaysEnum, workDayDate?: WorkDayDate) => void;
 	editWorkDayDate: (day: DaysEnum, date: WorkDayDate) => void;
 	removeWorkDayDate: (day: DaysEnum, dateId: string) => void;
 

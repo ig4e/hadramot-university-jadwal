@@ -2,6 +2,7 @@ import { z } from "zod";
 import { procedure, router } from "../trpc";
 import { majorRouter } from "./major";
 import { subjectRouter } from "./subject";
+import { teacherRouter } from "./teacher";
 
 export const appRouter = router({
 	hello: procedure
@@ -18,6 +19,7 @@ export const appRouter = router({
 
 	major: majorRouter,
 	subject: subjectRouter,
+	teacher: teacherRouter
 
 });
 

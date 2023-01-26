@@ -1,7 +1,7 @@
 import { router, procedure } from "../trpc";
 import { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
-import { z } from "zod";
+import { tuple, z } from "zod";
 import { prisma } from "../prisma";
 import Fuse from "fuse.js";
 
@@ -134,8 +134,10 @@ export const teacherRouter = router({
 		)
 		.query(async ({ input }) => {
 			const list = await prisma.teacher.findMany({
-				select: defaultTeacherSelect,
+				//select: defaultTeacherSelect,
+				select: { id: true, name: true },
 			});
+
 			const TeacherFuse = new Fuse(list, {
 				keys: ["name"],
 				includeScore: false,

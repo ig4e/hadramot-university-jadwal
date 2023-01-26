@@ -8,7 +8,7 @@ import { trpc } from "../../utils/trpc";
 import { useNotificationsStore } from "../../stores/notificationsStore";
 import Modal from "../ui/Modal";
 
-const AddMajorModal = ({
+const AddSubjectModal = ({
 	trigger,
 	onComplete,
 }: {
@@ -18,37 +18,37 @@ const AddMajorModal = ({
 	const notificationStore = useNotificationsStore();
 	const [inputValue, setInputValue] = useState("");
 	const [submitDisabled, setSubmitDisabled] = useState(true);
-	const createMajorHook = trpc.major.create.useMutation();
+	const createSubjectHook = trpc.subject.create.useMutation();
 
 	useEffect(() => {
 		setSubmitDisabled(!!!inputValue.trim());
 	}, [inputValue]);
 
-	const createMajor = async () => {
+	const createSubject = async () => {
 		try {
-			const major = await createMajorHook.mutateAsync({
+			const subject = await createSubjectHook.mutateAsync({
 				name: inputValue,
 			});
-			if (major.id) {
+			if (subject.id) {
 				notificationStore.notify({
 					success: true,
-					title: "تم أضافة تخصص بنجاح!",
-					description: `تم أضافة ${major.name} بنجاح.`,
+					title: "تم أضافة مادة بنجاح!",
+					description: `تم أضافة ${subject.name} بنجاح.`,
 				});
 				onComplete();
 			} else {
 				notificationStore.notify({
 					success: false,
-					title: "تعذر اضافة التخصص!",
-					description: "أسم التخصص مكرر",
+					title: "تعذر اضافة المادة!",
+					description: "أسم المادة مكرر",
 					timeToDismiss: 4000,
 				});
 			}
 		} catch {
 			notificationStore.notify({
 				success: false,
-				title: "تعذر اضافة التخصص!",
-				description: "أسم التخصص مكرر",
+				title: "تعذر اضافة المادة!",
+				description: "أسم المادة مكرر",
 				timeToDismiss: 4000,
 			});
 		}
@@ -62,11 +62,11 @@ const AddMajorModal = ({
 					onSubmit={(e) => e.preventDefault()}
 				>
 					<Dialog.Title asChild>
-						<Header size="md">أضف تخصص</Header>
+						<Header size="md">أضف مادة</Header>
 					</Dialog.Title>
 
 					<TextInput
-						label="أسم التخصص"
+						label="أسم المادة"
 						required={true}
 						onChange={(e) => setInputValue(e.target.value)}
 					></TextInput>
@@ -85,7 +85,7 @@ const AddMajorModal = ({
 						</Dialog.Close>
 						<Dialog.Close asChild>
 							<Button
-								onClick={createMajor}
+								onClick={createSubject}
 								disabled={submitDisabled}
 								type="submit"
 								size="md"
@@ -102,4 +102,4 @@ const AddMajorModal = ({
 	);
 };
 
-export default AddMajorModal;
+export default AddSubjectModal;

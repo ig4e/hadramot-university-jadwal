@@ -100,7 +100,7 @@ model TeacherOnWorkDay {
 
 model WorkDay {
   id               String             @id @default(uuid())
-  name             String
+  name             String             @unique
   TeacherOnWorkDay TeacherOnWorkDay[]
 
   updatedAt DateTime @updatedAt

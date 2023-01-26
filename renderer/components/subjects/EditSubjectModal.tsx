@@ -3,52 +3,60 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { CheckIcon, Cross2Icon } from "@radix-ui/react-icons";
 import Button from "../ui/Button";
 import Header from "../ui/Header";
-import { Notification, TextInput } from "@mantine/core";
+import { Loader, Notification, TextInput } from "@mantine/core";
 import { trpc } from "../../utils/trpc";
 import { useNotificationsStore } from "../../stores/notificationsStore";
 import Modal from "../ui/Modal";
 
-const AddMajorModal = ({
+const EditSubjectModal = ({
+	subjectId,
 	trigger,
 	onComplete,
 }: {
+	subjectId: number;
 	trigger: ReactNode;
 	onComplete: () => void;
 }) => {
 	const notificationStore = useNotificationsStore();
 	const [inputValue, setInputValue] = useState("");
 	const [submitDisabled, setSubmitDisabled] = useState(true);
-	const createMajorHook = trpc.major.create.useMutation();
+	const subjectData = trpc.subject.get.useQuery({ id: subjectId });
+	const editSubjectHook = trpc.subject.edit.useMutation();
 
 	useEffect(() => {
 		setSubmitDisabled(!!!inputValue.trim());
 	}, [inputValue]);
 
-	const createMajor = async () => {
+	useEffect(() => {
+		if (subjectData.data?.name) setInputValue(subjectData.data?.name);
+	}, [subjectData.data]);
+
+	const editSubject = async () => {
 		try {
-			const major = await createMajorHook.mutateAsync({
+			const subject = await editSubjectHook.mutateAsync({
+				id: subjectId,
 				name: inputValue,
 			});
-			if (major.id) {
+			if (subject.id) {
 				notificationStore.notify({
 					success: true,
-					title: "تم أضافة تخصص بنجاح!",
-					description: `تم أضافة ${major.name} بنجاح.`,
+					title: "تم تعديل مادة بنجاح!",
+					description: `تم تعديل ${subject.name} بنجاح.`,
 				});
 				onComplete();
 			} else {
 				notificationStore.notify({
 					success: false,
-					title: "تعذر اضافة التخصص!",
-					description: "أسم التخصص مكرر",
+					title: "تعذر تعجيل المادة!",
+					description: "أسم المادة مكرر",
 					timeToDismiss: 4000,
 				});
 			}
 		} catch {
 			notificationStore.notify({
 				success: false,
-				title: "تعذر اضافة التخصص!",
-				description: "أسم التخصص مكرر",
+				title: "تعذر تعديل المادة!",
+				description: "أسم المادة مكرر",
 				timeToDismiss: 4000,
 			});
 		}
@@ -62,13 +70,18 @@ const AddMajorModal = ({
 					onSubmit={(e) => e.preventDefault()}
 				>
 					<Dialog.Title asChild>
-						<Header size="md">أضف تخصص</Header>
+						<Header size="md">تعديل مادة</Header>
 					</Dialog.Title>
 
 					<TextInput
-						label="أسم التخصص"
+						label="أسم المادة"
 						required={true}
 						onChange={(e) => setInputValue(e.target.value)}
+						value={inputValue}
+						disabled={subjectData.isLoading}
+						rightSection={
+							subjectData.isLoading ? <Loader></Loader> : null
+						}
 					></TextInput>
 
 					<div className="flex gap-2 items-center justify-end">
@@ -85,7 +98,7 @@ const AddMajorModal = ({
 						</Dialog.Close>
 						<Dialog.Close asChild>
 							<Button
-								onClick={createMajor}
+								onClick={editSubject}
 								disabled={submitDisabled}
 								type="submit"
 								size="md"
@@ -102,4 +115,4 @@ const AddMajorModal = ({
 	);
 };
 
-export default AddMajorModal;
+export default EditSubjectModal;

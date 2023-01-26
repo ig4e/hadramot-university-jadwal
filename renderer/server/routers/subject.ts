@@ -5,24 +5,24 @@ import { z } from "zod";
 import { prisma } from "../prisma";
 import Fuse from "fuse.js";
 
-const defaultMajorSelect = Prisma.validator<Prisma.MajorSelect>()({
+const defaultSubjectSelect = Prisma.validator<Prisma.SubjectSelect>()({
 	id: true,
 	name: true,
 	createdAt: true,
 	updatedAt: true,
 });
 
-export const majorRouter = router({
+export const subjectRouter = router({
 	create: procedure
 		.input(z.object({ name: z.string() }))
 		.mutation(async ({ input }) => {
-			const createdMajor = await prisma.major.create({
+			const createdSubject = await prisma.subject.create({
 				data: {
 					name: input.name,
 				},
 			});
 
-			return createdMajor;
+			return createdSubject;
 		}),
 
 	list: procedure
@@ -42,8 +42,8 @@ export const majorRouter = router({
 			const limit = input.limit ?? 50;
 			const { cursor } = input;
 
-			const items = await prisma.major.findMany({
-				select: defaultMajorSelect,
+			const items = await prisma.subject.findMany({
+				select: defaultSubjectSelect,
 				take: limit + 1,
 				where: {},
 				cursor: cursor
@@ -75,15 +75,15 @@ export const majorRouter = router({
 			}),
 		)
 		.query(async ({ input }) => {
-			const list = await prisma.major.findMany({
-				select: defaultMajorSelect,
+			const list = await prisma.subject.findMany({
+				select: defaultSubjectSelect,
 			});
-			const majorFuse = new Fuse(list, {
+			const SubjectFuse = new Fuse(list, {
 				keys: ["name"],
 				includeScore: false,
 			});
 
-			return majorFuse.search(input.query).map((x) => x.item);
+			return SubjectFuse.search(input.query).map((x) => x.item);
 		}),
 
 	get: procedure
@@ -93,12 +93,12 @@ export const majorRouter = router({
 			}),
 		)
 		.query(async ({ input }) => {
-			const major = await prisma.major.findUnique({
+			const Subject = await prisma.subject.findUnique({
 				where: { id: input.id },
-				select: defaultMajorSelect,
+				select: defaultSubjectSelect,
 			});
 
-			return major;
+			return Subject;
 		}),
 
 	edit: procedure
@@ -109,15 +109,15 @@ export const majorRouter = router({
 			}),
 		)
 		.mutation(async ({ input }) => {
-			const editedMajor = await prisma.major.update({
+			const editedSubject = await prisma.subject.update({
 				where: { id: input.id },
 				data: {
 					name: input.name,
 				},
-				select: defaultMajorSelect,
+				select: defaultSubjectSelect,
 			});
 
-			return editedMajor;
+			return editedSubject;
 		}),
 
 	delete: procedure
@@ -127,11 +127,11 @@ export const majorRouter = router({
 			}),
 		)
 		.mutation(async ({ input }) => {
-			const editedMajor = await prisma.major.delete({
+			const editedSubject = await prisma.subject.delete({
 				where: { id: input.id },
-				select: defaultMajorSelect,
+				select: defaultSubjectSelect,
 			});
 
-			return editedMajor;
+			return editedSubject;
 		}),
 });

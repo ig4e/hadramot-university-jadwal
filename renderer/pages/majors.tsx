@@ -1,18 +1,17 @@
-import { Input, Loader, Table, TextInput } from "@mantine/core";
-import { ContextModalProps, openConfirmModal } from "@mantine/modals";
+import { Loader, Table } from "@mantine/core";
 import { Pencil1Icon, PlusIcon, TrashIcon } from "@radix-ui/react-icons";
-import React, { useRef } from "react";
 import Button from "../components/ui/Button";
 import Header from "../components/ui/Header";
 import P from "../components/ui/P";
 import { trpc } from "../utils/trpc";
-
-import { openContextModal } from "@mantine/modals";
 import AddMajorModal from "../components/majors/AddMajorModal";
+import EditMajorModal from "../components/majors/EditMajorModal";
+import { useNotificationsStore } from "../stores/notificationsStore";
 
 function Majors() {
 	const majors = trpc.major.list.useQuery({ limit: 250 });
-	const newMajorInputRef = useRef(null);
+	const majorDeleteHook = trpc.major.delete.useMutation();
+	const notificationStore = useNotificationsStore();
 
 	return (
 		<div className="space-y-8">
@@ -69,14 +68,52 @@ function Majors() {
 									</td>
 									<td className="w-28">
 										<div className="flex items-center gap-2 w-fit">
-											<Button size="sm" intent="secondary" className="flex items-center gap-2">
+											<Button
+												size="sm"
+												intent="secondary"
+												className="flex items-center gap-2"
+												onClick={async () => {
+													try {
+														await majorDeleteHook.mutateAsync(
+															{ id },
+														);
+														notificationStore.notify(
+															{
+																title: "تم حذف التخصص بنجاح!",
+																description: `تم حذف ${name} بنجاح.`,
+																success: true,
+															},
+														);
+														majors.refetch();
+													} catch {
+														notificationStore.notify(
+															{
+																title: "تعذر حذف التخصص!",
+																description: `تعذر حذف ${name}.`,
+																success: false,
+															},
+														);
+													}
+												}}
+											>
 												<TrashIcon></TrashIcon>
 												<span>حذف</span>
 											</Button>
-											<Button size="sm" className="flex items-center gap-2">
-												<Pencil1Icon></Pencil1Icon>
-												<span>تعديل</span>
-											</Button>
+											<EditMajorModal
+												onComplete={() =>
+													majors.refetch()
+												}
+												majorId={id}
+												trigger={
+													<Button
+														size="sm"
+														className="flex items-center gap-2"
+													>
+														<Pencil1Icon></Pencil1Icon>
+														<span>تعديل</span>
+													</Button>
+												}
+											></EditMajorModal>
 										</div>
 									</td>
 								</tr>

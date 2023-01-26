@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { procedure, router } from "../trpc";
 import { majorRouter } from "./major";
+import { subjectRouter } from "./subject";
 
 export const appRouter = router({
 	hello: procedure
@@ -16,6 +17,8 @@ export const appRouter = router({
 		}),
 
 	major: majorRouter,
+	subject: subjectRouter,
+
 });
 
 // export type definition of API

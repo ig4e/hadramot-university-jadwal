@@ -7,6 +7,7 @@ import { trpc } from "../utils/trpc";
 import AddSubjectModal from "../components/subjects/AddSubjectModal";
 import EditSubjectModal from "../components/subjects/EditSubjectModal";
 import { useNotificationsStore } from "../stores/notificationsStore";
+import PageHeader from "../components/PageHeader";
 
 function Subject() {
 	const subject = trpc.subject.list.useQuery({ limit: 250 });
@@ -15,30 +16,30 @@ function Subject() {
 
 	return (
 		<div className="space-y-8">
-			<div className="flex items-start justify-between">
-				<div className="space-y-2">
-					<Header>المواد</Header>
-					<P size="lg">هنا يوجد جميع المواد</P>
-				</div>
-
-				<AddSubjectModal
-					onComplete={() => subject.refetch()}
-					trigger={
-						<Button
-							size="lg"
-							className="flex items-center gap-2 min-w-max self-end"
-						>
-							<PlusIcon className="w-5 h-5 stroke-white stroke-[0.5]"></PlusIcon>
-							<span>أنشئ مادة جديد</span>
-						</Button>
-					}
-				></AddSubjectModal>
-			</div>
+			<PageHeader
+				header="المواد"
+				description="هنا يوجد جميع المواد"
+				leftSection={{
+					children: (
+						<AddSubjectModal
+							onComplete={() => subject.refetch()}
+							trigger={
+								<Button
+									size="lg"
+									className="flex items-center gap-2 min-w-max self-end"
+								>
+									<PlusIcon className="w-5 h-5 stroke-white stroke-[0.5]"></PlusIcon>
+									<span>أنشئ مادة جديد</span>
+								</Button>
+							}
+						></AddSubjectModal>
+					),
+				}}
+			></PageHeader>
 
 			<Table className="bg-slate-800 rounded-md">
 				<thead>
 					<tr>
-						<th className="!text-slate-50">المسلسل</th>
 						<th className="!text-slate-50">أسم المادة</th>
 						<th className="!text-slate-50">تاريخ الانشاء</th>
 						<th className="!text-slate-50">أخر تعديل</th>
@@ -50,7 +51,6 @@ function Subject() {
 						{subject.data?.items.map(
 							({ id, name, createdAt, updatedAt }) => (
 								<tr key={id}>
-									<td>{id}</td>
 									<td>{name}</td>
 									<td>
 										<time
@@ -70,7 +70,7 @@ function Subject() {
 										<div className="flex items-center gap-2 w-fit">
 											<Button
 												size="sm"
-												intent="secondary"
+												intent="danger"
 												className="flex items-center gap-2"
 												onClick={async () => {
 													try {

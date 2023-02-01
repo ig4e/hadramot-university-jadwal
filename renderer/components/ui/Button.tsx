@@ -11,7 +11,7 @@ function Button({
 	children: React.ReactNode;
 	size?: "lg" | "md" | "sm";
 	className?: string;
-	intent?: "primary" | "secondary" | "outline";
+	intent?: "primary" | "secondary" | "outline" | "danger";
 } & React.DetailedHTMLProps<
 	React.ButtonHTMLAttributes<HTMLButtonElement>,
 	HTMLButtonElement
@@ -27,6 +27,8 @@ function Button({
 					"text-md py-1 px-2": size === "sm",
 					"bg-blue-600 enabled:hover:bg-blue-700 enabled:active:bg-blue-800 text-neutral-50 ":
 						intent === "primary",
+					"bg-red-600 enabled:hover:bg-red-700 enabled:active:bg-red-800 text-neutral-50 ":
+						intent === "danger",
 					"bg-slate-600 enabled:hover:bg-slate-700 enabled:active:bg-slate-800 text-neutral-50 ":
 						intent === "secondary",
 					"border-2 border-slate-600 enabled:hover:border-slate-700 enabled:active:border-slate-800 text-slate-600 enabled:hover:text-slate-700 enabled:active:text-slate-800":
@@ -34,6 +36,9 @@ function Button({
 				},
 				className,
 			)}
+			onClick={(e) => {
+				if (intent === "danger") 
+			}}
 		>
 			{children}
 		</button>

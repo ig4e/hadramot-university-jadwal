@@ -22,7 +22,7 @@
 	}
 
 	body {
-		@apply bg-slate-50;
+		@apply bg-slate-50 scroll-smooth;
 	}
 
 	/* width */
@@ -32,17 +32,22 @@
 
 	/* Track */
 	::-webkit-scrollbar-track {
-		@apply bg-slate-50;
+		@apply bg-slate-900;
 	}
 
 	/* Handle */
 	::-webkit-scrollbar-thumb {
-		@apply bg-blue-600/70 rounded-md;
+		@apply bg-blue-600 rounded-md;
 	}
 
 	/* Handle on hover */
 	::-webkit-scrollbar-thumb:hover {
-		@apply bg-blue-600;
+		@apply bg-blue-700;
+	}
+
+	/* Handle on hover */
+	::-webkit-scrollbar-thumb:active {
+		@apply bg-blue-800;
 	}
 
 }

@@ -7,6 +7,7 @@ import { trpc } from "../utils/trpc";
 import AddMajorModal from "../components/majors/AddMajorModal";
 import EditMajorModal from "../components/majors/EditMajorModal";
 import { useNotificationsStore } from "../stores/notificationsStore";
+import PageHeader from "../components/PageHeader";
 
 function Majors() {
 	const majors = trpc.major.list.useQuery({ limit: 250 });
@@ -15,30 +16,30 @@ function Majors() {
 
 	return (
 		<div className="space-y-8">
-			<div className="flex items-start justify-between">
-				<div className="space-y-2">
-					<Header>التخصصات</Header>
-					<P size="lg">هنا يوجد جميع التخصصات</P>
-				</div>
-
-				<AddMajorModal
-					onComplete={() => majors.refetch()}
-					trigger={
-						<Button
-							size="lg"
-							className="flex items-center gap-2 min-w-max self-end"
-						>
-							<PlusIcon className="w-5 h-5 stroke-white stroke-[0.5]"></PlusIcon>
-							<span>أنشئ تخصص جديد</span>
-						</Button>
-					}
-				></AddMajorModal>
-			</div>
+			<PageHeader
+				header="التخصصات"
+				description="هنا يوجد جميع التخصصات"
+				leftSection={{
+					children: (
+						<AddMajorModal
+							onComplete={() => majors.refetch()}
+							trigger={
+								<Button
+									size="lg"
+									className="flex items-center gap-2 min-w-max self-end"
+								>
+									<PlusIcon className="w-5 h-5 stroke-white stroke-[0.5]"></PlusIcon>
+									<span>أنشئ تخصص جديد</span>
+								</Button>
+							}
+						></AddMajorModal>
+					),
+				}}
+			></PageHeader>
 
 			<Table className="bg-slate-800 rounded-md">
 				<thead>
 					<tr>
-						<th className="!text-slate-50">المسلسل</th>
 						<th className="!text-slate-50">أسم التخصص</th>
 						<th className="!text-slate-50">تاريخ الانشاء</th>
 						<th className="!text-slate-50">أخر تعديل</th>
@@ -50,7 +51,6 @@ function Majors() {
 						{majors.data?.items.map(
 							({ id, name, createdAt, updatedAt }) => (
 								<tr key={id}>
-									<td>{id}</td>
 									<td>{name}</td>
 									<td>
 										<time
@@ -70,7 +70,7 @@ function Majors() {
 										<div className="flex items-center gap-2 w-fit">
 											<Button
 												size="sm"
-												intent="secondary"
+												intent="danger"
 												className="flex items-center gap-2"
 												onClick={async () => {
 													try {

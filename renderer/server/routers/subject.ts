@@ -29,7 +29,7 @@ export const subjectRouter = router({
 		.input(
 			z.object({
 				limit: z.number().min(1).max(250).nullish(),
-				cursor: z.number().nullish(),
+				cursor: z.string().nullish(),
 			}),
 		)
 		.query(async ({ input }) => {
@@ -89,7 +89,7 @@ export const subjectRouter = router({
 	get: procedure
 		.input(
 			z.object({
-				id: z.number(),
+				id: z.string(),
 			}),
 		)
 		.query(async ({ input }) => {
@@ -104,7 +104,7 @@ export const subjectRouter = router({
 	edit: procedure
 		.input(
 			z.object({
-				id: z.number(),
+				id: z.string(),
 				name: z.string(),
 			}),
 		)
@@ -123,7 +123,7 @@ export const subjectRouter = router({
 	delete: procedure
 		.input(
 			z.object({
-				id: z.number(),
+				id: z.string(),
 			}),
 		)
 		.mutation(async ({ input }) => {

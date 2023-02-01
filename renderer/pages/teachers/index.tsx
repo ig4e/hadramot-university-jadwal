@@ -6,6 +6,7 @@ import P from "../../components/ui/P";
 import { trpc } from "../../utils/trpc";
 import { useNotificationsStore } from "../../stores/notificationsStore";
 import Link from "next/link";
+import PageHeader from "../../components/PageHeader";
 
 function Teacher() {
 	const teacher = trpc.teacher.list.useQuery({ limit: 250 });
@@ -14,27 +15,23 @@ function Teacher() {
 
 	return (
 		<div className="space-y-8">
-			<div className="flex items-start justify-between">
-				<div className="space-y-2">
-					<Header>المعلمين</Header>
-					<P size="lg">هنا يوجد جميع المعلمين</P>
-				</div>
-
-				<Link href={"/teachers/create"}>
-					<Button
-						size="lg"
-						className="flex items-center gap-2 min-w-max self-end"
-					>
-						<PlusIcon className="w-5 h-5 stroke-white stroke-[0.5]"></PlusIcon>
-						<span>أنشئ معلم جديد</span>
-					</Button>
-				</Link>
-			</div>
+			<PageHeader
+				header="المعلمين"
+				description="هنا يوجد جميع المعلمين"
+				link={{
+					href: "/teachers/create",
+					buttonChildren: (
+						<>
+							<PlusIcon className="w-5 h-5 stroke-white stroke-[0.5]"></PlusIcon>
+							<span>أنشئ معلم جديد</span>
+						</>
+					),
+				}}
+			></PageHeader>
 
 			<Table className="bg-slate-800 rounded-md">
 				<thead>
 					<tr>
-						<th className="!text-slate-50">المسلسل</th>
 						<th className="!text-slate-50">أسم المعلم</th>
 						<th className="!text-slate-50">تاريخ الانشاء</th>
 						<th className="!text-slate-50">أخر تعديل</th>
@@ -46,7 +43,6 @@ function Teacher() {
 						{teacher.data?.items.map(
 							({ id, name, createdAt, updatedAt }) => (
 								<tr key={id}>
-									<td>{id}</td>
 									<td>{name}</td>
 									<td>
 										<time
@@ -62,11 +58,11 @@ function Teacher() {
 											{createdAt.toLocaleString()}
 										</time>
 									</td>
-									<td className="w-28">
+									<td className="w-20">
 										<div className="flex items-center gap-2 w-fit">
 											<Button
 												size="sm"
-												intent="secondary"
+												intent="danger"
 												className="flex items-center gap-2"
 												onClick={async () => {
 													try {
@@ -95,16 +91,6 @@ function Teacher() {
 												<TrashIcon></TrashIcon>
 												<span>حذف</span>
 											</Button>
-
-											<Link href={"/teachers/edit/" + id}>
-												<Button
-													size="sm"
-													className="flex items-center gap-2"
-												>
-													<Pencil1Icon></Pencil1Icon>
-													<span>تعديل</span>
-												</Button>
-											</Link>
 										</div>
 									</td>
 								</tr>

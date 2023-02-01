@@ -13,7 +13,7 @@ const EditMajorModal = ({
 	trigger,
 	onComplete,
 }: {
-	majorId: number;
+	majorId: string;
 	trigger: ReactNode;
 	onComplete: () => void;
 }) => {

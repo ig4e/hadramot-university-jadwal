@@ -1,4 +1,5 @@
 import { Autocomplete, AutocompleteProps, ChevronIcon } from "@mantine/core";
+import { ChevronDownIcon } from "@radix-ui/react-icons";
 import clsx from "clsx";
 import React from "react";
 
@@ -12,7 +13,7 @@ function ComboBox({
 			dir="rtl"
 			className={clsx("w-full", className)}
 			labelProps={{ className: "!font-bold mb-2" }}
-			rightSection={<ChevronIcon></ChevronIcon>}
+			icon={<ChevronDownIcon className="pointer-events-none"></ChevronDownIcon>}
 			defaultValue={""}
 		/>
 	);

@@ -3,6 +3,7 @@ import React from "react";
 import { useNotificationsStore } from "../stores/notificationsStore";
 import SideBar from "./SideBar";
 
+
 function Layout({ children }: { children: React.ReactNode }) {
 	const notificationsStore = useNotificationsStore();
 

@@ -13,15 +13,15 @@ const EditSubjectModal = ({
 	trigger,
 	onComplete,
 }: {
-	subjectId: number;
+	subjectId: string;
 	trigger: ReactNode;
 	onComplete: () => void;
 }) => {
 	const notificationStore = useNotificationsStore();
-	const [inputValue, setInputValue] = useState("");
 	const [submitDisabled, setSubmitDisabled] = useState(true);
 	const subjectData = trpc.subject.get.useQuery({ id: subjectId });
 	const editSubjectHook = trpc.subject.edit.useMutation();
+	const [inputValue, setInputValue] = useState("");
 
 	useEffect(() => {
 		setSubmitDisabled(!!!inputValue.trim());
@@ -30,6 +30,7 @@ const EditSubjectModal = ({
 	useEffect(() => {
 		if (subjectData.data?.name) setInputValue(subjectData.data?.name);
 	}, [subjectData.data]);
+
 
 	const editSubject = async () => {
 		try {

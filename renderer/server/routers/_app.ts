@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { procedure, router } from "../trpc";
+import { hallRouter } from "./hall";
 import { majorRouter } from "./major";
 import { subjectRouter } from "./subject";
 import { teacherRouter } from "./teacher";
@@ -19,8 +20,8 @@ export const appRouter = router({
 
 	major: majorRouter,
 	subject: subjectRouter,
-	teacher: teacherRouter
-
+	teacher: teacherRouter,
+	hall: hallRouter
 });
 
 // export type definition of API

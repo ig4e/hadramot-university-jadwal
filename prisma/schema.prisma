@@ -12,107 +12,96 @@ datasource db {
 
 model Table {
   id       String @id @default(uuid())
-  type     Int
-  major    Major  @relation(fields: [majorId], references: [id])
-  level    Int
-  semester Int
+  major    Major  @relation(fields: [majorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  type     Int // 1 = 3am, 2 = thanwy
+  level    Int // 1, 2, 3, 4
+  semester Int // 1 = first, 2 =  second
 
-  days TableDay[]
+  subjects TableSubject[]
 
   majorId   String
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 }
 
-model TableDay {
-  id String @id @default(uuid())
+model TableSubject {
+  id      String  @id @default(uuid())
+  table   Table   @relation(fields: [tableId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  day     Day     @relation(fields: [dayId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  subject Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  teacher Teacher @relation(fields: [teacherId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  hall    Hall    @relation(fields: [hallId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  subjects TableDaySubjects[]
+  startsAt Float
+  endsAt   Float
 
-  table   Table  @relation(fields: [tableId], references: [id])
-  tableId String
-}
-
-model TableDaySubjects {
-  id String @id @default(uuid())
-
-  time    String
-  subject Subject @relation(fields: [subjectId], references: [id])
-  teacher Teacher @relation(fields: [teacherId], references: [id])
-
-  tableDay   TableDay @relation(fields: [tableDayId], references: [id])
-  tableDayId String
-  teacherId  String
-  subjectId  String
-}
-
-model Major {
-  id        String   @id @default(uuid())
-  name      String   @unique
-  updatedAt DateTime @updatedAt
-  createdAt DateTime @default(now())
-  tables    Table[]
+  tableId   String
+  dayId     String
+  subjectId String
+  teacherId String
+  hallId    String
 }
 
 model Teacher {
-  id       String             @id @default(uuid())
-  name     String             @unique
-  subjects SubjectOnTeacher[]
-  workDays TeacherOnWorkDay[]
-  tables   TableDaySubjects[]
+  id            String            @id @default(uuid())
+  name          String            @unique
+  subjects      Subject[]
+  workDates     TeacherWorkDate[]
+  tableSubjects TableSubject[]
 
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 }
 
-model SubjectOnTeacher {
-  teacher   Teacher @relation(fields: [teacherId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  teacherId String // relation scalar field (used in the `@relation` attribute above)
-  subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  subjectId String // relation scalar field (used in the `@relation` attribute above)
+model TeacherWorkDate {
+  id       String  @id @default(uuid())
+  day      Day     @relation(fields: [dayId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  teacher  Teacher @relation(fields: [teacherId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  startsAt Float
+  endsAt   Float
 
-  @@id([teacherId, subjectId])
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  teacherId String
+  dayId     String
+}
+
+model Major {
+  id            String  @id @default(uuid())
+  type          Int     @default(1) // 1 = 3am, 2 = thanwy
+  name          String  @unique
+  studentsCount Int
+  tables        Table[]
+
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
+
+model Hall {
+  id            String         @id @default(uuid())
+  name          String         @unique
+  studentsCount Int
+  tableSubjects TableSubject[]
+
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
 }
 
 model Subject {
-  id       String             @id @default(uuid())
-  name     String             @unique
-  teachers SubjectOnTeacher[]
-  tables   TableDaySubjects[]
+  id            String         @id @default(uuid())
+  name          String         @unique
+  teachers      Teacher[]
+  tableSubjects TableSubject[]
 
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 }
 
-model TeacherOnWorkDayHours {
-  id                 String           @id @default(uuid())
-  startsAt           Float
-  endsAt             Float
-  
-  teacherOnWorkDay   TeacherOnWorkDay @relation(fields: [teacherOnWorkDayId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  teacherOnWorkDayId String
+model Day {
+  id   String @id @default(uuid())
+  name String @unique
 
-  updatedAt          DateTime         @updatedAt
-  createdAt          DateTime         @default(now())
-}
-
-model TeacherOnWorkDay {
-  id        String                  @id @default(uuid())
-  teacher   Teacher                 @relation(fields: [teacherId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  day       WorkDay                 @relation(fields: [workDayId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  dates     TeacherOnWorkDayHours[]
-  teacherId String
-  workDayId String
-
-  updatedAt DateTime @updatedAt
-  createdAt DateTime @default(now())
-}
-
-model WorkDay {
-  id               String             @id @default(uuid())
-  name             String             @unique
-  teacherOnWorkDay TeacherOnWorkDay[]
-
-  updatedAt DateTime @updatedAt
-  createdAt DateTime @default(now())
+  teacherWorkDates TeacherWorkDate[]
+  tableSubjects    TableSubject[]
 }

@@ -3,7 +3,14 @@ import PageHeader from "../../../components/PageHeader";
 import { trpc } from "../../../utils/trpc";
 import { useNotificationsStore } from "../../../stores/notificationsStore";
 import { useRouter } from "next/router";
-import TeacherForm, { DaysIndex, OnSubmitData } from "../../../components/teachers/TeacherForm";
+import TeacherForm, {
+	DaysIndex,
+	TeacherFormData,
+} from "../../../components/teachers/TeacherForm";
+import {
+	teacherCreateFailNotification,
+	teacherCreateSuccessNotification,
+} from "../../../constants/notifications/teacherNotifications";
 const days = [
 	"SUNDAY",
 	"MONDAY",
@@ -18,38 +25,25 @@ function CreateTeachertPage() {
 	const notifications = useNotificationsStore();
 	const createTeacherHook = trpc.teacher.create.useMutation();
 
-	async function onSubmit(data: OnSubmitData) {
+	async function onSubmit(data: TeacherFormData) {
 		try {
 			const teacher = await createTeacherHook.mutateAsync({
 				name: data.name,
 				subjects: data.subjects,
-				workDays: days.map((d) => {
-					const day = d as DaysIndex;
+				workDates: data.workDates.map(({ id, day, value }) => {
 					return {
-						day,
-						dates: data.workDates[day].map(
-							({ value: [startsAt, endsAt] }) => ({
-								startsAt,
-								endsAt,
-							}),
-						),
+						dayName: day as DaysIndex,
+						endsAt: value[1],
+						startsAt: value[0],
 					};
 				}),
 			});
 
-			notifications.notify({
-				success: true,
-				title: "تم أضافة معلم بنجاح!",
-				description: `تم أضافة ${teacher.name} بنجاح.`,
-			});
-
+			notifications.notify(teacherCreateSuccessNotification(teacher.name));
+			
 			router.push("/teachers");
 		} catch {
-			notifications.notify({
-				success: true,
-				title: "تعذر أضافة معلم!",
-				description: `تعذرت أضافة ${data.name}.`,
-			});
+			notifications.notify(teacherCreateFailNotification(data.name));
 		}
 	}
 

@@ -5,34 +5,26 @@ import { z } from "zod";
 import { prisma } from "../prisma";
 import Fuse from "fuse.js";
 
-const defaultMajorSelect = Prisma.validator<Prisma.MajorSelect>()({
+const defaultHallSelect = Prisma.validator<Prisma.HallSelect>()({
 	id: true,
-	type: true,
 	name: true,
 	createdAt: true,
 	updatedAt: true,
 	studentsCount: true,
 });
 
-export const majorRouter = router({
+export const hallRouter = router({
 	create: procedure
-		.input(
-			z.object({
-				name: z.string(),
-				studentsCount: z.number(),
-				type: z.number(),
-			}),
-		)
-		.mutation(async ({ input: { name, studentsCount, type } }) => {
-			const createdMajor = await prisma.major.create({
+		.input(z.object({ name: z.string(), studentsCount: z.number() }))
+		.mutation(async ({ input: { name, studentsCount } }) => {
+			const createdHall = await prisma.hall.create({
 				data: {
 					name,
 					studentsCount,
-					type,
 				},
 			});
 
-			return createdMajor;
+			return createdHall;
 		}),
 
 	list: procedure
@@ -52,8 +44,8 @@ export const majorRouter = router({
 			const limit = input.limit ?? 50;
 			const { cursor } = input;
 
-			const items = await prisma.major.findMany({
-				select: defaultMajorSelect,
+			const items = await prisma.hall.findMany({
+				select: defaultHallSelect,
 				take: limit + 1,
 				where: {},
 				cursor: cursor
@@ -85,15 +77,15 @@ export const majorRouter = router({
 			}),
 		)
 		.query(async ({ input }) => {
-			const list = await prisma.major.findMany({
-				select: defaultMajorSelect,
+			const list = await prisma.hall.findMany({
+				select: defaultHallSelect,
 			});
-			const majorFuse = new Fuse(list, {
+			const hallFuse = new Fuse(list, {
 				keys: ["name"],
 				includeScore: false,
 			});
 
-			return majorFuse.search(input.query).map((x) => x.item);
+			return hallFuse.search(input.query).map((x) => x.item);
 		}),
 
 	get: procedure
@@ -103,12 +95,12 @@ export const majorRouter = router({
 			}),
 		)
 		.query(async ({ input }) => {
-			const major = await prisma.major.findUnique({
+			const hall = await prisma.hall.findUnique({
 				where: { id: input.id },
-				select: defaultMajorSelect,
+				select: defaultHallSelect,
 			});
 
-			return major;
+			return hall;
 		}),
 
 	edit: procedure
@@ -117,21 +109,19 @@ export const majorRouter = router({
 				id: z.string(),
 				name: z.string(),
 				studentsCount: z.number(),
-				type: z.number(),
 			}),
 		)
 		.mutation(async ({ input }) => {
-			const editedMajor = await prisma.major.update({
+			const editedHall = await prisma.hall.update({
 				where: { id: input.id },
 				data: {
 					name: input.name,
 					studentsCount: input.studentsCount,
-					type: input.type,
 				},
-				select: defaultMajorSelect,
+				select: defaultHallSelect,
 			});
 
-			return editedMajor;
+			return editedHall;
 		}),
 
 	delete: procedure
@@ -141,11 +131,11 @@ export const majorRouter = router({
 			}),
 		)
 		.mutation(async ({ input }) => {
-			const editedMajor = await prisma.major.delete({
+			const editedHall = await prisma.hall.delete({
 				where: { id: input.id },
-				select: defaultMajorSelect,
+				select: defaultHallSelect,
 			});
 
-			return editedMajor;
+			return editedHall;
 		}),
 });

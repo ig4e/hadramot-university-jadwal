@@ -7,6 +7,10 @@ import {
 	TableIcon,
 	StackIcon,
 	LayersIcon,
+	HomeIcon,
+	SquareIcon,
+	BoxIcon,
+	ArchiveIcon,
 } from "@radix-ui/react-icons";
 
 const ROUTES: { name: string; slug: string; Icon: any }[] = [
@@ -23,12 +27,17 @@ const ROUTES: { name: string; slug: string; Icon: any }[] = [
 	{
 		name: "التخصصات",
 		slug: "/majors",
-		Icon: StackIcon,
+		Icon: LayersIcon,
 	},
 	{
 		name: "المواد",
 		slug: "/subjects",
-		Icon: LayersIcon,
+		Icon: ArchiveIcon,
+	},
+	{
+		name: "القاعات",
+		slug: "/halls",
+		Icon: BoxIcon,
 	},
 ];
 

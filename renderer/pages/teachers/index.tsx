@@ -33,33 +33,32 @@ function Teacher() {
 				<thead>
 					<tr>
 						<th className="!text-slate-50">أسم المعلم</th>
-						<th className="!text-slate-50">تاريخ الانشاء</th>
-						<th className="!text-slate-50">أخر تعديل</th>
+						<th className="!text-slate-50">مواد المعلم</th>
 						<th className="!text-slate-50">اجرائات</th>
 					</tr>
 				</thead>
 				{(teacher.data?.items?.length || 0) > 0 && (
 					<tbody className="bg-slate-50 w-full border-b border-slate-300">
 						{teacher.data?.items.map(
-							({ id, name, createdAt, updatedAt }) => (
+							({ id, name, createdAt, updatedAt, subjects }) => (
 								<tr key={id}>
 									<td>{name}</td>
 									<td>
-										<time
-											dateTime={createdAt.toISOString()}
-										>
-											{createdAt.toLocaleString()}
-										</time>
+										{subjects.map((x) => x.name).join(", ")}
 									</td>
-									<td>
-										<time
-											dateTime={updatedAt.toISOString()}
-										>
-											{createdAt.toLocaleString()}
-										</time>
-									</td>
+
 									<td className="w-20">
 										<div className="flex items-center gap-2 w-fit">
+											<Link href={"/teachers/edit/" + id}>
+												<Button
+													size="sm"
+													className="flex items-center gap-2"
+												>
+													<Pencil1Icon></Pencil1Icon>
+													<span>تعديل</span>
+												</Button>
+											</Link>
+
 											<Button
 												size="sm"
 												intent="danger"

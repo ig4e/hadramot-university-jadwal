@@ -4,10 +4,10 @@ import Button from "../components/ui/Button";
 import Header from "../components/ui/Header";
 import P from "../components/ui/P";
 import { trpc } from "../utils/trpc";
-import AddSubjectModal from "../components/subjects/AddSubjectModal";
-import EditSubjectModal from "../components/subjects/EditSubjectModal";
+
 import { useNotificationsStore } from "../stores/notificationsStore";
 import PageHeader from "../components/PageHeader";
+import SubjectModal from "../components/subjects/SubjectModal";
 
 function Subject() {
 	const subject = trpc.subject.list.useQuery({ limit: 250 });
@@ -21,7 +21,7 @@ function Subject() {
 				description="هنا يوجد جميع المواد"
 				leftSection={{
 					children: (
-						<AddSubjectModal
+						<SubjectModal
 							onComplete={() => subject.refetch()}
 							trigger={
 								<Button
@@ -32,7 +32,7 @@ function Subject() {
 									<span>أنشئ مادة جديد</span>
 								</Button>
 							}
-						></AddSubjectModal>
+						></SubjectModal>
 					),
 				}}
 			></PageHeader>
@@ -41,8 +41,6 @@ function Subject() {
 				<thead>
 					<tr>
 						<th className="!text-slate-50">أسم المادة</th>
-						<th className="!text-slate-50">تاريخ الانشاء</th>
-						<th className="!text-slate-50">أخر تعديل</th>
 						<th className="!text-slate-50">اجرائات</th>
 					</tr>
 				</thead>
@@ -52,20 +50,7 @@ function Subject() {
 							({ id, name, createdAt, updatedAt }) => (
 								<tr key={id}>
 									<td>{name}</td>
-									<td>
-										<time
-											dateTime={createdAt.toISOString()}
-										>
-											{createdAt.toLocaleString()}
-										</time>
-									</td>
-									<td>
-										<time
-											dateTime={updatedAt.toISOString()}
-										>
-											{createdAt.toLocaleString()}
-										</time>
-									</td>
+
 									<td className="w-28">
 										<div className="flex items-center gap-2 w-fit">
 											<Button
@@ -99,7 +84,7 @@ function Subject() {
 												<TrashIcon></TrashIcon>
 												<span>حذف</span>
 											</Button>
-											<EditSubjectModal
+											<SubjectModal
 												onComplete={() =>
 													subject.refetch()
 												}
@@ -113,7 +98,7 @@ function Subject() {
 														<span>تعديل</span>
 													</Button>
 												}
-											></EditSubjectModal>
+											></SubjectModal>
 										</div>
 									</td>
 								</tr>

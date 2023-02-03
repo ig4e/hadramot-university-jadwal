@@ -6,33 +6,32 @@ import P from "../components/ui/P";
 import { trpc } from "../utils/trpc";
 import { useNotificationsStore } from "../stores/notificationsStore";
 import PageHeader from "../components/PageHeader";
-import MajorModal from "../components/majors/MajorModal";
-import { majorTypes } from "../constants/enums/majorType";
+import HallModal from "../components/halls/HallModal";
 
-function Majors() {
-	const majors = trpc.major.list.useQuery({ limit: 250 });
-	const majorDeleteHook = trpc.major.delete.useMutation();
+function Halls() {
+	const halls = trpc.hall.list.useQuery({ limit: 250 });
+	const hallDeleteHook = trpc.hall.delete.useMutation();
 	const notificationStore = useNotificationsStore();
 
 	return (
 		<div className="space-y-8">
 			<PageHeader
-				header="التخصصات"
-				description="هنا يوجد جميع التخصصات"
+				header="القاعات"
+				description="هنا يوجد جميع القاعات"
 				leftSection={{
 					children: (
-						<MajorModal
-							onComplete={() => majors.refetch()}
+						<HallModal
+							onComplete={() => halls.refetch()}
 							trigger={
 								<Button
 									size="lg"
 									className="flex items-center gap-2 min-w-max self-end"
 								>
 									<PlusIcon className="w-5 h-5 stroke-white stroke-[0.5]"></PlusIcon>
-									<span>أنشئ تخصص جديد</span>
+									<span>أنشئ قاعة جديد</span>
 								</Button>
 							}
-						></MajorModal>
+						></HallModal>
 					),
 				}}
 			></PageHeader>
@@ -40,27 +39,40 @@ function Majors() {
 			<Table className="bg-slate-800 rounded-md">
 				<thead>
 					<tr>
-						<th className="!text-slate-50">أسم التخصص</th>
-						<th className="!text-slate-50">عدد طلاب التخصص</th>
-						<th className="!text-slate-50">نوع قبول التخصص</th>
+						<th className="!text-slate-50">أسم القاعة</th>
+						<th className="!text-slate-50">سعة القاعة</th>
+						<th className="!text-slate-50">تاريخ الانشاء</th>
+						<th className="!text-slate-50">أخر تعديل</th>
 						<th className="!text-slate-50">اجرائات</th>
 					</tr>
 				</thead>
-				{(majors.data?.items?.length || 0) > 0 && (
+				{(halls.data?.items?.length || 0) > 0 && (
 					<tbody className="bg-slate-50 w-full border-b border-slate-300">
-						{majors.data?.items.map(
-							({ id, name, type, studentsCount }) => (
+						{halls.data?.items.map(
+							({
+								id,
+								name,
+								studentsCount,
+								createdAt,
+								updatedAt,
+							}) => (
 								<tr key={id}>
 									<td>{name}</td>
 									<td>{studentsCount}</td>
 									<td>
-										{
-											majorTypes[
-												type as any as "1" | "2" | "3"
-											]
-										}
+										<time
+											dateTime={createdAt.toISOString()}
+										>
+											{createdAt.toLocaleString()}
+										</time>
 									</td>
-
+									<td>
+										<time
+											dateTime={updatedAt.toISOString()}
+										>
+											{createdAt.toLocaleString()}
+										</time>
+									</td>
 									<td className="w-28">
 										<div className="flex items-center gap-2 w-fit">
 											<Button
@@ -69,21 +81,21 @@ function Majors() {
 												className="flex items-center gap-2"
 												onClick={async () => {
 													try {
-														await majorDeleteHook.mutateAsync(
+														await hallDeleteHook.mutateAsync(
 															{ id },
 														);
 														notificationStore.notify(
 															{
-																title: "تم حذف التخصص بنجاح!",
+																title: "تم حذف القاعة بنجاح!",
 																description: `تم حذف ${name} بنجاح.`,
 																success: true,
 															},
 														);
-														majors.refetch();
+														halls.refetch();
 													} catch {
 														notificationStore.notify(
 															{
-																title: "تعذر حذف التخصص!",
+																title: "تعذر حذف القاعة!",
 																description: `تعذر حذف ${name}.`,
 																success: false,
 															},
@@ -95,11 +107,11 @@ function Majors() {
 												<span>حذف</span>
 											</Button>
 
-											<MajorModal
+											<HallModal
 												onComplete={() => {
-													majors.refetch();
+													halls.refetch()
 												}}
-												majorId={id}
+												hallId={id}
 												trigger={
 													<Button
 														size="sm"
@@ -109,7 +121,7 @@ function Majors() {
 														<span>تعديل</span>
 													</Button>
 												}
-											></MajorModal>
+											></HallModal>
 										</div>
 									</td>
 								</tr>
@@ -118,16 +130,16 @@ function Majors() {
 					</tbody>
 				)}
 			</Table>
-			{(majors.data?.items?.length || 0) <= 0 && !majors.isLoading && (
+			{(halls.data?.items?.length || 0) <= 0 && !halls.isLoading && (
 				<span className="bg-slate-50 w-full text-center flex justify-center">
-					لا يوجد تخصصات
+					لا يوجد قاعات
 				</span>
 			)}
-			{majors.isLoading && (
+			{halls.isLoading && (
 				<Loader className="bg-slate-50 w-full text-center flex justify-center"></Loader>
 			)}
 		</div>
 	);
 }
 
-export default Majors;
+export default Halls;

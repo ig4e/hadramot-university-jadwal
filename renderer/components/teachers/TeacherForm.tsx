@@ -1,15 +1,16 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { MultiSelect, TextInput } from "@mantine/core";
 import { Tabs } from "@mantine/core";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm, Controller } from "react-hook-form";
-import { createTeacherValidationSchema } from "../../validation/createTeacherSchema";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { teacherValidationSchema } from "../../validation/teacherSchema";
 import { trpc } from "../../utils/trpc";
 
 import Header from "../ui/Header";
 import P from "../ui/P";
 import Button from "../ui/Button";
-import CreateTeacherDate from "./CreateTeacherDate";
+import { v4 } from "uuid";
+import TimeRangeSlider from "../ui/TimeRangeSlider";
 
 const days = [
 	"SUNDAY",
@@ -40,40 +41,22 @@ export const localizeDays = {
 	SATURDAY: "السبت",
 };
 
-export type OnSubmitData = {
+export type TeacherFormData = {
 	name: string;
 	subjects: string[];
 	workDates: {
-		SUNDAY: {
-			value: number[];
-		}[];
-		MONDAY: {
-			value: number[];
-		}[];
-		TUESDAY: {
-			value: number[];
-		}[];
-		WEDNESDAY: {
-			value: number[];
-		}[];
-		THURSDAY: {
-			value: number[];
-		}[];
-		FRIDAY: {
-			value: number[];
-		}[];
-		SATURDAY: {
-			value: number[];
-		}[];
-	};
+		id: string;
+		day: string;
+		value: number[];
+	}[];
 };
 
 function TeacherForm({
 	onSubmit,
 	defaultData,
 }: {
-	onSubmit: (d: OnSubmitData) => void;
-	defaultData?: OnSubmitData;
+	onSubmit: (d: TeacherFormData) => void;
+	defaultData?: TeacherFormData;
 }) {
 	const allSubjects = trpc.subject.list.useQuery({ limit: 250 });
 
@@ -83,22 +66,35 @@ function TeacherForm({
 		watch,
 		control,
 		formState: { errors },
+		setValue,
 	} = useForm({
-		defaultValues: defaultData || {
+		resolver: yupResolver(teacherValidationSchema),
+		defaultValues: {
 			name: "",
 			subjects: [""],
-			workDates: {
-				SUNDAY: [{ value: [8, 16] }],
-				MONDAY: [{ value: [8, 16] }],
-				TUESDAY: [{ value: [8, 16] }],
-				WEDNESDAY: [{ value: [8, 16] }],
-				THURSDAY: [{ value: [8, 16] }],
-				FRIDAY: [{ value: [8, 16] }],
-				SATURDAY: [{ value: [8, 16] }],
-			},
+			workDates: [{ id: v4(), day: "SUNDAY", value: [8, 16] }],
 		},
+	});
 
-		resolver: yupResolver(createTeacherValidationSchema),
+	useEffect(() => {
+		if (defaultData) {
+			const { name, subjects, workDates } = defaultData;
+			setValue("name", name);
+			setValue("subjects", subjects);
+			setValue("workDates", []);
+			setValue("workDates", workDates);
+
+		}
+	}, [defaultData]);
+
+	const {
+		append,
+		remove,
+		fields: workDates,
+	} = useFieldArray({
+		name: "workDates",
+		control,
+		keyName: "id",
 	});
 
 	const allSubjectsMemo = useMemo(
@@ -125,7 +121,6 @@ function TeacherForm({
 
 					<div className="col-span-1 -mt-2">
 						<Header size="sm">مواد المعلم</Header>
-
 						<Controller
 							name="subjects"
 							control={control}
@@ -163,21 +158,79 @@ function TeacherForm({
 								pt="md"
 								className="space-y-10 mx-2"
 							>
-								<div>
-									<Header size="sm">
-										توافر المعلم يوم{" "}
-										{localizeDays[day as DaysIndex]}
-									</Header>
-									<P size="sm">
-										هنا يمكنك تحديد توافر المعلم فى يوم{" "}
-										{localizeDays[day as DaysIndex]}
-									</P>
+								<div className="flex justify-between">
+									<div>
+										<Header size="sm">
+											توافر المعلم يوم{" "}
+											{localizeDays[day as DaysIndex]}
+										</Header>
+										<P size="sm">
+											هنا يمكنك تحديد توافر المعلم فى يوم{" "}
+											{localizeDays[day as DaysIndex]}
+										</P>
+									</div>
+
+									<Button
+										size="md"
+										onClick={() =>
+											append({
+												day,
+												id: v4(),
+												value: [16, 20],
+											})
+										}
+									>
+										أضف وقت توفر
+									</Button>
 								</div>
 
-								<CreateTeacherDate
-									control={control}
-									fieldKey={day}
-								></CreateTeacherDate>
+								{workDates.map(
+									(
+										{ id, day: workDateDay, value },
+										index,
+									) => {
+										if (day == workDateDay)
+											return (
+												<div key={id} className="flex gap-2 items-center">
+													<Controller
+														name={`workDates.${index}.value`}
+														control={control}
+														render={({
+															field: {
+																onChange,
+																onBlur,
+																value,
+																name,
+																ref,
+															},
+														}) => (
+															<TimeRangeSlider
+																className="w-full"
+																onChange={
+																	onChange
+																}
+																onBlur={onBlur}
+																value={[
+																	value[0],
+																	value[1],
+																]}
+																name={name}
+															></TimeRangeSlider>
+														)}
+													></Controller>
+													<Button
+														intent="danger"
+														onClick={() =>
+															remove(index)
+														}
+														size="sm"
+													>
+														حذف
+													</Button>
+												</div>
+											);
+									},
+								)}
 							</Tabs.Panel>
 						);
 					})}

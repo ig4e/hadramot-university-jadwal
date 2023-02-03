@@ -33,7 +33,9 @@ const defaultTeacherSelect = Prisma.validator<Prisma.TeacherSelect>()({
 	createdAt: true,
 	updatedAt: true,
 	subjects: true,
-	workDays: { include: { dates: true, day: true } },
+	workDates: {
+		include: { day: true, teacher: true },
+	},
 });
 
 export const teacherRouter = router({
@@ -42,89 +44,34 @@ export const teacherRouter = router({
 			z.object({
 				name: z.string(),
 				subjects: z.string().array(),
-				workDays: z
+				workDates: z
 					.object({
-						day: daysEnum,
-						dates: z
-							.object({
-								startsAt: z.number(),
-								endsAt: z.number(),
-							})
-							.array(),
+						dayName: daysEnum,
+						startsAt: z.number(),
+						endsAt: z.number(),
 					})
 					.array(),
 			}),
 		)
 		.mutation(async ({ input }) => {
-			const createdTeacher = await prisma.teacher.create({
+			return await prisma.teacher.create({
 				data: {
 					name: input.name,
-				},
-				include: {
-					workDays: {
-						include: {
-							dates: true,
-							day: true,
-						},
+					subjects: { connect: input.subjects.map((id) => ({ id })) },
+					workDates: {
+						create: input.workDates.map((workDate) => ({
+							day: {
+								connectOrCreate: {
+									where: { name: workDate.dayName },
+									create: { name: workDate.dayName },
+								},
+							},
+							startsAt: workDate.startsAt,
+							endsAt: workDate.endsAt,
+						})),
 					},
 				},
 			});
-
-			try {
-				const createdSubjects = [];
-				const createdWorkDays = [];
-
-				for (let subjectId of input.subjects) {
-					createdSubjects.push(
-						await prisma.subjectOnTeacher.create({
-							data: {
-								subject: { connect: { id: subjectId } },
-								teacher: { connect: { id: createdTeacher.id } },
-							},
-						}),
-					);
-
-					//subjects: { connect: [{ teacherId_subjectId: { subjectId: } }] },
-				}
-
-				for (let workDay of input.workDays) {
-					createdWorkDays.push(
-						await prisma.teacherOnWorkDay.create({
-							data: {
-								teacher: { connect: { id: createdTeacher.id } },
-								day: {
-									connectOrCreate: {
-										where: { name: workDay.day },
-										create: { name: workDay.day },
-									},
-								},
-								dates: {
-									create: workDay.dates.map(
-										({ endsAt, startsAt }) => {
-											return {
-												endsAt: endsAt,
-												startsAt: startsAt,
-											};
-										},
-									),
-								},
-							},
-						}),
-					);
-				}
-
-				return {
-					...createdTeacher,
-					workDays: createdWorkDays,
-					subjects: createdSubjects,
-				};
-			} catch {
-				await prisma.teacher.delete({
-					where: { id: createdTeacher.id },
-				});
-
-				throw new Error();
-			}
 		}),
 
 	list: procedure
@@ -199,10 +146,7 @@ export const teacherRouter = router({
 		.query(async ({ input }) => {
 			const Teacher = await prisma.teacher.findUnique({
 				where: { id: input.id },
-				include: {
-					workDays: { include: { dates: true, day: true } },
-					subjects: { include: { subject: true } },
-				},
+				select: defaultTeacherSelect,
 			});
 
 			return Teacher;
@@ -213,6 +157,15 @@ export const teacherRouter = router({
 			z.object({
 				id: z.string(),
 				name: z.string(),
+				subjects: z.string().array(),
+				workDates: z
+					.object({
+						id: z.string(),
+						dayName: daysEnum,
+						startsAt: z.number(),
+						endsAt: z.number(),
+					})
+					.array(),
 			}),
 		)
 		.mutation(async ({ input }) => {
@@ -220,9 +173,52 @@ export const teacherRouter = router({
 				where: { id: input.id },
 				data: {
 					name: input.name,
+					subjects: {
+						set: input.subjects.map((subjectId) => ({
+							id: subjectId,
+						})),
+					},
 				},
 				select: defaultTeacherSelect,
 			});
+
+			const isWorkDatesChanged = editedTeacher.workDates.some(
+				({ id, endsAt, startsAt }) => {
+					const editedDate = input.workDates.find(
+						(workDate) => workDate.id === id,
+					);
+
+					if (!editedDate) return false;
+
+					return (
+						endsAt === editedDate.endsAt &&
+						startsAt === editedDate.startsAt
+					);
+				},
+			);
+
+			if (isWorkDatesChanged) {
+				await prisma.teacher.update({
+					where: { id: input.id },
+					data: {
+						workDates: {
+							deleteMany: input.workDates.map(({ id }) => ({
+								id,
+							})),
+							create: input.workDates.map((workDate) => ({
+								day: {
+									connectOrCreate: {
+										where: { name: workDate.dayName },
+										create: { name: workDate.dayName },
+									},
+								},
+								startsAt: workDate.startsAt,
+								endsAt: workDate.endsAt,
+							})),
+						},
+					},
+				});
+			}
 
 			return editedTeacher;
 		}),

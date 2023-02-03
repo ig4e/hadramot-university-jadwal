@@ -18,6 +18,7 @@ function Button({
 >) {
 	return (
 		<button
+			type="button"
 			{...buttonArgs}
 			className={clsx(
 				"rounded-md font-medium transition enabled:hover:-translate-y-0.5 enabled:active:hover:translate-y-0 disabled:opacity-50",
@@ -36,9 +37,6 @@ function Button({
 				},
 				className,
 			)}
-			onClick={(e) => {
-				if (intent === "danger") 
-			}}
 		>
 			{children}
 		</button>

@@ -14,7 +14,6 @@ function ComboBox({
 			className={clsx("w-full", className)}
 			labelProps={{ className: "!font-bold mb-2" }}
 			icon={<ChevronDownIcon className="pointer-events-none"></ChevronDownIcon>}
-			defaultValue={""}
 		/>
 	);
 }

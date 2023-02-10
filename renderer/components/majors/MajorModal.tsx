@@ -55,7 +55,7 @@ function MajorModal({
 		defaultValues: {
 			name: "",
 			studentsCount: 0,
-			type: "3",
+			type: "1",
 		},
 		resolver: yupResolver(majorSchema),
 	});
@@ -156,9 +156,8 @@ function MajorModal({
 								{...field}
 								label="نوع قبول التخصص"
 								data={[
-									{ value: "1", label: "عام فقط" },
-									{ value: "2", label: "ثانوى فقط" },
-									{ value: "3", label: "مشترك" },
+									{ value: "1", label: "عام" },
+									{ value: "2", label: "موازى" },
 								]}
 								className=""
 								error={errors.type?.message}

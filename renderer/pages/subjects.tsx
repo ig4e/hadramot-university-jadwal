@@ -24,10 +24,7 @@ function Subject() {
 						<SubjectModal
 							onComplete={() => subject.refetch()}
 							trigger={
-								<Button
-									size="lg"
-									className="flex items-center gap-2 min-w-max self-end"
-								>
+								<Button size="lg" className="flex items-center gap-2 min-w-max self-end">
 									<PlusIcon className="w-5 h-5 stroke-white stroke-[0.5]"></PlusIcon>
 									<span>أنشئ مادة جديد</span>
 								</Button>
@@ -46,75 +43,58 @@ function Subject() {
 				</thead>
 				{(subject.data?.items?.length || 0) > 0 && (
 					<tbody className="bg-slate-50 w-full border-b border-slate-300">
-						{subject.data?.items.map(
-							({ id, name, createdAt, updatedAt }) => (
-								<tr key={id}>
-									<td>{name}</td>
+						{subject.data?.items.map(({ id, name, createdAt, updatedAt }) => (
+							<tr key={id}>
+								<td>{name}</td>
 
-									<td className="w-28">
-										<div className="flex items-center gap-2 w-fit">
-											<Button
-												size="sm"
-												intent="danger"
-												className="flex items-center gap-2"
-												onClick={async () => {
-													try {
-														await subjectDeleteHook.mutateAsync(
-															{ id },
-														);
-														notificationStore.notify(
-															{
-																title: "تم حذف المادة بنجاح!",
-																description: `تم حذف ${name} بنجاح.`,
-																success: true,
-															},
-														);
-														subject.refetch();
-													} catch {
-														notificationStore.notify(
-															{
-																title: "تعذر حذف المادة!",
-																description: `تعذر حذف ${name}.`,
-																success: false,
-															},
-														);
-													}
-												}}
-											>
-												<TrashIcon></TrashIcon>
-												<span>حذف</span>
-											</Button>
-											<SubjectModal
-												onComplete={() =>
-													subject.refetch()
+								<td className="w-28">
+									<div className="flex items-center gap-2 w-fit">
+										<Button
+											size="sm"
+											intent="danger"
+											className="flex items-center gap-2"
+											onClick={async () => {
+												try {
+													await subjectDeleteHook.mutateAsync({ id });
+													notificationStore.notify({
+														title: "تم حذف المادة بنجاح!",
+														description: `تم حذف ${name} بنجاح.`,
+														success: true,
+													});
+													subject.refetch();
+												} catch {
+													notificationStore.notify({
+														title: "تعذر حذف المادة!",
+														description: `تعذر حذف ${name}.`,
+														success: false,
+													});
 												}
-												subjectId={id}
-												trigger={
-													<Button
-														size="sm"
-														className="flex items-center gap-2"
-													>
-														<Pencil1Icon></Pencil1Icon>
-														<span>تعديل</span>
-													</Button>
-												}
-											></SubjectModal>
-										</div>
-									</td>
-								</tr>
-							),
-						)}
+											}}
+										>
+											<TrashIcon></TrashIcon>
+											<span>حذف</span>
+										</Button>
+										<SubjectModal
+											onComplete={() => subject.refetch()}
+											subjectId={id}
+											trigger={
+												<Button size="sm" className="flex items-center gap-2">
+													<Pencil1Icon></Pencil1Icon>
+													<span>تعديل</span>
+												</Button>
+											}
+										></SubjectModal>
+									</div>
+								</td>
+							</tr>
+						))}
 					</tbody>
 				)}
 			</Table>
 			{(subject.data?.items?.length || 0) <= 0 && !subject.isLoading && (
-				<span className="bg-slate-50 w-full text-center flex justify-center">
-					لا يوجد مادات
-				</span>
+				<span className="bg-slate-50 w-full text-center flex justify-center">لا يوجد مادات</span>
 			)}
-			{subject.isLoading && (
-				<Loader className="bg-slate-50 w-full text-center flex justify-center"></Loader>
-			)}
+			{subject.isLoading && <Loader className="bg-slate-50 w-full text-center flex justify-center"></Loader>}
 		</div>
 	);
 }

@@ -1,4 +1,4 @@
-import { Loader, Table } from "@mantine/core";
+import { Badge, Loader, Table, useMantineTheme } from "@mantine/core";
 import { Pencil1Icon, PlusIcon, TrashIcon } from "@radix-ui/react-icons";
 import Button from "../../components/ui/Button";
 import Header from "../../components/ui/Header";
@@ -12,6 +12,7 @@ function Teacher() {
 	const teacher = trpc.teacher.list.useQuery({ limit: 250 });
 	const teacherDeleteHook = trpc.teacher.delete.useMutation();
 	const notificationStore = useNotificationsStore();
+	const theme = useMantineTheme();
 
 	return (
 		<div className="space-y-8">
@@ -39,73 +40,62 @@ function Teacher() {
 				</thead>
 				{(teacher.data?.items?.length || 0) > 0 && (
 					<tbody className="bg-slate-50 w-full border-b border-slate-300">
-						{teacher.data?.items.map(
-							({ id, name, createdAt, updatedAt, subjects }) => (
-								<tr key={id}>
-									<td>{name}</td>
-									<td>
-										{subjects.map((x) => x.name).join(", ")}
-									</td>
+						{teacher.data?.items.map(({ id, name, createdAt, updatedAt, subjects }) => (
+							<tr key={id}>
+								<td>{name}</td>
+								<td className="flex flex-wrap gap-1">
+									{subjects.map((x) => (
+										<Badge variant="outline" color={"gray"}>
+											{x.name}
+										</Badge>
+									))}
+								</td>
 
-									<td className="w-20">
-										<div className="flex items-center gap-2 w-fit">
-											<Link href={"/teachers/edit/" + id}>
-												<Button
-													size="sm"
-													className="flex items-center gap-2"
-												>
-													<Pencil1Icon></Pencil1Icon>
-													<span>تعديل</span>
-												</Button>
-											</Link>
-
-											<Button
-												size="sm"
-												intent="danger"
-												className="flex items-center gap-2"
-												onClick={async () => {
-													try {
-														await teacherDeleteHook.mutateAsync(
-															{ id },
-														);
-														notificationStore.notify(
-															{
-																title: "تم حذف المعلم بنجاح!",
-																description: `تم حذف ${name} بنجاح.`,
-																success: true,
-															},
-														);
-														teacher.refetch();
-													} catch {
-														notificationStore.notify(
-															{
-																title: "تعذر حذف المعلم!",
-																description: `تعذر حذف ${name}.`,
-																success: false,
-															},
-														);
-													}
-												}}
-											>
-												<TrashIcon></TrashIcon>
-												<span>حذف</span>
+								<td className="w-20">
+									<div className="flex items-center gap-2 w-fit">
+										<Link href={"/teachers/edit/" + id}>
+											<Button size="sm" className="flex items-center gap-2">
+												<Pencil1Icon></Pencil1Icon>
+												<span>تعديل</span>
 											</Button>
-										</div>
-									</td>
-								</tr>
-							),
-						)}
+										</Link>
+
+										<Button
+											size="sm"
+											intent="danger"
+											className="flex items-center gap-2"
+											onClick={async () => {
+												try {
+													await teacherDeleteHook.mutateAsync({ id });
+													notificationStore.notify({
+														title: "تم حذف المعلم بنجاح!",
+														description: `تم حذف ${name} بنجاح.`,
+														success: true,
+													});
+													teacher.refetch();
+												} catch {
+													notificationStore.notify({
+														title: "تعذر حذف المعلم!",
+														description: `تعذر حذف ${name}.`,
+														success: false,
+													});
+												}
+											}}
+										>
+											<TrashIcon></TrashIcon>
+											<span>حذف</span>
+										</Button>
+									</div>
+								</td>
+							</tr>
+						))}
 					</tbody>
 				)}
 			</Table>
 			{(teacher.data?.items?.length || 0) <= 0 && !teacher.isLoading && (
-				<span className="bg-slate-50 w-full text-center flex justify-center">
-					لا يوجد معلمون
-				</span>
+				<span className="bg-slate-50 w-full text-center flex justify-center">لا يوجد معلمون</span>
 			)}
-			{teacher.isLoading && (
-				<Loader className="bg-slate-50 w-full text-center flex justify-center"></Loader>
-			)}
+			{teacher.isLoading && <Loader className="bg-slate-50 w-full text-center flex justify-center"></Loader>}
 		</div>
 	);
 }

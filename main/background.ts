@@ -1,6 +1,26 @@
 import { app } from "electron";
 import serve from "electron-serve";
 import { createWindow } from "./helpers";
+import express from "express";
+import { inferAsyncReturnType, initTRPC } from "@trpc/server";
+import * as trpcExpress from "@trpc/server/adapters/express";
+import cors from "cors";
+const expressApp = express();
+
+// import { appRouter } from "./server/routers/_app";
+
+// expressApp.use(
+// 	cors({
+// 		origin: "*",
+// 	}),
+// );
+
+// expressApp.use(
+// 	"/trpc",
+// 	trpcExpress.createExpressMiddleware({
+// 		router: appRouter,
+// 	}),
+// );
 
 const isProd: boolean = process.env.NODE_ENV === "production";
 
@@ -31,6 +51,11 @@ if (isProd) {
 	}
 })();
 
+const server = expressApp.listen(3000, () =>
+	console.log("server started at 3000"),
+);
+
 app.on("window-all-closed", () => {
 	app.quit();
+	server.close();
 });

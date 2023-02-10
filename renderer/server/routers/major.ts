@@ -40,6 +40,7 @@ export const majorRouter = router({
 			z.object({
 				limit: z.number().min(1).max(250).nullish(),
 				cursor: z.string().nullish(),
+				type: z.number().max(2).nullish(),
 			}),
 		)
 		.query(async ({ input }) => {
@@ -55,7 +56,9 @@ export const majorRouter = router({
 			const items = await prisma.major.findMany({
 				select: defaultMajorSelect,
 				take: limit + 1,
-				where: {},
+				where: {
+					type: input.type || undefined,
+				},
 				cursor: cursor
 					? {
 							id: cursor,

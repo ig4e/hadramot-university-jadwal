@@ -70,7 +70,7 @@ model TeacherWorkDate {
 model Major {
   id            String  @id @default(uuid())
   type          Int     @default(1) // 1 = 3am, 2 = thanwy
-  name          String  @unique
+  name          String  //@unique
   studentsCount Int
   tables        Table[]
 

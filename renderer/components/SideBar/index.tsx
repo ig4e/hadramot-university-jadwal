@@ -12,6 +12,7 @@ import {
 	BoxIcon,
 	ArchiveIcon,
 } from "@radix-ui/react-icons";
+import { useNotificationsStore } from "../../stores/notificationsStore";
 
 const ROUTES: { name: string; slug: string; Icon: any }[] = [
 	{
@@ -42,9 +43,11 @@ const ROUTES: { name: string; slug: string; Icon: any }[] = [
 ];
 
 function SideBar() {
+	const notificationsStore = useNotificationsStore();
+
 	return (
 		<div className="bg-slate-900 min-h-screen min-w-[18rem] w-[25vw] max-w-[20rem] ">
-			<div className="flex flex-col justify-between h-[calc(100vh-1rem)] sticky top-0 p-4">
+			<div className="flex flex-col justify-between h-[calc(100vh-1rem)] sticky top-0 px-4 pt-4">
 				<div className="flex flex-col gap-4 items-start">
 					<div className="flex items-center gap-2">
 						<Image
@@ -66,7 +69,15 @@ function SideBar() {
 						<SideBarLink key={route.slug} {...route}></SideBarLink>
 					))}
 				</div>
-				<span className="text-sm">
+				<span
+					className="text-sm p-2 bg-slate-800 hover:bg-slate-700 rounded-md transition"
+					onClick={() =>
+						notificationsStore.notify({
+							success: true,
+							title: "صنع ب ❤️ من محمد ابوبكر احمد باوزير",
+						})
+					}
+				>
 					صنع ب ❤️ من محمد ابوبكر احمد باوزير @ayak
 				</span>
 			</div>

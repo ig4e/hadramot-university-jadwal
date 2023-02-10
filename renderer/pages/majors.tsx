@@ -24,10 +24,7 @@ function Majors() {
 						<MajorModal
 							onComplete={() => majors.refetch()}
 							trigger={
-								<Button
-									size="lg"
-									className="flex items-center gap-2 min-w-max self-end"
-								>
+								<Button size="lg" className="flex items-center gap-2 min-w-max self-end">
 									<PlusIcon className="w-5 h-5 stroke-white stroke-[0.5]"></PlusIcon>
 									<span>أنشئ تخصص جديد</span>
 								</Button>
@@ -48,84 +45,63 @@ function Majors() {
 				</thead>
 				{(majors.data?.items?.length || 0) > 0 && (
 					<tbody className="bg-slate-50 w-full border-b border-slate-300">
-						{majors.data?.items.map(
-							({ id, name, type, studentsCount }) => (
-								<tr key={id}>
-									<td>{name}</td>
-									<td>{studentsCount}</td>
-									<td>
-										{
-											majorTypes[
-												type as any as "1" | "2" | "3"
-											]
-										}
-									</td>
+						{majors.data?.items.map(({ id, name, type, studentsCount }) => (
+							<tr key={id}>
+								<td>{name}</td>
+								<td>{studentsCount}</td>
+								<td>{majorTypes[type as any as "1" | "2"]}</td>
 
-									<td className="w-28">
-										<div className="flex items-center gap-2 w-fit">
-											<Button
-												size="sm"
-												intent="danger"
-												className="flex items-center gap-2"
-												onClick={async () => {
-													try {
-														await majorDeleteHook.mutateAsync(
-															{ id },
-														);
-														notificationStore.notify(
-															{
-																title: "تم حذف التخصص بنجاح!",
-																description: `تم حذف ${name} بنجاح.`,
-																success: true,
-															},
-														);
-														majors.refetch();
-													} catch {
-														notificationStore.notify(
-															{
-																title: "تعذر حذف التخصص!",
-																description: `تعذر حذف ${name}.`,
-																success: false,
-															},
-														);
-													}
-												}}
-											>
-												<TrashIcon></TrashIcon>
-												<span>حذف</span>
-											</Button>
-
-											<MajorModal
-												onComplete={() => {
+								<td className="w-28">
+									<div className="flex items-center gap-2 w-fit">
+										<Button
+											size="sm"
+											intent="danger"
+											className="flex items-center gap-2"
+											onClick={async () => {
+												try {
+													await majorDeleteHook.mutateAsync({ id });
+													notificationStore.notify({
+														title: "تم حذف التخصص بنجاح!",
+														description: `تم حذف ${name} بنجاح.`,
+														success: true,
+													});
 													majors.refetch();
-												}}
-												majorId={id}
-												trigger={
-													<Button
-														size="sm"
-														className="flex items-center gap-2"
-													>
-														<Pencil1Icon></Pencil1Icon>
-														<span>تعديل</span>
-													</Button>
+												} catch {
+													notificationStore.notify({
+														title: "تعذر حذف التخصص!",
+														description: `تعذر حذف ${name}.`,
+														success: false,
+													});
 												}
-											></MajorModal>
-										</div>
-									</td>
-								</tr>
-							),
-						)}
+											}}
+										>
+											<TrashIcon></TrashIcon>
+											<span>حذف</span>
+										</Button>
+
+										<MajorModal
+											onComplete={() => {
+												majors.refetch();
+											}}
+											majorId={id}
+											trigger={
+												<Button size="sm" className="flex items-center gap-2">
+													<Pencil1Icon></Pencil1Icon>
+													<span>تعديل</span>
+												</Button>
+											}
+										></MajorModal>
+									</div>
+								</td>
+							</tr>
+						))}
 					</tbody>
 				)}
 			</Table>
 			{(majors.data?.items?.length || 0) <= 0 && !majors.isLoading && (
-				<span className="bg-slate-50 w-full text-center flex justify-center">
-					لا يوجد تخصصات
-				</span>
+				<span className="bg-slate-50 w-full text-center flex justify-center">لا يوجد تخصصات</span>
 			)}
-			{majors.isLoading && (
-				<Loader className="bg-slate-50 w-full text-center flex justify-center"></Loader>
-			)}
+			{majors.isLoading && <Loader className="bg-slate-50 w-full text-center flex justify-center"></Loader>}
 		</div>
 	);
 }

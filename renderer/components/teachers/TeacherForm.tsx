@@ -12,7 +12,7 @@ import Button from "../ui/Button";
 import { v4 } from "uuid";
 import TimeRangeSlider from "../ui/TimeRangeSlider";
 
-const days = [
+export const days = [
 	"SUNDAY",
 	"MONDAY",
 	"TUESDAY",

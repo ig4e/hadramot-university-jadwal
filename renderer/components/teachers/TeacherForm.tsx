@@ -12,24 +12,9 @@ import Button from "../ui/Button";
 import { v4 } from "uuid";
 import TimeRangeSlider from "../ui/TimeRangeSlider";
 
-export const days = [
-	"SUNDAY",
-	"MONDAY",
-	"TUESDAY",
-	"WEDNESDAY",
-	"THURSDAY",
-	"FRIDAY",
-	"SATURDAY",
-];
+export const days = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"] as const;
 
-export type DaysIndex =
-	| "SUNDAY"
-	| "MONDAY"
-	| "TUESDAY"
-	| "WEDNESDAY"
-	| "THURSDAY"
-	| "FRIDAY"
-	| "SATURDAY";
+export type DaysIndex = "SUNDAY" | "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY";
 
 export const localizeDays = {
 	SUNDAY: "الأحد",
@@ -39,7 +24,7 @@ export const localizeDays = {
 	THURSDAY: "الخميس",
 	FRIDAY: "الجمعة",
 	SATURDAY: "السبت",
-};
+} as const;
 
 export type TeacherFormData = {
 	name: string;
@@ -51,13 +36,7 @@ export type TeacherFormData = {
 	}[];
 };
 
-function TeacherForm({
-	onSubmit,
-	defaultData,
-}: {
-	onSubmit: (d: TeacherFormData) => void;
-	defaultData?: TeacherFormData;
-}) {
+function TeacherForm({ onSubmit, defaultData }: { onSubmit: (d: TeacherFormData) => void; defaultData?: TeacherFormData }) {
 	const allSubjects = trpc.subject.list.useQuery({ limit: 250 });
 
 	const {
@@ -83,7 +62,6 @@ function TeacherForm({
 			setValue("subjects", subjects);
 			setValue("workDates", []);
 			setValue("workDates", workDates);
-
 		}
 	}, [defaultData]);
 
@@ -112,11 +90,7 @@ function TeacherForm({
 				<div className="grid grid-flow-row [grid-template-columns:repeat(auto-fill,minmax(250px,1fr));] gap-4 w-full">
 					<div className="col-span-1 -mt-2">
 						<Header size="sm">معلومات المعلم</Header>
-						<TextInput
-							{...register("name")}
-							label={"أسم المعلم"}
-							error={errors.name?.message}
-						></TextInput>
+						<TextInput {...register("name")} label={"أسم المعلم"} error={errors.name?.message}></TextInput>
 					</div>
 
 					<div className="col-span-1 -mt-2">
@@ -144,7 +118,7 @@ function TeacherForm({
 						{days.map((day) => {
 							return (
 								<Tabs.Tab key={day + "tab"} value={day}>
-									{localizeDays[day as DaysIndex]}
+									{localizeDays[day]}
 								</Tabs.Tab>
 							);
 						})}
@@ -152,22 +126,11 @@ function TeacherForm({
 
 					{days.map((day, index) => {
 						return (
-							<Tabs.Panel
-								key={day + "tabPanel"}
-								value={day}
-								pt="md"
-								className="space-y-10 mx-2"
-							>
+							<Tabs.Panel key={day + "tabPanel"} value={day} pt="md" className="space-y-10 mx-2">
 								<div className="flex justify-between">
 									<div>
-										<Header size="sm">
-											توافر المعلم يوم{" "}
-											{localizeDays[day as DaysIndex]}
-										</Header>
-										<P size="sm">
-											هنا يمكنك تحديد توافر المعلم فى يوم{" "}
-											{localizeDays[day as DaysIndex]}
-										</P>
+										<Header size="sm">توافر المعلم يوم {localizeDays[day]}</Header>
+										<P size="sm">هنا يمكنك تحديد توافر المعلم فى يوم {localizeDays[day]}</P>
 									</div>
 
 									<Button
@@ -184,53 +147,29 @@ function TeacherForm({
 									</Button>
 								</div>
 
-								{workDates.map(
-									(
-										{ id, day: workDateDay, value },
-										index,
-									) => {
-										if (day == workDateDay)
-											return (
-												<div key={id} className="flex gap-2 items-center">
-													<Controller
-														name={`workDates.${index}.value`}
-														control={control}
-														render={({
-															field: {
-																onChange,
-																onBlur,
-																value,
-																name,
-																ref,
-															},
-														}) => (
-															<TimeRangeSlider
-																className="w-full"
-																onChange={
-																	onChange
-																}
-																onBlur={onBlur}
-																value={[
-																	value[0],
-																	value[1],
-																]}
-																name={name}
-															></TimeRangeSlider>
-														)}
-													></Controller>
-													<Button
-														intent="danger"
-														onClick={() =>
-															remove(index)
-														}
-														size="sm"
-													>
-														حذف
-													</Button>
-												</div>
-											);
-									},
-								)}
+								{workDates.map(({ id, day: workDateDay, value }, index) => {
+									if (day == workDateDay)
+										return (
+											<div key={id} className="flex gap-2 items-center">
+												<Controller
+													name={`workDates.${index}.value`}
+													control={control}
+													render={({ field: { onChange, onBlur, value, name, ref } }) => (
+														<TimeRangeSlider
+															className="w-full"
+															onChange={onChange}
+															onBlur={onBlur}
+															value={[value[0], value[1]]}
+															name={name}
+														></TimeRangeSlider>
+													)}
+												></Controller>
+												<Button intent="danger" onClick={() => remove(index)} size="md">
+													حذف
+												</Button>
+											</div>
+										);
+								})}
 							</Tabs.Panel>
 						);
 					})}

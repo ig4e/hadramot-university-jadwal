@@ -13,11 +13,11 @@ export function formatDuration(hours: number) {
 		.format("hh:mm A");
 }
 
-function TimeRangeSlider({ ...props }: RangeSliderProps) {
+function TimeRangeSlider({ error, ...props }: RangeSliderProps & { error?: string }) {
 	const [value, setValue] = useState(props.value || [8, 16]);
 
 	return (
-		<div className={clsx(props.className, "flex items-center gap-2")}>
+		<div className={clsx(props.className, "flex flex-col items-start")}>
 			<RangeSlider
 				{...props}
 				className={clsx(props.className, "w-full")}
@@ -35,8 +35,15 @@ function TimeRangeSlider({ ...props }: RangeSliderProps) {
 					setValue(value);
 				}}
 				value={value as any}
+				color={error && "red"}
 			></RangeSlider>
-			<span className="w-[6rem] whitespace-nowrap">{value[1] - value[0]} ساعات</span>
+
+			<div className={clsx("whitespace-nowrap flex justify-between items-center", { "text-red-500": !!error })}>
+				<span>{error}</span>
+				<span>
+					{formatDuration(value[0])} ألى {formatDuration(value[1])}
+				</span>
+			</div>
 		</div>
 	);
 }

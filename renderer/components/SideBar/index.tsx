@@ -46,10 +46,10 @@ function SideBar() {
 	const notificationsStore = useNotificationsStore();
 
 	return (
-		<div className="bg-slate-900 min-h-screen min-w-[18rem] w-[25vw] max-w-[20rem] ">
+		<div className="bg-slate-900 min-h-screen min-w-[14rem] w-[25vw] max-w-[20rem]">
 			<div className="flex flex-col justify-between h-[calc(100vh-1rem)] sticky top-0 px-4 pt-4">
 				<div className="flex flex-col gap-4 items-start">
-					<div className="flex items-center gap-2">
+					<div className="flex items-center gap-2 flex-wrap">
 						<Image
 							src={Logo}
 							width={86}

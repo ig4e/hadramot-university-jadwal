@@ -11,25 +11,28 @@ export interface ComboboxData {
 }
 
 function ComboBox({
+	disabled,
 	className,
 	data,
 	label,
 	placeholder,
 	onChange,
 	value,
+	error,
 	...args
 }: {
 	data: ComboboxData[];
+	error?: string;
 	className?: string;
 	label?: string;
 	placeholder?: string;
 	onChange?: (value: ComboboxData | undefined) => void;
 } & React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>) {
-	const [selected, setSelected] = useState<ComboboxData>();
+	const [selected, setSelected] = useState<ComboboxData>({ value: value as any, label: "" });
 	const [query, setQuery] = useState("");
 
 	useEffect(() => {
-		onChange && onChange(selected);
+		if (selected) onChange && onChange(selected.value as any);
 	}, [selected]);
 
 	const filteredData = useMemo(
@@ -45,20 +48,29 @@ function ComboBox({
 	return (
 		<div>
 			{label && <label className="text-sm">{label}</label>}
-			<Combobox value={selected} onChange={setSelected}>
+			<Combobox value={selected} onChange={setSelected} disabled={disabled}>
 				<div className="relative">
 					<div className="relative w-full cursor-default overflow-hidden rounded bg-white">
 						<Combobox.Input
 							{...args}
-							className="w-full py-2 pr-3 pl-10 text-sm leading-5 rounded text-gray-900 focus:outline-none focus:ring-0  border border-gray-300  focus:border-blue-600"
+							className={clsx(
+								"w-full py-2 pr-3 pl-10 text-sm leading-5 rounded text-gray-900 focus:outline-none focus:ring-0  border border-gray-300 focus:border-blue-600",
+								{
+									"focus:!border-red-600 !border-red-300": !!error,
+									"bg-slate-100 cursor-not-allowed": disabled,
+								},
+							)}
 							displayValue={(value: ComboboxData) => value.label}
 							onChange={(event) => setQuery(event.target.value)}
 							placeholder={placeholder}
+							disabled={disabled}
 						/>
 						<Combobox.Button className="absolute inset-y-0 left-0 flex items-center pl-2 bg-transparent">
 							<ChevronDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
 						</Combobox.Button>
 					</div>
+					<span className="!text-xs text-red-500">{error}</span>
+
 					<Transition
 						as={Fragment}
 						leave="transition ease-in duration-100"

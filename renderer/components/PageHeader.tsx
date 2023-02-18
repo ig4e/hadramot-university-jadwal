@@ -28,10 +28,7 @@ function PageHeader({
 				: link && (
 						<Link href={link.href}>
 							{link.buttonChildren && (
-								<Button
-									size="lg"
-									className="flex items-center gap-2 min-w-max self-end"
-								>
+								<Button size="lg" className="flex items-center gap-2 min-w-max self-end">
 									{link.buttonChildren}
 								</Button>
 							)}

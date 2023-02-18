@@ -79,7 +79,7 @@ function Halls() {
 												}
 											}}
 										>
-											<TrashIcon></TrashIcon>
+											<TrashIcon className="h-5 w-5"></TrashIcon>
 											<span>حذف</span>
 										</Button>
 
@@ -90,7 +90,7 @@ function Halls() {
 											hallId={id}
 											trigger={
 												<Button size="sm" className="flex items-center gap-2">
-													<Pencil1Icon></Pencil1Icon>
+													<Pencil1Icon className="h-5 w-5"></Pencil1Icon>
 													<span>تعديل</span>
 												</Button>
 											}

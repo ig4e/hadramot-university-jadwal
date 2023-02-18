@@ -4,15 +4,27 @@ import { PlusIcon, TrashIcon } from "@radix-ui/react-icons";
 import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import clsx from "clsx";
 import React, { useEffect, useMemo, useState } from "react";
-import { Control, Controller, FieldErrors, useFieldArray, useForm, UseFormRegister, UseFormSetError, useWatch } from "react-hook-form";
+import {
+	Control,
+	Controller,
+	FieldErrors,
+	useFieldArray,
+	useForm,
+	UseFormGetValues,
+	UseFormRegister,
+	UseFormSetError,
+	UseFormSetValue,
+	useWatch,
+} from "react-hook-form";
 import { v4 } from "uuid";
 import PageHeader from "../../components/PageHeader";
 import { days, DaysIndex, localizeDays } from "../../components/teachers/TeacherForm";
 import Button from "../../components/ui/Button";
 import ComboBox from "../../components/ui/ComboBox";
 import TimeRangeSelect from "../../components/ui/TimeRangeSelect";
-import TimeRangeSlider, { formatDuration } from "../../components/ui/TimeRangeSlider";
+import TimeRangeSlider from "../../components/ui/TimeRangeSlider";
 import { AppRouter } from "../../server/routers/_app";
+import { isIn, isConflicting } from "../../utils/range";
 import { trpc } from "../../utils/trpc";
 import { tableValidationSchema } from "../../validation/tableSchema";
 export type CreateTableDayValue = { id: string; teacherId: string; subjectId: string; hallId: string; timeRange: [number, number] };
@@ -64,6 +76,7 @@ function CreateTable() {
 		setValue("majorId", "");
 	}, [acceptType]);
 
+	const createTableHook = trpc.table.create.useMutation();
 	const teachersQuery = trpc.teacher.list.useQuery({ limit: 250 });
 	const hallsQuery = trpc.hall.list.useQuery({ limit: 250 });
 	const majorsQuery = trpc.major.list.useQuery({ limit: 250, type: acceptType });
@@ -88,7 +101,11 @@ function CreateTable() {
 		SATURDAY: saturdayFieldsArray,
 	};
 
-	function formSubmit(data: any) {}
+	async function formSubmit(data: CreateTableFormValues) {
+		//console.log(data, isErrored);
+		const result = await createTableHook.mutateAsync(data);
+		console.log(result);
+	}
 
 	return (
 		<div className="space-y-4">
@@ -183,7 +200,7 @@ function CreateTable() {
 					return (
 						<div
 							key={"day" + day}
-							className="grid  md:[grid-template-columns:_15%_85%;] lg:[grid-template-columns:_10%_90%;] xl:[grid-template-columns:_5%_95%;] "
+							className="grid md:[grid-template-columns:_15%_85%;] lg:[grid-template-columns:_10%_90%;] xl:[grid-template-columns:_5%_95%;] "
 						>
 							<div
 								className={clsx("py-2 w-full flex justify-center items-center bg-slate-900 text-slate-50", {
@@ -208,10 +225,13 @@ function CreateTable() {
 										{arrays[day].fields.map(({ id, teacherId, subjectId, timeRange }, index) => {
 											return (
 												<TableRow
+													setValue={setValue}
+													getValues={getValues}
 													setError={setError}
 													key={id}
 													teachers={teachersQuery.data?.items || []}
 													control={control}
+													day={day}
 													name={`${day}.${index}`}
 													register={register}
 													onDelete={() => {
@@ -266,30 +286,68 @@ function TableRow({
 	halls,
 	errors,
 	major,
+	day,
+	getValues,
+	setValue,
 }: {
 	control: Control<CreateTableFormValues>;
 	register: UseFormRegister<CreateTableFormValues>;
 	setError: UseFormSetError<CreateTableFormValues>;
+	setValue: UseFormSetValue<CreateTableFormValues>;
 	name: string;
+	day: DaysIndex;
 	teachers: RouterOutput["teacher"]["list"]["items"];
 	halls: RouterOutput["hall"]["list"]["items"];
 	onDelete: () => void;
+	getValues: UseFormGetValues<CreateTableFormValues>;
 	errors: any;
 	major?: RouterOutput["major"]["get"];
 }) {
-	const { teacherId, hallId } = useWatch({ control, name: name as "SUNDAY.0" }) || {};
+	const { teacherId, hallId, timeRange, id } = useWatch({ control, name: name as "SUNDAY.0" }) || {};
+	const formValues = useWatch({ control });
 	const teacherQuery = trpc.teacher.get.useQuery({ id: teacherId });
 	const hallQuery = trpc.hall.get.useQuery({ id: hallId });
-
 	const teacherSubjects = teacherQuery.data?.subjects || [];
+
+	const otherRanges: RouterInput["teacher"]["validateTimeRange"]["otherRanges"] = (formValues[day]
+		?.filter(({ teacherId: thisTeacherId, id: rangeId }) => thisTeacherId === teacherId && rangeId !== id)
+		.map(({ timeRange }) => timeRange!) || []) as any;
+
+	const teacherTimeRangeValidationQuery = trpc.teacher.validateTimeRange.useQuery({
+		dayName: day,
+		id: teacherId,
+		startsAt: timeRange[0],
+		endsAt: timeRange[1],
+		otherRanges,
+	});
 
 	useEffect(() => {
 		const { data: hall } = hallQuery;
 		if (hall && major) {
-			if (hall.studentsCount < major.studentsCount)
-				setError(`${name}.hallId` as "SUNDAY.0.hallId", { message: "سعة القاعة لاتكفى عدد طلاب التخصص" });
+			if (hall.studentsCount < major.studentsCount) setValue(`${name}.hallId` as "SUNDAY.0.hallId", "");
 		}
-	}, [hallId, major]);
+	}, [hallId, major, errors]);
+
+	useEffect(() => {
+		setValue(`${name}.subjectId` as "SUNDAY.0.subjectId", "");
+	}, [teacherId]);
+
+	useEffect(() => {
+		let debounceTimeout: any = null;
+
+		if (teacherTimeRangeValidationQuery.data) {
+			debounceTimeout = setTimeout(() => {
+				const { error, valid } = teacherTimeRangeValidationQuery.data;
+				if (valid) {
+					setError(`${name}.timeRange` as "SUNDAY.0.timeRange", {});
+				} else {
+					setError(`${name}.timeRange` as "SUNDAY.0.timeRange", { message: error });
+				}
+			}, 250);
+		}
+
+		return () => clearTimeout(debounceTimeout);
+	}, [teacherTimeRangeValidationQuery.data, errors]);
 
 	return (
 		<tr>
@@ -350,11 +408,13 @@ function TableRow({
 					}}
 				/>
 			</td>
-			<td className="w-full">
+			<td className="w-1/2">
 				<Controller
 					control={control}
 					name={`${name}.timeRange` as any}
-					render={({ field }) => <TimeRangeSlider {...field} error={".."} disabled={!teacherId}></TimeRangeSlider>}
+					render={({ field }) => (
+						<TimeRangeSlider {...field} error={errors.timeRange?.message} disabled={!teacherId}></TimeRangeSlider>
+					)}
 				/>
 			</td>
 			<td className="w-1">

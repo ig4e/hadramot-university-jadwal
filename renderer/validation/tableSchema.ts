@@ -1,12 +1,14 @@
 import { y } from "./y";
 
-export const tableDayValidationSchema = y.array().of(y.object().shape({
-	id: y.string().required(),
-	teacherId: y.string().required("يرجى أختيار معلم"),
-	subjectId: y.string().required("يرجى أختيار المادة"),
-	hallId: y.string().required("يرجى أختيار القاعة"),
-	timeRange: y.array().of(y.number().required()).length(2),
-}));
+export const tableDayValidationSchema = y.array().of(
+	y.object().shape({
+		id: y.string().required(),
+		teacherId: y.string().required("يرجى أختيار معلم"),
+		subjectId: y.string().required("يرجى أختيار المادة"),
+		hallId: y.string().required("يرجى أختيار القاعة"),
+		timeRange: y.array().of(y.number().required()).length(2),
+	}),
+);
 
 export const tableValidationSchema = y.object().shape({
 	semester: y.number().required("يرجى أختيار الفصل الدارسى"),

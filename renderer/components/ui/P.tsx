@@ -1,15 +1,7 @@
 import clsx from "clsx";
 import React from "react";
 
-function P({
-	children,
-	size = "lg",
-	className,
-}: {
-	children: React.ReactNode;
-	size?: "lg" | "md" | "sm";
-	className?: string;
-}) {
+function P({ children, size = "lg", className }: { children: React.ReactNode; size?: "lg" | "md" | "sm"; className?: string }) {
 	return (
 		<div
 			className={clsx(

@@ -7,7 +7,7 @@ import { trpc } from "../utils/trpc";
 import { useNotificationsStore } from "../stores/notificationsStore";
 import PageHeader from "../components/PageHeader";
 import MajorModal from "../components/majors/MajorModal";
-import { majorTypes } from "../constants/enums/majorType";
+import { acceptTypeEnum, AcceptTypeEnumIndex } from "../constants/enums/acceptTypeEnum";
 
 function Majors() {
 	const majors = trpc.major.list.useQuery({ limit: 250 });
@@ -49,7 +49,7 @@ function Majors() {
 							<tr key={id}>
 								<td>{name}</td>
 								<td>{studentsCount}</td>
-								<td>{majorTypes[type as any as "1" | "2"]}</td>
+								<td>{acceptTypeEnum[type as unknown as AcceptTypeEnumIndex]}</td>
 
 								<td className="w-28">
 									<div className="flex items-center gap-2 w-fit">
@@ -75,7 +75,7 @@ function Majors() {
 												}
 											}}
 										>
-											<TrashIcon></TrashIcon>
+											<TrashIcon className="h-5 w-5"></TrashIcon>
 											<span>حذف</span>
 										</Button>
 
@@ -86,7 +86,7 @@ function Majors() {
 											majorId={id}
 											trigger={
 												<Button size="sm" className="flex items-center gap-2">
-													<Pencil1Icon></Pencil1Icon>
+													<Pencil1Icon className="h-5 w-5"></Pencil1Icon>
 													<span>تعديل</span>
 												</Button>
 											}

@@ -13,17 +13,15 @@ const defaultSubjectSelect = Prisma.validator<Prisma.SubjectSelect>()({
 });
 
 export const subjectRouter = router({
-	create: procedure
-		.input(z.object({ name: z.string() }))
-		.mutation(async ({ input }) => {
-			const createdSubject = await prisma.subject.create({
-				data: {
-					name: input.name,
-				},
-			});
+	create: procedure.input(z.object({ name: z.string() })).mutation(async ({ input }) => {
+		const createdSubject = await prisma.subject.create({
+			data: {
+				name: input.name,
+			},
+		});
 
-			return createdSubject;
-		}),
+		return createdSubject;
+	}),
 
 	list: procedure
 		.input(

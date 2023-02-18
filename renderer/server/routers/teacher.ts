@@ -1,31 +1,18 @@
 import { router, procedure } from "../trpc";
 import { Prisma } from "@prisma/client";
-import { TRPCError } from "@trpc/server";
+import { inferRouterInputs, TRPCError } from "@trpc/server";
 import { tuple, z } from "zod";
 import { prisma } from "../prisma";
 import Fuse from "fuse.js";
+import { isConflicting, isIn } from "../../utils/range";
+import { formatDuration } from "../../utils/format";
+import { appRouter } from "./_app";
 
-const daysEnum = z.enum([
-	"SUNDAY",
-	"MONDAY",
-	"TUESDAY",
-	"WEDNESDAY",
-	"THURSDAY",
-	"FRIDAY",
-	"SATURDAY",
-]);
+const daysEnum = z.enum(["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"]);
 
 type DaysEnum = z.infer<typeof daysEnum>;
 
-const DAYS_ARRAY: DaysEnum[] = [
-	"SUNDAY",
-	"MONDAY",
-	"TUESDAY",
-	"WEDNESDAY",
-	"THURSDAY",
-	"FRIDAY",
-	"SATURDAY",
-];
+const DAYS_ARRAY: DaysEnum[] = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
 
 const defaultTeacherSelect = Prisma.validator<Prisma.TeacherSelect>()({
 	id: true,
@@ -129,12 +116,12 @@ export const teacherRouter = router({
 				select: { id: true, name: true },
 			});
 
-			const TeacherFuse = new Fuse(list, {
+			const teacherFuse = new Fuse(list, {
 				keys: ["name"],
 				includeScore: false,
 			});
 
-			return TeacherFuse.search(input.query).map((x) => x.item);
+			return teacherFuse.search(input.query).map((x) => x.item);
 		}),
 
 	get: procedure
@@ -144,12 +131,12 @@ export const teacherRouter = router({
 			}),
 		)
 		.query(async ({ input }) => {
-			const Teacher = await prisma.teacher.findUnique({
+			const teacher = await prisma.teacher.findUnique({
 				where: { id: input.id },
 				select: defaultTeacherSelect,
 			});
 
-			return Teacher;
+			return teacher;
 		}),
 
 	edit: procedure
@@ -183,19 +170,12 @@ export const teacherRouter = router({
 			});
 
 			const isWorkDatesChanged = editedTeacher.workDates.some(
-				({ id, endsAt, startsAt }) => {
-					const editedDate = input.workDates.find(
-						(workDate) => workDate.id === id,
-					);
-
-					if (!editedDate) return false;
-
-					return (
-						endsAt === editedDate.endsAt &&
-						startsAt === editedDate.startsAt
-					);
-				},
+				({ endsAt, startsAt }) =>
+					!input.workDates.find((workDate) => endsAt === workDate.endsAt && startsAt === workDate.startsAt) ||
+					input.workDates.length !== editedTeacher.workDates.length,
 			);
+
+			console.log(isWorkDatesChanged);
 
 			if (isWorkDatesChanged) {
 				await prisma.teacher.update({
@@ -237,4 +217,68 @@ export const teacherRouter = router({
 
 			return editedTeacher;
 		}),
+
+	validateTimeRange: procedure
+		.input(
+			z.object({
+				id: z.string(),
+				dayName: daysEnum,
+				startsAt: z.number(),
+				endsAt: z.number(),
+				otherRanges: z.tuple([z.number(), z.number()]).array(),
+			}),
+		)
+		.query(async ({ input }) => {
+			return await validateTimeRange(input);
+		}),
 });
+
+export async function validateTimeRange(input: {
+	id: string;
+	dayName: "SUNDAY" | "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY";
+	startsAt: number;
+	endsAt: number;
+	otherRanges: [number, number][];
+}) {
+	let result = {
+		valid: true,
+		error: "",
+	};
+
+	const teacher = await prisma.teacher.findUnique({
+		where: { id: input.id },
+		select: {
+			workDates: { include: { day: true }, where: { day: { name: input.dayName } } },
+			tableSubjects: { include: { day: true }, where: { day: { name: input.dayName } } },
+		},
+	});
+
+	if (!teacher) return { valid: false, error: "هذه المعلم غير موجود." };
+
+	const teacherWorkDatesRangeArray: typeof input["otherRanges"] = teacher.workDates.map(({ startsAt, endsAt }) => [startsAt, endsAt]);
+
+	const isRangeInTeacherWorkDates = isIn([input.startsAt, input.endsAt], teacherWorkDatesRangeArray);
+
+	if (!isRangeInTeacherWorkDates)
+		return {
+			valid: false,
+			error: `مواعيد توافر المعلم هى<br /><div class="flex flex-wrap gap-1 mt-1">${teacherWorkDatesRangeArray
+				.map(
+					([startsAt, endsAt]) =>
+						`<span class="bg-slate-900 text-slate-50 p-1 rounded-md text-xs">${formatDuration(startsAt)} ألى ${formatDuration(
+							endsAt,
+						)}</span>`,
+				)
+				.join("")}</div>`,
+		};
+
+	const isRangeConflicting = isConflicting([input.startsAt, input.endsAt], input.otherRanges);
+
+	if (isRangeConflicting)
+		return {
+			valid: false,
+			error: `المعلم يوجد فى محاضرة اخرى فى نفس الوقت`,
+		};
+
+	return result;
+}

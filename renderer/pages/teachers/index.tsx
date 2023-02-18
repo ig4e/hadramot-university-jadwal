@@ -55,7 +55,7 @@ function Teacher() {
 									<div className="flex items-center gap-2 w-fit">
 										<Link href={"/teachers/edit/" + id}>
 											<Button size="sm" className="flex items-center gap-2">
-												<Pencil1Icon></Pencil1Icon>
+												<Pencil1Icon className="h-5 w-5"></Pencil1Icon>
 												<span>تعديل</span>
 											</Button>
 										</Link>
@@ -82,7 +82,7 @@ function Teacher() {
 												}
 											}}
 										>
-											<TrashIcon></TrashIcon>
+											<TrashIcon className="h-5 w-5"></TrashIcon>
 											<span>حذف</span>
 										</Button>
 									</div>

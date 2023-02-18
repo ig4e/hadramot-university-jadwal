@@ -4,27 +4,11 @@ import { immer } from "zustand/middleware/immer";
 import { v4 } from "uuid";
 import { z } from "zod";
 
-export const daysEnum = z.enum([
-	"SUNDAY",
-	"MONDAY",
-	"TUESDAY",
-	"WEDNESDAY",
-	"THURSDAY",
-	"FRIDAY",
-	"SATURDAY",
-]);
+export const daysEnum = z.enum(["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"]);
 
 export type DaysEnum = z.infer<typeof daysEnum>;
 
-export const DAYS_ARRAY: DaysEnum[] = [
-	"SUNDAY",
-	"MONDAY",
-	"TUESDAY",
-	"WEDNESDAY",
-	"THURSDAY",
-	"FRIDAY",
-	"SATURDAY",
-];
+export const DAYS_ARRAY: DaysEnum[] = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
 
 interface Subject {
 	inputId: string;
@@ -83,7 +67,7 @@ const useNewTeacherStore = create<newTeacherState & newTeacherActions>()(
 					state.workDays = DAYS_ARRAY.map((day) => ({
 						day: day,
 						dates: [{ inputId: v4(), startAt: 0, endAt: 0 }],
-					}))
+					}));
 				});
 			},
 
@@ -102,9 +86,7 @@ const useNewTeacherStore = create<newTeacherState & newTeacherActions>()(
 			},
 			removeSubject(subject) {
 				set((state) => {
-					state.subjects.filter(
-						(tSubject) => tSubject.id !== subject.id,
-					);
+					state.subjects.filter((tSubject) => tSubject.id !== subject.id);
 				});
 			},
 
@@ -128,8 +110,7 @@ const useNewTeacherStore = create<newTeacherState & newTeacherActions>()(
 					state.workDays = state.workDays.map((workDay) => {
 						if (workDay.day === day) {
 							workDay.dates = workDay.dates.map((workDayDate) => {
-								if (workDayDate.inputId == date.inputId)
-									return date;
+								if (workDayDate.inputId == date.inputId) return date;
 								return workDayDate;
 							});
 						}
@@ -142,9 +123,7 @@ const useNewTeacherStore = create<newTeacherState & newTeacherActions>()(
 				set((state) => {
 					state.workDays = state.workDays.map((workDay) => {
 						if (workDay.day === day) {
-							workDay.dates = workDay.dates.filter(
-								(date) => date.inputId != inputId,
-							);
+							workDay.dates = workDay.dates.filter((date) => date.inputId != inputId);
 						}
 
 						return workDay;

@@ -3,23 +3,9 @@ import PageHeader from "../../../components/PageHeader";
 import { trpc } from "../../../utils/trpc";
 import { useNotificationsStore } from "../../../stores/notificationsStore";
 import { useRouter } from "next/router";
-import TeacherForm, {
-	DaysIndex,
-	TeacherFormData,
-} from "../../../components/teachers/TeacherForm";
-import {
-	teacherCreateFailNotification,
-	teacherCreateSuccessNotification,
-} from "../../../constants/notifications/teacherNotifications";
-const days = [
-	"SUNDAY",
-	"MONDAY",
-	"TUESDAY",
-	"WEDNESDAY",
-	"THURSDAY",
-	"FRIDAY",
-	"SATURDAY",
-];
+import TeacherForm, { DaysIndex, TeacherFormData } from "../../../components/teachers/TeacherForm";
+import { teacherCreateFailNotification, teacherCreateSuccessNotification } from "../../../constants/notifications/teacherNotifications";
+const days = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
 function CreateTeachertPage() {
 	const router = useRouter();
 	const notifications = useNotificationsStore();
@@ -40,7 +26,7 @@ function CreateTeachertPage() {
 			});
 
 			notifications.notify(teacherCreateSuccessNotification(teacher.name));
-			
+
 			router.push("/teachers");
 		} catch {
 			notifications.notify(teacherCreateFailNotification(data.name));

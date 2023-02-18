@@ -3,25 +3,11 @@ import PageHeader from "../../../components/PageHeader";
 import { trpc } from "../../../utils/trpc";
 import { useNotificationsStore } from "../../../stores/notificationsStore";
 import { useRouter } from "next/router";
-import TeacherForm, {
-	DaysIndex,
-	TeacherFormData,
-} from "../../../components/teachers/TeacherForm";
-import {
-	teacherEditFailNotification,
-	teacherEditSuccessNotification,
-} from "../../../constants/notifications/teacherNotifications";
+import TeacherForm, { DaysIndex, TeacherFormData } from "../../../components/teachers/TeacherForm";
+import { teacherEditFailNotification, teacherEditSuccessNotification } from "../../../constants/notifications/teacherNotifications";
 import { useMemo } from "react";
 
-const days = [
-	"SUNDAY",
-	"MONDAY",
-	"TUESDAY",
-	"WEDNESDAY",
-	"THURSDAY",
-	"FRIDAY",
-	"SATURDAY",
-];
+const days = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
 
 function EditTeachertPage() {
 	const router = useRouter();
@@ -47,9 +33,8 @@ function EditTeachertPage() {
 		} as TeacherFormData;
 	}, [teacherQuery.data]);
 
-
 	async function onSubmit(data: TeacherFormData) {
-        console.log(data)
+		console.log(data);
 		try {
 			const teacher = await editTeacherHook.mutateAsync({
 				id: router.query.id as string,
@@ -58,7 +43,7 @@ function EditTeachertPage() {
 				workDates: data.workDates.map(({ id, day, value }) => {
 					return {
 						id,
-                        dayName: day as DaysIndex,
+						dayName: day as DaysIndex,
 						endsAt: value[1],
 						startsAt: value[0],
 					};

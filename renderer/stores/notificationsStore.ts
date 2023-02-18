@@ -4,7 +4,7 @@ import { immer } from "zustand/middleware/immer";
 
 interface NotificationInput {
 	title: string;
-    success: boolean
+	success: boolean;
 	description?: string;
 	timeToDismiss?: number;
 }
@@ -12,7 +12,7 @@ interface NotificationInput {
 interface Notification extends NotificationInput {
 	id: string;
 	timeToDismiss: number;
-    open: boolean;
+	open: boolean;
 }
 
 interface NotificationsState {
@@ -24,9 +24,7 @@ interface NotificationActions {
 	closeNotification: (notificationId: Notification["id"]) => void;
 }
 
-const useNotificationsStore = create<
-	NotificationsState & NotificationActions
->()(
+const useNotificationsStore = create<NotificationsState & NotificationActions>()(
 	immer((set, get) => ({
 		notifications: [],
 		notify: (notification) => {
@@ -35,7 +33,7 @@ const useNotificationsStore = create<
 				...notification,
 				id: crypto.randomUUID(),
 				timeToDismiss: 3000,
-                open: true,
+				open: true,
 			};
 
 			set((state) => {
@@ -48,9 +46,7 @@ const useNotificationsStore = create<
 		},
 		closeNotification: (id) => {
 			set((state) => {
-				state.notifications = state.notifications.filter(
-					(notification: Notification) => notification.id !== id,
-				);
+				state.notifications = state.notifications.filter((notification: Notification) => notification.id !== id);
 			});
 		},
 	})),

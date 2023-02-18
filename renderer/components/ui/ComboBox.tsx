@@ -35,6 +35,10 @@ function ComboBox({
 		if (selected) onChange && onChange(selected.value as any);
 	}, [selected]);
 
+	useEffect(() => {
+		setSelected(data.find((element) => element.value === value) || ({ value } as any));
+	}, [value]);
+
 	const filteredData = useMemo(
 		() =>
 			query === ""
@@ -71,13 +75,7 @@ function ComboBox({
 					</div>
 					<span className="!text-xs text-red-500">{error}</span>
 
-					<Transition
-						as={Fragment}
-						leave="transition ease-in duration-100"
-						leaveFrom="opacity-100"
-						leaveTo="opacity-0"
-						afterLeave={() => setQuery("")}
-					>
+					<Transition as={Fragment} afterLeave={() => setQuery("")}>
 						<Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded bg-white p-1 text-base shadow-md ring-1 ring-black ring-opacity-5 z-50 focus:outline-none sm:text-sm">
 							{filteredData.length === 0 && query !== "" ? (
 								<div className="relative cursor-default select-none py-2 px-4 text-gray-700">لا يوجد نتائج.</div>
@@ -94,7 +92,7 @@ function ComboBox({
 									>
 										{({ selected, active }) => (
 											<>
-												<span className={`block truncate ${selected ? "font-medium" : "font-normal"}`}>
+												<span className={` truncate w-full ${selected ? "font-medium" : "font-normal"}`}>
 													{value.label}
 												</span>
 												{selected ? (

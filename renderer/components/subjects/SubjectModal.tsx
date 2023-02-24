@@ -17,24 +17,13 @@ import Button from "../ui/Button";
 import Header from "../ui/Header";
 import Modal from "../ui/Modal";
 
-function SubjectModal({
-	trigger,
-	subjectId,
-	onComplete,
-}: {
-	trigger: ReactNode;
-	subjectId?: string;
-	onComplete?: () => void;
-}) {
+function SubjectModal({ trigger, subjectId, onComplete }: { trigger: ReactNode; subjectId?: string; onComplete?: () => void }) {
 	const isEdit = !!subjectId;
 	const [isOpen, setIsOpen] = useState(false);
-	const subjectData = isEdit
-		? trpc.subject.get.useQuery({ id: subjectId })
-		: undefined;
+	const subjectData = isEdit ? trpc.subject.get.useQuery({ id: subjectId }) : undefined;
 	const notificationStore = useNotificationsStore();
 	const createSubjectHook = trpc.subject.create.useMutation();
 	const editSubjectHook = trpc.subject.edit.useMutation();
-
 
 	const {
 		register,
@@ -60,29 +49,21 @@ function SubjectModal({
 
 	async function onSubmit(data: { name: string }) {
 		setIsOpen(false);
-		reset()
+		reset();
 
 		try {
 			if (isEdit) {
 				await editSubjectHook.mutateAsync({ id: subjectId, ...data });
-				notificationStore.notify(
-					subjectEditSuccessNotification(data.name),
-				);
+				notificationStore.notify(subjectEditSuccessNotification(data.name));
 			} else {
 				await createSubjectHook.mutateAsync(data);
-				notificationStore.notify(
-					subjectCreateSuccessNotification(data.name),
-				);
+				notificationStore.notify(subjectCreateSuccessNotification(data.name));
 			}
 		} catch {
 			if (isEdit) {
-				notificationStore.notify(
-					subjectEditFailNotification(data.name),
-				);
+				notificationStore.notify(subjectEditFailNotification(data.name));
 			} else {
-				notificationStore.notify(
-					subjectCreateFailNotification(data.name),
-				);
+				notificationStore.notify(subjectCreateFailNotification(data.name));
 			}
 		}
 
@@ -101,34 +82,19 @@ function SubjectModal({
 		>
 			<form className="space-y-8" onSubmit={handleSubmit(onSubmit)}>
 				<Dialog.Title asChild>
-					<Header size="md">
-						{isEdit ? "عدل مادة" : "أضف مادة"}
-					</Header>
+					<Header size="md">{isEdit ? "عدل مادة" : "أضف مادة"}</Header>
 				</Dialog.Title>
 
-				<TextInput
-					{...register("name")}
-					label={"أسم المادة"}
-					error={errors.name?.message}
-				></TextInput>
+				<TextInput {...register("name")} label={"أسم المادة"} error={errors.name?.message}></TextInput>
 
 				<div className="flex gap-2 items-center justify-end">
 					<Dialog.Close asChild>
-						<Button
-							className="flex gap-2 items-center"
-							size="md"
-							intent="secondary"
-							aria-label="Close"
-						>
+						<Button className="flex gap-2 items-center" size="md" intent="secondary" aria-label="Close">
 							<Cross2Icon className="h-5 w-5" />
 							<span>أغلق</span>
 						</Button>
 					</Dialog.Close>
-					<Button
-						type="submit"
-						size="md"
-						className="flex gap-2 items-center"
-					>
+					<Button type="submit" size="md" className="flex gap-2 items-center">
 						<CheckIcon className="h-5 w-5" />
 						<span>{isEdit ? "تعديل" : "أضف"}</span>
 					</Button>

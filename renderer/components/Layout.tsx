@@ -23,7 +23,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 							color={notification.success ? "blue" : "red"}
 							dir="rtl"
 						>
-							{notification.description}
+							{notification.description && <span dangerouslySetInnerHTML={{ __html: notification.description }}></span>}
 						</Notification>
 					);
 				})}

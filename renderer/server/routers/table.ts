@@ -5,7 +5,9 @@ import { z } from "zod";
 import { prisma } from "../prisma";
 import Fuse from "fuse.js";
 import { DAYS_ARRAY } from "../../stores/newTeacherStore";
-import { teacherRouter, validateTimeRange } from "./teacher";
+import { FormState } from "react-hook-form";
+import { CreateTableFormValues } from "../../pages/tables/create";
+import { isConflicting, isIn } from "../../utils/range";
 
 // const defaultTableSelect: Prisma.TableSelect = {
 // 	id: true,
@@ -72,6 +74,7 @@ const defaultTableSelect = Prisma.validator<Prisma.TableSelect>()({
 
 const tableDayInputType = z
 	.object({
+		id: z.string(),
 		teacherId: z.string(),
 		subjectId: z.string(),
 		hallId: z.string(),
@@ -97,51 +100,57 @@ export const tableRouter = router({
 			}),
 		)
 		.mutation(async ({ input }) => {
-			const tableSubjects = DAYS_ARRAY.map((dayName) => input[dayName].map((dayData) => ({ ...dayData, dayName }))).reduce(
-				(allSubjects, subject) => [...allSubjects, ...subject],
-				[],
-			);
+			const validation = await validateTable(input);
+			if (validation.error) return validation;
+			const { semester, majorId, level, acceptType, ...days } = input;
+			const daysWithDayName = Object.keys(days)
+				.map((key) => {
+					const dayName = key as keyof typeof days;
+					return days[dayName].map((day) => ({ dayName: dayName, ...day }));
+				})
+				.reduce((total, current) => [...total, ...current], []);
 
-			for (let subjectIndex = 0; subjectIndex < tableSubjects.length; subjectIndex++) {
-				const {
-					dayName,
-					teacherId,
-					timeRange: [startsAt, endsAt],
-				} = tableSubjects[subjectIndex];
-
-				const result = await validateTimeRange({
-					dayName,
-					id: teacherId,
-					startsAt,
-					endsAt,
-					otherRanges: tableSubjects
-						.filter((subject, index) => subject.teacherId === teacherId && index !== subjectIndex)
-						.map(({ timeRange: [startsAt, endsAt] }) => [startsAt, endsAt]),
-				});
-
-				if (result.error)
-					throw new TRPCError({ code: "BAD_REQUEST", message: "يوجد خطاء فى مواعيد المحاضرات يرجى اعادة النظر فيها" });
-			}
-
-			return await prisma.table.create({
+			const table = await prisma.table.create({
 				data: {
-					level: input.level,
-					semester: input.semester,
-					type: input.acceptType,
-					major: { connect: { id: input.majorId } },
+					level: level,
+					semester: semester,
+					type: acceptType,
+					major: { connect: { id: majorId } },
 					subjects: {
-						create: tableSubjects.map((subject) => ({
-							day: { connect: { name: subject.dayName } },
+						create: daysWithDayName.map((subject) => ({
+							id: subject.id,
 							hall: { connect: { id: subject.hallId } },
-							subject: { connect: { id: subject.subjectId } },
-							teacher: { connect: { id: subject.teacherId } },
+							day: { connect: { name: subject.dayName } },
 							startsAt: subject.timeRange[0],
 							endsAt: subject.timeRange[1],
+							subject: { connect: { id: subject.subjectId } },
+							teacher: { connect: { id: subject.teacherId } },
 						})),
 					},
 				},
-				select: defaultTableSelect,
 			});
+
+			return { ...validation, table };
+		}),
+
+	validate: procedure
+		.input(
+			z.object({
+				semester: z.number().min(1).max(2),
+				acceptType: z.number().min(1).max(2),
+				level: z.number().min(1).max(4),
+				majorId: z.string(),
+				SUNDAY: tableDayInputType,
+				MONDAY: tableDayInputType,
+				TUESDAY: tableDayInputType,
+				WEDNESDAY: tableDayInputType,
+				THURSDAY: tableDayInputType,
+				FRIDAY: tableDayInputType,
+				SATURDAY: tableDayInputType,
+			}),
+		)
+		.query(async ({ input }) => {
+			return await validateTable(input);
 		}),
 
 	list: procedure
@@ -225,3 +234,67 @@ export const tableRouter = router({
 			return editedTable;
 		}),
 });
+
+type DayInput = {
+	id: string;
+	teacherId: string;
+	subjectId: string;
+	hallId: string;
+	timeRange: [number, number];
+}[];
+async function validateTable(input: {
+	semester: number;
+	acceptType: number;
+	level: number;
+	majorId: string;
+	SUNDAY: DayInput;
+	MONDAY: DayInput;
+	TUESDAY: DayInput;
+	WEDNESDAY: DayInput;
+	THURSDAY: DayInput;
+	FRIDAY: DayInput;
+	SATURDAY: DayInput;
+}) {
+	const errors: { [index: string]: string } = {};
+	const { semester, majorId, level, acceptType, ...days } = input;
+	const daysWithDayName = Object.keys(days)
+		.map((key) => {
+			const dayName = key as keyof typeof days;
+			return days[dayName].map((day) => ({ dayName: dayName, ...day }));
+		})
+		.reduce((total, current) => [...total, ...current], []);
+
+	for (let day of daysWithDayName) {
+		const { id, dayName, hallId, subjectId, teacherId, timeRange } = day;
+		const dayIndex = days[dayName].findIndex((daySubject) => daySubject.id === id);
+
+		errors[`${dayName}.${dayIndex}.timeRange`] = "";
+
+		const teacher = await prisma.teacher.findUnique({
+			where: { id: teacherId },
+			include: {
+				tableSubjects: { where: { day: { name: dayName } } },
+				workDates: { where: { day: { name: dayName } } },
+			},
+		});
+
+		if (isConflicting(timeRange, teacher?.tableSubjects.map(({ startsAt, endsAt }) => [startsAt, endsAt])!)) {
+			errors[`${dayName}.${dayIndex}.timeRange`] = "المعلم فمحاضرة اخرى";
+		}
+
+		if (
+			isConflicting(
+				timeRange,
+				days[dayName].filter((_, index) => index !== dayIndex).map(({ timeRange: [startsAt, endsAt] }) => [startsAt, endsAt])!,
+			)
+		) {
+			errors[`${dayName}.${dayIndex}.timeRange`] = "المعلم فمحاضرة اخرى فنفس الوقت والجدول";
+		}
+
+		if (!isIn(timeRange, teacher?.workDates.map(({ startsAt, endsAt }) => [startsAt, endsAt])!)) {
+			errors[`${dayName}.${dayIndex}.timeRange`] = "المعلم غير متوفر";
+		}
+	}
+
+	return { errors, error: Object.keys(errors).some((key) => errors[key]) };
+}

@@ -177,7 +177,7 @@ function Index() {
 					)}
 				</Table>
 				{(tablesQuery.data?.items?.length || 0) <= 0 && !tablesQuery.isLoading && (
-					<span className="bg-slate-50 w-full text-center flex justify-center">لا يوجد قاعات</span>
+					<span className="bg-slate-50 w-full text-center flex justify-center">لا يوجد جداول</span>
 				)}
 				{tablesQuery.isLoading && <Loader className="bg-slate-50 w-full text-center flex justify-center"></Loader>}
 			</div>

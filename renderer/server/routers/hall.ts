@@ -4,6 +4,8 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { prisma } from "../prisma";
 import Fuse from "fuse.js";
+import { daysEnum } from "../../stores/newTeacherStore";
+import { isConflicting, isIn } from "../../utils/range";
 
 const defaultHallSelect = Prisma.validator<Prisma.HallSelect>()({
 	id: true,
@@ -138,4 +140,48 @@ export const hallRouter = router({
 
 			return editedHall;
 		}),
+
+	isAvailable: procedure
+		.input(
+			z.object({
+				id: z.string(),
+				hallId: z.string(),
+				dayName: daysEnum,
+				range: z.tuple([z.number(), z.number()]),
+			}),
+		)
+		.query(async ({ input }) => {
+			return isHallAvailable(input);
+		}),
 });
+
+export async function isHallAvailable(input: {
+	id: string;
+	hallId: string;
+	dayName: "SUNDAY" | "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY";
+	range: [number, number];
+}) {
+	const hall = await prisma.hall.findUnique({
+		where: { id: input.hallId },
+		include: { tableSubjects: { where: { day: { name: input.dayName } } } },
+	});
+
+	if (!hall)
+		return {
+			error: false,
+			message: ``,
+		};
+
+	const hallTableWorkDatesRanges: [number, number][] = hall?.tableSubjects.map(({ startsAt, endsAt }) => [startsAt, endsAt]) || [];
+
+	if (isIn(input.range, hallTableWorkDatesRanges) || isConflicting(input.range, hallTableWorkDatesRanges))
+		return {
+			error: true,
+			message: `القاعة مشغولة بمحاضرة اخرى الأن`,
+		};
+
+	return {
+		error: false,
+		message: ``,
+	};
+}

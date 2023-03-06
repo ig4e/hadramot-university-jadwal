@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { formatDuration } from "../../utils/format";
 
 import { motion, AnimatePresence } from "framer-motion";
+import { TriangleUpIcon } from "@radix-ui/react-icons";
 
 function TimeRangeSlider({ error, ...props }: RangeSliderProps & { error?: string }) {
 	const [value, setValue] = useState(props.value || [8, 16]);
@@ -30,25 +31,18 @@ function TimeRangeSlider({ error, ...props }: RangeSliderProps & { error?: strin
 			></RangeSlider>
 
 			<div className={clsx("relative", { "text-red-500": !!error })}>
-				<AnimatePresence>
-					{error && (
-						<motion.div
-							key="sliderError"
-							className="ml-36"
-							initial={{ scale: 0, opacity: 0 }}
-							animate={{ scale: 1, opacity: 1 }}
-							exit={{ scale: 0, opacity: 0 }}
-							transition={{ duration: 0.1 }}
-						>
-							<span dangerouslySetInnerHTML={{ __html: error }}></span>
-						</motion.div>
-					)}
-				</AnimatePresence>
-
 				<span className="whitespace-nowrap self-start top-0 left-0 absolute">
 					{formatDuration(value[0])} ألى {formatDuration(value[1])}
 				</span>
 				<div className="h-4 w-1 block"></div>
+
+				{error && (
+					<>
+						<div key="sliderError" className="mt-2">
+							<span className="" dangerouslySetInnerHTML={{ __html: error }}></span>
+						</div>
+					</>
+				)}
 			</div>
 		</div>
 	);

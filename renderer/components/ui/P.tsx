@@ -7,9 +7,9 @@ function P({ children, size = "lg", className }: { children: React.ReactNode; si
 			className={clsx(
 				"",
 				{
-					"text-lg": size === "lg",
-					"text-md": size === "md",
-					"text-sm": size === "sm",
+					"text-base lg:text-lg": size === "lg",
+					"text-sm lg:text-base": size === "md",
+					"text-xs lg:text-sm": size === "sm",
 				},
 				className,
 			)}

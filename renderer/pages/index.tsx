@@ -13,7 +13,7 @@ import Link from "next/link";
 import { semesterEnum, SemesterEnumIndex } from "../constants/enums/semesterEnum";
 import { levelEnum, LevelEnumIndex } from "../constants/enums/levelEnum";
 
-import { PrinterIcon } from "@heroicons/react/24/outline";
+import { ArrowsPointingOutIcon, PrinterIcon } from "@heroicons/react/24/outline";
 
 function Index() {
 	const [filters, setFilters] = useState<{
@@ -165,8 +165,8 @@ function Index() {
 											</Button>
 											<Link href={`/tables/preview/${id}`}>
 												<Button size="sm" intent="primary" className="flex items-center gap-2">
-													<PrinterIcon className="h-5 w-5"></PrinterIcon>
-													<span>طبع</span>
+													<ArrowsPointingOutIcon className="h-5 w-5"></ArrowsPointingOutIcon>
+													<span>عرض</span>
 												</Button>
 											</Link>
 										</div>

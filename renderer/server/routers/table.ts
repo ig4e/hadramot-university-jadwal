@@ -285,7 +285,9 @@ async function validateTable(input: {
 		if (
 			isConflicting(
 				timeRange,
-				days[dayName].filter((_, index) => index !== dayIndex).map(({ timeRange: [startsAt, endsAt] }) => [startsAt, endsAt])!,
+				days[dayName]
+					.filter((_, index) => index !== dayIndex && _.teacherId === teacherId)
+					.map(({ timeRange: [startsAt, endsAt] }) => [startsAt, endsAt])!,
 			)
 		) {
 			errors[`${dayName}.${dayIndex}.timeRange`] = "المعلم فمحاضرة اخرى فنفس الوقت والجدول";

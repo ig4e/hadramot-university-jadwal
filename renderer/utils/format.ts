@@ -6,5 +6,6 @@ export function formatDuration(hours: number) {
 	return dayjs()
 		.startOf("day")
 		.set("second", hours * 60 * 60)
-		.format("hh:mm A");
+		.format("hh:mm A")
+		.replace(/[0-9]/g, (str) => Number(str).toLocaleString("ar-AE"));
 }

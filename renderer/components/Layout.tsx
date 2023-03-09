@@ -12,7 +12,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 				<div className="print:hidden">
 					<SideBar />
 				</div>
-				<div className="text-neutral-900 mx-6 mt-6 w-full">{children}</div>
+				<div className="text-neutral-900 mx-6 mt-6 print:my-0 w-full">{children}</div>
 			</div>
 			<div dir="rtl" className="fixed bottom-4 right-4 flex flex-col gap-2">
 				{notificationsStore.notifications.map((notification) => {

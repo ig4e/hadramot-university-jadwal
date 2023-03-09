@@ -7,9 +7,9 @@ function Header({ children, size = "lg", className }: { children: React.ReactNod
 			className={clsx(
 				"font-semibold",
 				{
-					"text-4xl font-semibold": size === "lg",
-					"text-2xl font-semibold": size === "md",
-					"text-xl font-semibold": size === "sm",
+					"text-2xl md:text-3xl lg:text-4xl font-semibold": size === "lg",
+					"text-lg md:text-xl lg:text-2xl font-semibold": size === "md",
+					"text-base md:text-lg lg:text-xl font-semibold": size === "sm",
 				},
 				className,
 			)}

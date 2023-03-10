@@ -273,7 +273,7 @@ async function validateTable(input: {
 		const teacher = await prisma.teacher.findUnique({
 			where: { id: teacherId },
 			include: {
-				tableSubjects: { where: { day: { name: dayName } } },
+				tableSubjects: { where: { day: { name: dayName }, table: { semester: input.semester } } },
 				workDates: { where: { day: { name: dayName } } },
 			},
 		});

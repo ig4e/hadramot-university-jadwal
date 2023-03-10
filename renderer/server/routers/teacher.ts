@@ -165,40 +165,27 @@ export const teacherRouter = router({
 							id: subjectId,
 						})),
 					},
+					workDates: {
+						deleteMany: { NOT: { id: { in: input.workDates.map(({ id }) => id) } } },
+						upsert: input.workDates.map(({ id, endsAt, startsAt, dayName }) => ({
+							where: {
+								id,
+							},
+							update: {
+								startsAt,
+								endsAt,
+							},
+							create: {
+								id,
+								day: { connect: { name: dayName } },
+								startsAt,
+								endsAt,
+							},
+						})),
+					},
 				},
 				select: defaultTeacherSelect,
 			});
-
-			const isWorkDatesChanged = editedTeacher.workDates.some(
-				({ endsAt, startsAt }) =>
-					!input.workDates.find((workDate) => endsAt === workDate.endsAt && startsAt === workDate.startsAt) ||
-					input.workDates.length !== editedTeacher.workDates.length,
-			);
-
-			console.log(isWorkDatesChanged);
-
-			if (isWorkDatesChanged) {
-				await prisma.teacher.update({
-					where: { id: input.id },
-					data: {
-						workDates: {
-							deleteMany: input.workDates.map(({ id }) => ({
-								id,
-							})),
-							create: input.workDates.map((workDate) => ({
-								day: {
-									connectOrCreate: {
-										where: { name: workDate.dayName },
-										create: { name: workDate.dayName },
-									},
-								},
-								startsAt: workDate.startsAt,
-								endsAt: workDate.endsAt,
-							})),
-						},
-					},
-				});
-			}
 
 			return editedTeacher;
 		}),

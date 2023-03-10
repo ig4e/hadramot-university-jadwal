@@ -45,7 +45,7 @@ function SubjectModal({ trigger, subjectId, onComplete }: { trigger: ReactNode; 
 		if (subjectData && subjectData.data) {
 			setValue("name", subjectData.data.name);
 		}
-	}, [subjectData]);
+	}, [subjectData?.data]);
 
 	async function onSubmit(data: { name: string }) {
 		setIsOpen(false);

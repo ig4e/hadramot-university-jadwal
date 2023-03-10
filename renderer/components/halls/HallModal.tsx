@@ -17,24 +17,13 @@ import Button from "../ui/Button";
 import Header from "../ui/Header";
 import Modal from "../ui/Modal";
 
-function HallModal({
-	trigger,
-	hallId,
-	onComplete,
-}: {
-	trigger: ReactNode;
-	hallId?: string;
-	onComplete?: () => void;
-}) {
+function HallModal({ trigger, hallId, onComplete }: { trigger: ReactNode; hallId?: string; onComplete?: () => void }) {
 	const isEdit = !!hallId;
 	const [isOpen, setIsOpen] = useState(false);
-	const hallData = isEdit
-		? trpc.hall.get.useQuery({ id: hallId })
-		: undefined;
+	const hallData = isEdit ? trpc.hall.get.useQuery({ id: hallId }) : undefined;
 	const notificationStore = useNotificationsStore();
 	const createHallHook = trpc.hall.create.useMutation();
 	const editHallHook = trpc.hall.edit.useMutation();
-
 
 	const {
 		register,
@@ -58,7 +47,7 @@ function HallModal({
 			setValue("name", hallData.data.name);
 			setValue("studentsCount", hallData.data.studentsCount);
 		}
-	}, [hallData]);
+	}, [hallData?.data]);
 
 	async function onSubmit(data: { name: string; studentsCount: number }) {
 		setIsOpen(false);
@@ -67,14 +56,10 @@ function HallModal({
 		try {
 			if (isEdit) {
 				await editHallHook.mutateAsync({ id: hallId, ...data });
-				notificationStore.notify(
-					hallEditSuccessNotification(data.name),
-				);
+				notificationStore.notify(hallEditSuccessNotification(data.name));
 			} else {
 				await createHallHook.mutateAsync(data);
-				notificationStore.notify(
-					hallCreateSuccessNotification(data.name),
-				);
+				notificationStore.notify(hallCreateSuccessNotification(data.name));
 			}
 		} catch {
 			if (isEdit) {
@@ -99,16 +84,10 @@ function HallModal({
 		>
 			<form className="space-y-8" onSubmit={handleSubmit(onSubmit)}>
 				<Dialog.Title asChild>
-					<Header size="md">
-						{isEdit ? "عدل قاعة" : "أضف القاعة"}
-					</Header>
+					<Header size="md">{isEdit ? "عدل قاعة" : "أضف القاعة"}</Header>
 				</Dialog.Title>
 
-				<TextInput
-					{...register("name")}
-					label={"أسم القاعة"}
-					error={errors.name?.message}
-				></TextInput>
+				<TextInput {...register("name")} label={"أسم القاعة"} error={errors.name?.message}></TextInput>
 
 				<Controller
 					name="studentsCount"
@@ -125,21 +104,12 @@ function HallModal({
 
 				<div className="flex gap-2 items-center justify-end">
 					<Dialog.Close asChild>
-						<Button
-							className="flex gap-2 items-center"
-							size="md"
-							intent="secondary"
-							aria-label="Close"
-						>
+						<Button className="flex gap-2 items-center" size="md" intent="secondary" aria-label="Close">
 							<Cross2Icon className="h-5 w-5" />
 							<span>أغلق</span>
 						</Button>
 					</Dialog.Close>
-					<Button
-						type="submit"
-						size="md"
-						className="flex gap-2 items-center"
-					>
+					<Button type="submit" size="md" className="flex gap-2 items-center">
 						<CheckIcon className="h-5 w-5" />
 						<span>{isEdit ? "تعديل" : "أضف"}</span>
 					</Button>

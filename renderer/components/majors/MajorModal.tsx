@@ -66,7 +66,7 @@ function MajorModal({
 			setValue("studentsCount", majorData.data.studentsCount);
 			setValue("type", String(majorData.data.type));
 		}
-	}, [majorData]);
+	}, [majorData?.data]);
 
 	async function onSubmit(data: {
 		name: string;

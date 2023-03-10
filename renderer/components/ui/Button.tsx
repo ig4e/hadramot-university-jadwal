@@ -18,7 +18,7 @@ function Button({
 			type="button"
 			{...buttonArgs}
 			className={clsx(
-				"rounded-md font-medium transition enabled:hover:-translate-y-0.5 enabled:active:hover:translate-y-0 disabled:opacity-50",
+				"rounded-md font-medium transition enabled:hover:-translate-y-0.5 enabled:active:hover:translate-y-0 disabled:opacity-50 select-none",
 				{
 					"text-xl font-medium py-2 px-4 rounded-lg": size === "lg",
 					"text-lg py-1 px-2": size === "md",

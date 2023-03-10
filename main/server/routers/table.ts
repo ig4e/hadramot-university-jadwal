@@ -158,10 +158,6 @@ export const tableRouter = router({
 			z.object({
 				limit: z.number().min(1).max(250).nullish(),
 				cursor: z.string().nullish(),
-				semester: z.number().min(1).max(2).nullish(),
-				type: z.number().min(1).max(2).nullish(),
-				level: z.number().min(1).max(4).nullish(),
-				majorId: z.string().nullish(),
 			}),
 		)
 		.query(async ({ input }) => {
@@ -177,12 +173,7 @@ export const tableRouter = router({
 			const items = await prisma.table.findMany({
 				select: defaultTableSelect,
 				take: limit + 1,
-				where: {
-					semester: input.semester || undefined,
-					type: input.type || undefined,
-					level: input.level || undefined,
-					major: input.majorId ? { id: input.majorId } : undefined,
-				},
+				where: {},
 				cursor: cursor
 					? {
 							id: cursor,

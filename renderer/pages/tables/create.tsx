@@ -3,6 +3,7 @@ import { Loader, Select, Table } from "@mantine/core";
 import { PlusIcon, TrashIcon } from "@radix-ui/react-icons";
 import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import clsx from "clsx";
+import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
 import {
 	Control,
@@ -96,6 +97,7 @@ function CreateTable() {
 	const majorsSelectData = useMemo(() => majorsQuery.data?.items.map(({ id, name }) => ({ value: id, label: name })), [majorsQuery.data]);
 	const formValues = useWatch({ control });
 	const validateTableHook = trpc.table.validate.useQuery({ ...(formValues as CreateTableFormValues) }, { cacheTime: 0 });
+	const router = useRouter();
 
 	useEffect(() => {
 		if (validateTableHook.data) {
@@ -105,17 +107,30 @@ function CreateTable() {
 	}, [validateTableHook.data]);
 
 	async function formSubmit(data: CreateTableFormValues) {
-		const result = await createTableHook.mutateAsync({ ...data });
-		if (result.error) {
-			Object.keys(result.errors).map((key) => setError(key as any, { message: result.errors[key] }));
+		try {
+			const result = await createTableHook.mutateAsync({ ...data });
+			if (result.error) {
+				Object.keys(result.errors).map((key) => setError(key as any, { message: result.errors[key] }));
+				return notifications.notify({
+					success: false,
+					title: "هناك مشكلة بالمدخلات",
+					description: `${Object.values(result.errors).join("<br/>")}`,
+				});
+			}
+
 			notifications.notify({
-				success: false,
-				title: "هناك مشكلة بالمدخلات",
-				description: `${Object.values(result.errors).join("<br/>")}`,
+				success: true,
+				title: "تم انشاء الجدول بنجاح",
+			});
+
+			router.push("/");
+		} catch {
+			notifications.notify({
+				success: true,
+				title: "تعذر انشاء الجدول!",
+				description: "تعذر انشاء الجدول يرجى المحاولة مرة اخرى",
 			});
 		}
-
-		console.log(result);
 	}
 
 	return (

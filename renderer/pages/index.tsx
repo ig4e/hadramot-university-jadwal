@@ -14,8 +14,11 @@ import { semesterEnum, SemesterEnumIndex } from "../constants/enums/semesterEnum
 import { levelEnum, LevelEnumIndex } from "../constants/enums/levelEnum";
 
 import { ArrowsPointingOutIcon, PrinterIcon } from "@heroicons/react/24/outline";
+import { useNotificationsStore } from "../stores/notificationsStore";
 
 function Index() {
+	const notificationStore = useNotificationsStore();
+	const tableDeleteHook = trpc.table.delete.useMutation();
 	const [filters, setFilters] = useState<{
 		semester: string;
 		acceptType: string;
@@ -23,13 +26,13 @@ function Index() {
 		level: string;
 	}>();
 
-	const tablesQuery = trpc.table.list.useQuery({
-		limit: 250,
-	});
-
 	const majorsQuery = trpc.major.list.useQuery({
 		limit: 250,
 		type: filters && filters.acceptType !== "0" ? Number(filters.acceptType) : undefined,
+	});
+
+	const tablesQuery = trpc.table.list.useQuery({
+		limit: 250,
 	});
 
 	useEffect(() => {
@@ -150,18 +153,28 @@ function Index() {
 									</td>
 									<td className="w-28">
 										<div className="flex items-center gap-2 w-fit">
-											<Button size="sm" intent="danger" className="flex items-center gap-2" onClick={async () => {}}>
-												<TrashIcon className="h-5 w-5"></TrashIcon>
-												<span>حذف</span>
-											</Button>
 											<Button
 												size="sm"
-												intent="secondary"
+												intent="danger"
 												className="flex items-center gap-2"
-												onClick={async () => {}}
+												onClick={async () => {
+													try {
+														await tableDeleteHook.mutateAsync({ id });
+														notificationStore.notify({
+															title: "تم حذف الجدول بنجاح!",
+															success: true,
+														});
+														tablesQuery.refetch();
+													} catch {
+														notificationStore.notify({
+															title: "تعذر حذف الجدول!",
+															success: false,
+														});
+													}
+												}}
 											>
-												<Pencil1Icon className="h-5 w-5"></Pencil1Icon>
-												<span>تعديل</span>
+												<TrashIcon className="h-5 w-5"></TrashIcon>
+												<span>حذف</span>
 											</Button>
 											<Link href={`/tables/preview/${id}`}>
 												<Button size="sm" intent="primary" className="flex items-center gap-2">

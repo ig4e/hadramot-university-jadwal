@@ -4,7 +4,9 @@ module.exports = {
 			// config.target = 'electron-renderer';
 		}
 
-		return config;
+		return {
+			...config,
+		};
 	},
 	images: {
 		unoptimized: true,

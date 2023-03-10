@@ -226,12 +226,12 @@ export const tableRouter = router({
 			}),
 		)
 		.mutation(async ({ input }) => {
-			const editedTable = await prisma.table.delete({
+			const deletedTable = await prisma.table.delete({
 				where: { id: input.id },
 				select: defaultTableSelect,
 			});
 
-			return editedTable;
+			return deletedTable;
 		}),
 });
 

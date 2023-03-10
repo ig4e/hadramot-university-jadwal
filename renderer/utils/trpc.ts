@@ -1,10 +1,12 @@
 import { httpBatchLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
 import superjson from "superjson";
-import { AppRouter } from "../server/routers/_app";
-// import { AppRouter } from "../../main/server/routers/_app";
+//import { AppRouter } from "../server/routers/_app";
+import { AppRouter } from "../../main/server/routers/_app";
 
 function getBaseUrl() {
+	// assume localhost
+	return `http://localhost:${process.env.PORT ?? 3000}`;
 	if (typeof window !== "undefined")
 		// browser should use relative path
 		return "/api";
@@ -14,9 +16,6 @@ function getBaseUrl() {
 	if (process.env.RENDER_INTERNAL_HOSTNAME)
 		// reference for render.com
 		return `http://${process.env.RENDER_INTERNAL_HOSTNAME}:${process.env.PORT}/api`;
-
-	// assume localhost
-	return `http://localhost:${process.env.PORT ?? 3000}`;
 }
 
 export const trpc = createTRPCNext<AppRouter>({

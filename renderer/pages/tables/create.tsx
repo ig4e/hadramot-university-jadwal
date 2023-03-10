@@ -26,7 +26,7 @@ import Button from "../../components/ui/Button";
 import ComboBox from "../../components/ui/ComboBox";
 import TimeRangeSelect from "../../components/ui/TimeRangeSelect";
 import TimeRangeSlider from "../../components/ui/TimeRangeSlider";
-import { AppRouter } from "../../server/routers/_app";
+import { AppRouter } from "../../../main/server/routers/_app";
 import { useNotificationsStore } from "../../stores/notificationsStore";
 import { isIn, isConflicting } from "../../utils/range";
 import { trpc } from "../../utils/trpc";

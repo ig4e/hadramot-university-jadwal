@@ -1,12 +1,7 @@
 import { router, procedure } from "../trpc";
 import { Prisma } from "@prisma/client";
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { prisma } from "../prisma";
-import Fuse from "fuse.js";
-import { DAYS_ARRAY } from "../../stores/newTeacherStore";
-import { FormState } from "react-hook-form";
-import { CreateTableFormValues } from "../../pages/tables/create";
 import { isConflicting, isIn } from "../../utils/range";
 
 // const defaultTableSelect: Prisma.TableSelect = {

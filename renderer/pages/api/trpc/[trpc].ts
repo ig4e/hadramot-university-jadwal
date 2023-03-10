@@ -1,6 +1,6 @@
 import * as trpcNext from "@trpc/server/adapters/next";
-import { appRouter } from "../../../server/routers/_app";
-// import { appRouter } from "../../../../main/server/routers/_app";
+//import { appRouter } from "../../../server/routers/_app";
+ import { appRouter } from "../../../../main/server/routers/_app";
 
 // export API handler
 // @see https://trpc.io/docs/api-handler

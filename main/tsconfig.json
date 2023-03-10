@@ -1,0 +1,10 @@
+{
+	"compilerOptions": {
+		"lib": ["esnext", "dom"],
+		"target": "esnext",
+		"esModuleInterop": true,
+		"strict": true,
+		"moduleResolution": "node",
+		"noEmit": true
+	}
+}

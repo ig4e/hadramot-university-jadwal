@@ -6,7 +6,7 @@ import React, { useEffect, useMemo } from "react";
 import { Control, Controller, useFieldArray, useFormContext, useWatch } from "react-hook-form";
 import { v4 } from "uuid";
 import { CreateTableFormValues } from "../../pages/tables/create";
-import { AppRouter } from "../../server/routers/_app";
+import { AppRouter } from "../../../main/server/routers/_app";
 import { isConflicting } from "../../utils/range";
 import { trpc } from "../../utils/trpc";
 import { DaysIndex, localizeDays } from "../teachers/TeacherForm";

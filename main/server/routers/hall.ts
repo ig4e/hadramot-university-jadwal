@@ -4,8 +4,13 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { prisma } from "../prisma";
 import Fuse from "fuse.js";
-import { daysEnum } from "../../stores/newTeacherStore";
 import { isConflicting, isIn } from "../../utils/range";
+
+export const daysEnum = z.enum(["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"]);
+
+export type DaysEnum = z.infer<typeof daysEnum>;
+
+export const DAYS_ARRAY: DaysEnum[] = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
 
 const defaultHallSelect = Prisma.validator<Prisma.HallSelect>()({
 	id: true,

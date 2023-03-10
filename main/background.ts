@@ -6,9 +6,7 @@ import { inferAsyncReturnType, initTRPC } from "@trpc/server";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import cors from "cors";
 const expressApp = express();
-require("@electron/remote/main").initialize();
-
-// import { appRouter } from "./server/routers/_app";
+import { appRouter } from "./server/routers/_app";
 
 expressApp.use(
 	cors({
@@ -16,12 +14,12 @@ expressApp.use(
 	}),
 );
 
-// expressApp.use(
-// 	"/trpc",
-// 	trpcExpress.createExpressMiddleware({
-// 		router: appRouter,
-// 	}),
-// );
+expressApp.use(
+	"/trpc",
+	trpcExpress.createExpressMiddleware({
+		router: appRouter,
+	}),
+);
 
 const isProd: boolean = process.env.NODE_ENV === "production";
 

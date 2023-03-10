@@ -28,11 +28,15 @@ function Index() {
 
 	const majorsQuery = trpc.major.list.useQuery({
 		limit: 250,
-		type: filters && filters.acceptType !== "0" ? Number(filters.acceptType) : undefined,
+		type: filters?.acceptType ? Number(filters?.acceptType) : undefined,
 	});
 
 	const tablesQuery = trpc.table.list.useQuery({
 		limit: 250,
+		level: filters?.level ? Number(filters.level) : undefined,
+		semester: filters?.semester ? Number(filters.semester) : undefined,
+		type: filters?.acceptType ? Number(filters.acceptType) : undefined,
+		majorId: filters?.majorId,
 	});
 
 	useEffect(() => {
@@ -65,23 +69,23 @@ function Index() {
 					label="أختر الفصل الدراسى"
 					placeholder="الفصل الدراسى"
 					data={[
-						{ value: "0", label: "الكل" },
+						{ value: "", label: "الكل" },
 						{ value: "1", label: "الأول" },
 						{ value: "2", label: "الثانى" },
 					]}
 					onChange={handleOnChange("semester")}
-					defaultValue={"0"}
+					defaultValue={""}
 				/>
 				<Select
 					label="أختر نوع القبول"
 					placeholder="نوع القبول"
 					data={[
-						{ value: "0", label: "الكل" },
+						{ value: "", label: "الكل" },
 						{ value: "1", label: "عام" },
 						{ value: "2", label: "موازى" },
 					]}
 					onChange={handleOnChange("acceptType")}
-					defaultValue={"0"}
+					defaultValue={""}
 				/>
 				<Select
 					label="أختر التخصص"
@@ -90,7 +94,7 @@ function Index() {
 						majorsSelectData
 							? [
 									{
-										value: "0",
+										value: "",
 										label: "الكل",
 										group: "الكل",
 									},
@@ -99,21 +103,21 @@ function Index() {
 							: []
 					}
 					value={filters?.majorId}
-					defaultValue={"0"}
+					defaultValue={""}
 					onChange={handleOnChange("majorId")}
 				/>
 				<Select
 					label="أختر المستوى"
 					placeholder="المستوى"
 					data={[
-						{ value: "0", label: "الكل" },
+						{ value: "", label: "الكل" },
 						{ value: "1", label: "الأول" },
 						{ value: "2", label: "الثانى" },
 						{ value: "3", label: "الثالث" },
 						{ value: "4", label: "الرابع" },
 					]}
 					onChange={handleOnChange("level")}
-					defaultValue={"0"}
+					defaultValue={""}
 				/>
 				<Link href="/tables/create" className="self-end">
 					<Button size="md" className="flex items-center gap-2 min-w-max">

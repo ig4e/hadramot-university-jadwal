@@ -1,31 +1,35 @@
-import React, { ReactNode } from 'react'
-import Link from 'next/link'
-import Head from 'next/head'
+import { Notification } from "@mantine/core";
+import React from "react";
+import { useNotificationsStore } from "../stores/notificationsStore";
+import SideBar from "./SideBar";
 
-type Props = {
-  children: ReactNode
-  title?: string
+function Layout({ children }: { children: React.ReactNode }) {
+	const notificationsStore = useNotificationsStore();
+
+	return (
+		<>
+			<div className="flex text-white" dir="rtl">
+				<div className="print:hidden">
+					<SideBar />
+				</div>
+				<div className="text-neutral-900 mx-6 mt-6 print:my-0 w-full">{children}</div>
+			</div>
+			<div dir="rtl" className="fixed bottom-4 right-4 flex flex-col gap-2">
+				{notificationsStore.notifications.map((notification) => {
+					return (
+						<Notification
+							onClose={() => notificationsStore.closeNotification(notification.id)}
+							title={notification.title}
+							color={notification.success ? "blue" : "red"}
+							dir="rtl"
+						>
+							{notification.description && <span dangerouslySetInnerHTML={{ __html: notification.description }}></span>}
+						</Notification>
+					);
+				})}
+			</div>
+		</>
+	);
 }
 
-const Layout = ({ children, title = 'This is the default title' }: Props) => (
-  <div>
-    <Head>
-      <title>{title}</title>
-      <meta charSet="utf-8" />
-      <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-    </Head>
-    <header>
-      <nav>
-        <Link href="/">Home</Link> | <Link href="/about">About</Link> |{' '}
-        <Link href="/initial-props">With Initial Props</Link>
-      </nav>
-    </header>
-    {children}
-    <footer>
-      <hr />
-      <span>I'm here to stay (Footer)</span>
-    </footer>
-  </div>
-)
-
-export default Layout
+export default Layout;

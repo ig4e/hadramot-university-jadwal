@@ -1,0 +1,136 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+	font-family: Cairo;
+	src: url("../public/fonts/Cairo-VariableFont_slnt,wght.ttf");
+}
+
+@font-face {
+	font-family: Inter;
+	src: url("../public/fonts/Inter-VariableFont_slnt,wght.ttf");
+}
+
+@font-face {
+	font-family: Lora;
+	src: url("../public/fonts/Lora-VariableFont_wght.ttf");
+}
+
+@font-face {
+	font-family: NotoNaskhArabic;
+	src: url("../public/fonts/NotoNaskhArabic-VariableFont_wght.ttf");
+}
+
+@font-face {
+	font-family: Lateef;
+	src: url("../public/fonts/Lateef-Bold.ttf");
+	font-weight: 700;
+}
+
+@font-face {
+	font-family: Lateef;
+	src: url("../public/fonts/Lateef-SemiBold.ttf");
+	font-weight: 600;
+}
+
+@font-face {
+	font-family: Lateef;
+	src: url("../public/fonts/Lateef-Medium.ttf");
+	font-weight: 500;
+}
+
+@font-face {
+	font-family: Lateef;
+	src: url("../public/fonts/Lateef-Regular.ttf");
+	font-weight: 400;
+}
+
+@font-face {
+	font-family: Lateef;
+	src: url("../public/fonts/Lateef-Light.ttf");
+	font-weight: 300;
+}
+
+@font-face {
+	font-family: Lateef;
+	src: url("../public/fonts/Lateef-ExtraLight.ttf");
+	font-weight: 200;
+}
+
+@font-face {
+	font-family: Amiri;
+	src: url("../public/fonts/Amiri-Bold.ttf");
+	font-weight: 200;
+}
+
+@font-face {
+	font-family: DubaiW23;
+	src: url("../public/fonts/DubaiW23-Bold.ttf");
+	font-weight: 700;
+}
+
+@font-face {
+	font-family: DubaiW23;
+	src: url("../public/fonts/DubaiW23-Bold.ttf");
+	font-weight: 600;
+}
+
+@font-face {
+	font-family: DubaiW23;
+	src: url("../public/fonts/DubaiW23-Medium.ttf");
+	font-weight: 400;
+}
+
+@font-face {
+	font-family: DubaiW23;
+	src: url("../public/fonts/DubaiW23-Regular.ttf");
+	font-weight: 300;
+}
+
+.ant-picker-ok > button {
+	@apply !bg-blue-600 !text-white;
+}
+
+@layer base {
+	* {
+		font-family: Lora, DubaiW23, serif !important;
+	}
+
+	th,
+	td {
+		@apply !font-semibold;
+	}
+
+	body {
+		@apply bg-slate-50 scroll-smooth;
+	}
+
+	/* width */
+	::-webkit-scrollbar {
+		@apply w-2;
+	}
+
+	/* Track */
+	::-webkit-scrollbar-track {
+		@apply bg-slate-900;
+	}
+
+	/* Handle */
+	::-webkit-scrollbar-thumb {
+		@apply bg-blue-600 rounded-md;
+	}
+
+	/* Handle on hover */
+	::-webkit-scrollbar-thumb:hover {
+		@apply bg-blue-700;
+	}
+
+	/* Handle on hover */
+	::-webkit-scrollbar-thumb:active {
+		@apply bg-blue-800;
+	}
+}
+
+@layer components {
+}

@@ -1,3 +1,4 @@
+import { v4 } from "uuid";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
@@ -31,7 +32,7 @@ const useNotificationsStore = create<NotificationsState & NotificationActions>()
 			const closeNotification = get().closeNotification;
 			const newNotification: Notification = {
 				...notification,
-				id: crypto.randomUUID(),
+				id: v4(),
 				timeToDismiss: 3000,
 				open: true,
 			};

@@ -1,8 +1,7 @@
 import { router, procedure } from "../trpc";
-import { Prisma } from "@prisma/client";
 import { inferRouterInputs, TRPCError } from "@trpc/server";
 import { tuple, z } from "zod";
-import { prisma } from "../prisma";
+import { prisma, Prisma } from "../prisma";
 import Fuse from "fuse.js";
 import { isConflicting, isIn } from "../../utils/range";
 import { formatDuration } from "../../utils/format";

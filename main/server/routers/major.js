@@ -5,11 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.majorRouter = void 0;
 const trpc_1 = require("../trpc");
-const client_1 = require("@prisma/client");
 const zod_1 = require("zod");
 const prisma_1 = require("../prisma");
 const fuse_js_1 = __importDefault(require("fuse.js"));
-const defaultMajorSelect = client_1.Prisma.validator()({
+const defaultMajorSelect = prisma_1.Prisma.validator()({
     id: true,
     type: true,
     name: true,

@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.tableRouter = void 0;
 const trpc_1 = require("../trpc");
-const client_1 = require("@prisma/client");
 const zod_1 = require("zod");
 const prisma_1 = require("../prisma");
 const range_1 = require("../../utils/range");
@@ -23,7 +22,7 @@ const range_1 = require("../../utils/range");
 // 		},
 // 	},
 // };
-const defaultTableSelect = client_1.Prisma.validator()({
+const defaultTableSelect = prisma_1.Prisma.validator()({
     id: true,
     createdAt: true,
     level: true,

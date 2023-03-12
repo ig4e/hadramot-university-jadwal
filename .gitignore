@@ -10,8 +10,8 @@
 /coverage
 
 # next.js
-/renderer/.next/
-/out/
+/renderer/.next
+/renderer/out
 
 # production
 /build

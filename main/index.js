@@ -26,18 +26,46 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.prisma = exports.dbPath = void 0;
 // Native
-const path_1 = require("path");
+const path_1 = __importStar(require("path"));
 const url_1 = require("url");
 // Packages
 const electron_1 = require("electron");
 const electron_is_dev_1 = __importDefault(require("electron-is-dev"));
+//@ts-ignore
 const electron_next_1 = __importDefault(require("electron-next"));
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const trpcExpress = __importStar(require("@trpc/server/adapters/express"));
+const fs_1 = __importDefault(require("fs"));
 // Imports
 const _app_1 = require("./server/routers/_app");
+const prisma_client_1 = require("../generated/prisma-client");
+exports.dbPath = electron_is_dev_1.default ? path_1.default.join(__dirname, "../prisma/dev.db") : path_1.default.join(electron_1.app.getPath("userData"), "database.db");
+if (!electron_is_dev_1.default) {
+    try {
+        // database file does not exist, need to create
+        fs_1.default.copyFileSync((0, path_1.join)(process.resourcesPath, "prisma/dev.db"), exports.dbPath, fs_1.default.constants.COPYFILE_EXCL);
+        console.log("New database file created");
+    }
+    catch (err) {
+        if (err.code != "EEXIST") {
+            console.error(`Failed creating sqlite file.`, err);
+        }
+        else {
+            console.log("Database file detected");
+        }
+    }
+}
+exports.prisma = new prisma_client_1.PrismaClient({
+    log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
+    datasources: {
+        db: {
+            url: `file:${exports.dbPath}`,
+        },
+    },
+});
 const expressApp = (0, express_1.default)();
 expressApp.use((0, cors_1.default)({
     origin: "*",
@@ -51,6 +79,7 @@ electron_1.app.on("ready", async () => {
     const mainWindow = new electron_1.BrowserWindow({
         width: 800,
         height: 600,
+        autoHideMenuBar: true,
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: false,
@@ -69,6 +98,6 @@ electron_1.app.on("ready", async () => {
 // Quit the app once all windows are closed
 const server = expressApp.listen(3000, () => console.log("server started at 3000"));
 electron_1.app.on("window-all-closed", () => {
-    electron_1.app.quit();
     server.close();
+    electron_1.app.quit();
 });

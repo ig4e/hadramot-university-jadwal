@@ -1,8 +1,7 @@
 import { router, procedure } from "../trpc";
-import { Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { prisma } from "../prisma";
+import { prisma, Prisma } from "../prisma";
 import Fuse from "fuse.js";
 
 const defaultSubjectSelect = Prisma.validator<Prisma.SubjectSelect>()({

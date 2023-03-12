@@ -1,13 +1,15 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "sqlite"
   url      = "file:./dev.db"
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  engineType    = "library"
+  binaryTargets = ["native", "windows"]
 }
 
 model Table {
@@ -70,7 +72,7 @@ model TeacherWorkDate {
 model Major {
   id            String  @id @default(uuid())
   type          Int     @default(1) // 1 = 3am, 2 = thanwy
-  name          String  //@unique
+  name          String //@unique
   studentsCount Int
   tables        Table[]
 

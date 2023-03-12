@@ -1,7 +1,6 @@
 import { router, procedure } from "../trpc";
-import { Prisma } from "@prisma/client";
 import { z } from "zod";
-import { prisma } from "../prisma";
+import { prisma, Prisma } from "../prisma";
 import { isConflicting, isIn } from "../../utils/range";
 
 // const defaultTableSelect: Prisma.TableSelect = {

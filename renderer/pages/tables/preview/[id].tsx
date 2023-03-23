@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import  { useMemo } from "react";
+import { useMemo } from "react";
 import { acceptTypeEnum, AcceptTypeEnumIndex } from "constants/enums/acceptTypeEnum";
 import { semesterEnum, SemesterEnumIndex } from "constants/enums/semesterEnum";
 import { trpc } from "utils/trpc";

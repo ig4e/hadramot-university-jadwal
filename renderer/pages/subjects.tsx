@@ -1,10 +1,6 @@
 import { Loader, Table } from "@mantine/core";
-import { Pencil1Icon, PlusIcon, TrashIcon } from "@radix-ui/react-icons";
 import Button from "components/ui/Button";
-import Header from "components/ui/Header";
-import P from "components/ui/P";
 import { trpc } from "utils/trpc";
-
 import { useNotificationsStore } from "stores/notificationsStore";
 import PageHeader from "components/PageHeader";
 import SubjectModal from "components/subjects/SubjectModal";

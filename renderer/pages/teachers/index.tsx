@@ -1,5 +1,5 @@
 import { Badge, Loader, Table, useMantineTheme } from "@mantine/core";
-import { PlusIcon, TrashIcon } from "@radix-ui/react-icons";
+import { PlusIcon } from "@radix-ui/react-icons";
 import Button from "components/ui/Button";
 
 import { trpc } from "utils/trpc";
@@ -13,7 +13,6 @@ function Teacher() {
 	const teacher = trpc.teacher.list.useQuery({ limit: 250 });
 	const teacherDeleteHook = trpc.teacher.delete.useMutation();
 	const notificationStore = useNotificationsStore();
-	const theme = useMantineTheme();
 
 	return (
 		<div className="space-y-8">

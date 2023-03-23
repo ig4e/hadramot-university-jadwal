@@ -46,9 +46,9 @@ function Preview() {
 
 	return (
 		<div className="relative -mt-4 print:mt-0">
-			<div className="fixed bottom-4 print:hidden bg-slate-900 rounded-xl transition p-2 ">
+			<div className="fixed bottom-4 print:hidden">
 				<a href={"http://localhost:3000/generate/pdf?title=" + id}>
-					<Button size="lg" icon="save">
+					<Button icon="save">
 						<span>استخراج ألى PDF</span>
 					</Button>
 				</a>
@@ -89,7 +89,7 @@ function Preview() {
 							<P size="lg">المستوى: {levelEnum[data?.level as unknown as LevelEnumIndex]}</P>
 						</div>
 					</div>
-					<table className="w-full " cellSpacing={108}>
+					<table className="w-full border-collapse" cellPadding={2}>
 						<tr className="border border-blue-600 text-center">
 							<th className="border border-blue-600 text-center">الأيام</th>
 							<th className="border border-blue-600 text-center">عضو هيئة التعليم</th>
@@ -98,9 +98,22 @@ function Preview() {
 							<th className="border border-blue-600 text-center">القاعة</th>
 						</tr>
 
-						{data.subjects
-							.sort((a, b) => daysNumbers[a.day.name as DaysIndex] - daysNumbers[b.day.name as DaysIndex])
-							.map((subject, index, array) => {
+						{days.map((dayName) => {
+							const dayData = data.subjects
+								.sort((a, b) => daysNumbers[a.day.name as DaysIndex] - daysNumbers[b.day.name as DaysIndex])
+								.filter((x) => x.day.name === dayName);
+
+							if (dayData.length <= 0)
+								return (
+									<tr className={`bg-slate-100 border-blue-600`}>
+										<td className="border border-blue-600 text-center">{localizeDays[dayName]}</td>
+										<td className="border border-blue-600 text-center" colSpan={4}>
+											OFF
+										</td>
+									</tr>
+								);
+
+							return dayData.map((subject, index, array) => {
 								const subjectDay = subject.day.name as DaysIndex;
 								return (
 									<>
@@ -124,7 +137,8 @@ function Preview() {
 										</tr>
 									</>
 								);
-							})}
+							});
+						})}
 					</table>
 				</div>
 

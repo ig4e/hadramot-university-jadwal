@@ -4,6 +4,8 @@ import { SideBarLink } from "./SideBarLink";
 import Logo from "public/images/logo.png";
 import { PersonIcon, TableIcon, StackIcon, LayersIcon, HomeIcon, SquareIcon, BoxIcon, ArchiveIcon } from "@radix-ui/react-icons";
 import { useNotificationsStore } from "stores/notificationsStore";
+import getConfig from "next/config";
+const { publicRuntimeConfig } = getConfig();
 
 const ROUTES: { name: string; slug: string; Icon: any }[] = [
 	{
@@ -57,7 +59,7 @@ function SideBar() {
 						notificationsStore.notify({
 							success: true,
 							title: "صنع ب ❤️ من محمد ابوبكر احمد باوزير",
-							description: "",
+							description: `الاصدار: ${publicRuntimeConfig.version}`,
 						})
 					}
 				>

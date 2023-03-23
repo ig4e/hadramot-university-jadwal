@@ -113,11 +113,11 @@ function TeacherForm({ onSubmit, defaultData }: { onSubmit: (d: TeacherFormData)
 
 			<div className="pt-4 border-t space-y-4">
 				<Header size="sm">توافر المعلم</Header>
-				<Tabs defaultValue={"SUNDAY"}>
+				<Tabs defaultValue={"SUNDAY"} className="border-slate-900 border rounded-lg pb-4">
 					<Tabs.List>
 						{days.map((day) => {
 							return (
-								<Tabs.Tab key={day + "tab"} value={day}>
+								<Tabs.Tab key={day + "tab"} value={day} className="!rounded-t-lg">
 									{localizeDays[day]}
 								</Tabs.Tab>
 							);
@@ -143,7 +143,7 @@ function TeacherForm({ onSubmit, defaultData }: { onSubmit: (d: TeacherFormData)
 												value: [16, 20],
 											})
 										}
-										className="flex items-center gap-2"
+										icon="plus"
 									>
 										<span>أضف وقت توفر</span>
 									</Button>
@@ -178,8 +178,7 @@ function TeacherForm({ onSubmit, defaultData }: { onSubmit: (d: TeacherFormData)
 				</Tabs>
 			</div>
 
-			<div className="border-t-2 border-slate-300 rounded"></div>
-			<Button type="submit" className="w-full">
+			<Button type="submit" className="w-full justify-center" icon="save">
 				حفظ المعلم
 			</Button>
 		</form>

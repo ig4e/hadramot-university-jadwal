@@ -49,7 +49,7 @@ function Button({
 				className,
 			)}
 		>
-			{Icon && <Icon className={clsx("h-5 w-5", { "h-4 w-4": size === "md" || size === "sm" })}></Icon>}
+			{Icon && <Icon className={clsx("h-5 w-5", { "h-4 w-4": size === "sm" })}></Icon>}
 			{children}
 		</button>
 	);

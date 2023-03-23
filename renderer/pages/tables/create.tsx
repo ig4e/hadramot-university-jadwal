@@ -210,7 +210,7 @@ function CreateTable() {
 						})}
 					</div>
 
-					<Button type="submit" className="w-full" icon="save">
+					<Button type="submit" className="w-full justify-center" icon="save">
 						حفظ الجدول
 					</Button>
 				</form>

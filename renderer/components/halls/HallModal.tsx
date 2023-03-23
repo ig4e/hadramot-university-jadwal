@@ -9,13 +9,13 @@ import {
 	hallCreateSuccessNotification,
 	hallEditFailNotification,
 	hallEditSuccessNotification,
-} from "../../constants/notifications/hallNotifications";
-import { useNotificationsStore } from "../../stores/notificationsStore";
-import { trpc } from "../../utils/trpc";
-import { hallSchema } from "../../validation/hallSchema";
-import Button from "../ui/Button";
-import Header from "../ui/Header";
-import Modal from "../ui/Modal";
+} from "constants/notifications/hallNotifications";
+import { useNotificationsStore } from "stores/notificationsStore";
+import { trpc } from "utils/trpc";
+import { hallSchema } from "validation/hallSchema";
+import Button from "components/ui/Button";
+import Header from "components/ui/Header";
+import Modal from "components/ui/Modal";
 
 function HallModal({ trigger, hallId, onComplete }: { trigger: ReactNode; hallId?: string; onComplete?: () => void }) {
 	const isEdit = !!hallId;

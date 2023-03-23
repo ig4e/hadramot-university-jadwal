@@ -1,11 +1,11 @@
 import { ChevronLeftIcon } from "@radix-ui/react-icons";
-import PageHeader from "../../../components/PageHeader";
-import { trpc } from "../../../utils/trpc";
-import { useNotificationsStore } from "../../../stores/notificationsStore";
+import PageHeader from "components/PageHeader";
+import { trpc } from "utils/trpc";
+import { useNotificationsStore } from "stores/notificationsStore";
 import { useRouter } from "next/router";
-import TeacherForm, { DaysIndex, TeacherFormData } from "../../../components/teachers/TeacherForm";
-import { teacherCreateFailNotification, teacherCreateSuccessNotification } from "../../../constants/notifications/teacherNotifications";
-const days = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
+import TeacherForm, { DaysIndex, TeacherFormData } from "components/teachers/TeacherForm";
+import { teacherCreateFailNotification, teacherCreateSuccessNotification } from "constants/notifications/teacherNotifications";
+
 function CreateTeachertPage() {
 	const router = useRouter();
 	const notifications = useNotificationsStore();

@@ -3,7 +3,7 @@ import React, { ReactNode } from "react";
 import { PersonIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/router";
 import { clsx } from "clsx";
-import Button from "../ui/Button";
+import Button from "components/ui/Button";
 
 function SideBarLink({ name, slug, Icon }: { name: string; slug: string; Icon: typeof PersonIcon }) {
 	const router = useRouter();

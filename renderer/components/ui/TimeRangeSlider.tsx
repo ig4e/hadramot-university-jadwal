@@ -1,6 +1,6 @@
 import { clsx, RangeSlider, RangeSliderProps } from "@mantine/core";
 import React, { useState } from "react";
-import { formatDuration } from "../../utils/format";
+import { formatDuration } from "utils/format";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { TriangleUpIcon } from "@radix-ui/react-icons";

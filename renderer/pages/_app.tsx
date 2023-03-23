@@ -1,10 +1,7 @@
-import React from "react";
 import type { AppProps } from "next/app";
-import { trpc } from "../utils/trpc";
-
-import "../styles/globals.css";
-import Layout from "../components/Layout";
-
+import { trpc } from "utils/trpc";
+import "styles/globals.css";
+import Layout from "components/Layout";
 import { MantineProvider, createEmotionCache } from "@mantine/core";
 import rtlPlugin from "stylis-plugin-rtl";
 
@@ -12,12 +9,6 @@ const rtlCache = createEmotionCache({
 	key: "mantine-rtl",
 	stylisPlugins: [rtlPlugin],
 });
-import { ContextModalProps, ModalsProvider } from "@mantine/modals";
-import P from "../components/ui/P";
-import Button from "../components/ui/Button";
-import { ConfigProvider, TimePicker } from "antd";
-
-import arAZ from "antd/locale/ar_EG";
 
 function MyApp({ Component, pageProps }: AppProps) {
 	return (
@@ -32,11 +23,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 			}}
 			emotionCache={rtlCache}
 		>
-			<ConfigProvider locale={arAZ} direction={"rtl"}>
-				<Layout>
-					<Component {...pageProps} />
-				</Layout>
-			</ConfigProvider>
+			<Layout>
+				<Component {...pageProps} />
+			</Layout>
 		</MantineProvider>
 	);
 }

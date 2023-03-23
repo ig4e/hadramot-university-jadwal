@@ -1,6 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
-	Checkbox,
 	CheckIcon,
 	NumberInput,
 	Select,
@@ -8,21 +7,20 @@ import {
 } from "@mantine/core";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Cross2Icon } from "@radix-ui/react-icons";
-import React, { ReactNode, useEffect, useState } from "react";
+import{ ReactNode, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
 	majorCreateFailNotification,
 	majorCreateSuccessNotification,
 	majorEditFailNotification,
 	majorEditSuccessNotification,
-} from "../../constants/notifications/majorNotifications";
-import { useNotificationsStore } from "../../stores/notificationsStore";
-import { trpc } from "../../utils/trpc";
-import { majorSchema } from "../../validation/majorSchema";
-import Button from "../ui/Button";
-import ComboBox from "../ui/ComboBox";
-import Header from "../ui/Header";
-import Modal from "../ui/Modal";
+} from "constants/notifications/majorNotifications";
+import { useNotificationsStore } from "stores/notificationsStore";
+import { trpc } from "utils/trpc";
+import { majorSchema } from "validation/majorSchema";
+import Button from "components/ui/Button";
+import Header from "components/ui/Header";
+import Modal from "components/ui/Modal";
 
 function MajorModal({
 	trigger,

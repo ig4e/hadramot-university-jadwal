@@ -1,21 +1,18 @@
 import { useRouter } from "next/router";
-import React, { useMemo, useRef } from "react";
-import { acceptTypeEnum, AcceptTypeEnumIndex } from "../../../constants/enums/acceptTypeEnum";
-import { semesterEnum, SemesterEnumIndex } from "../../../constants/enums/semesterEnum";
-import { trpc } from "../../../utils/trpc";
-import { levelEnum, LevelEnumIndex } from "../../../constants/enums/levelEnum";
+import  { useMemo } from "react";
+import { acceptTypeEnum, AcceptTypeEnumIndex } from "constants/enums/acceptTypeEnum";
+import { semesterEnum, SemesterEnumIndex } from "constants/enums/semesterEnum";
+import { trpc } from "utils/trpc";
+import { levelEnum, LevelEnumIndex } from "constants/enums/levelEnum";
 import { Divider } from "@mantine/core";
-import Header from "../../../components/ui/Header";
-import P from "../../../components/ui/P";
+import Header from "components/ui/Header";
+import P from "components/ui/P";
 import Image from "next/image";
-import { formatDuration } from "../../../utils/format";
-import { days, DaysIndex, localizeDays } from "../../../components/teachers/TeacherForm";
-import Button from "../../../components/ui/Button";
-import { ArrowsPointingOutIcon } from "@heroicons/react/24/outline";
+import { formatDuration } from "utils/format";
+import { days, DaysIndex, localizeDays } from "components/teachers/TeacherForm";
+import Button from "components/ui/Button";
 
-import { saveAs } from "file-saver";
-
-import Logo from "../../../public/images/logo.png";
+import Logo from "public/images/logo.png";
 
 const daysNumbers = {
 	SUNDAY: 1,

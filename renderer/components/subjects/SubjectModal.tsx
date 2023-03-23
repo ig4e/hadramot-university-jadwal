@@ -9,13 +9,13 @@ import {
 	subjectCreateSuccessNotification,
 	subjectEditFailNotification,
 	subjectEditSuccessNotification,
-} from "../../constants/notifications/subjectNotifications";
-import { useNotificationsStore } from "../../stores/notificationsStore";
-import { trpc } from "../../utils/trpc";
-import { subjectSchema } from "../../validation/subjectSchema";
-import Button from "../ui/Button";
-import Header from "../ui/Header";
-import Modal from "../ui/Modal";
+} from "constants/notifications/subjectNotifications";
+import { useNotificationsStore } from "stores/notificationsStore";
+import { trpc } from "utils/trpc";
+import { subjectSchema } from "validation/subjectSchema";
+import Button from "components/ui/Button";
+import Header from "components/ui/Header";
+import Modal from "components/ui/Modal";
 
 function SubjectModal({ trigger, subjectId, onComplete }: { trigger: ReactNode; subjectId?: string; onComplete?: () => void }) {
 	const isEdit = !!subjectId;

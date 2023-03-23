@@ -1,14 +1,13 @@
 import { Badge, Loader, Table, useMantineTheme } from "@mantine/core";
-import { Pencil1Icon, PlusIcon, TrashIcon } from "@radix-ui/react-icons";
-import Button from "../../components/ui/Button";
-import Header from "../../components/ui/Header";
-import P from "../../components/ui/P";
-import { trpc } from "../../utils/trpc";
-import { useNotificationsStore } from "../../stores/notificationsStore";
+import { PlusIcon, TrashIcon } from "@radix-ui/react-icons";
+import Button from "components/ui/Button";
+
+import { trpc } from "utils/trpc";
+import { useNotificationsStore } from "stores/notificationsStore";
 import Link from "next/link";
-import PageHeader from "../../components/PageHeader";
+import PageHeader from "components/PageHeader";
 import { uniqBy } from "lodash";
-import { DaysIndex, localizeDays } from "../../components/teachers/TeacherForm";
+import { DaysIndex, localizeDays } from "components/teachers/TeacherForm";
 
 function Teacher() {
 	const teacher = trpc.teacher.list.useQuery({ limit: 250 });
@@ -74,7 +73,7 @@ function Teacher() {
 										<Button
 											size="sm"
 											intent="danger"
-											className="flex items-center gap-2"
+											icon="delete"
 											onClick={async () => {
 												try {
 													await teacherDeleteHook.mutateAsync({ id });
@@ -93,7 +92,6 @@ function Teacher() {
 												}
 											}}
 										>
-											<TrashIcon className="h-5 w-5"></TrashIcon>
 											<span>حذف</span>
 										</Button>
 									</div>

@@ -1,20 +1,13 @@
-import { Pencil1Icon, PlusIcon, TrashIcon } from "@radix-ui/react-icons";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import Button from "../components/ui/Button";
-import Header from "../components/ui/Header";
-import P from "../components/ui/P";
-import { Autocomplete, ChevronIcon, Loader, Select, Table } from "@mantine/core";
-import ComboBox from "../components/ui/ComboBox";
-import PageHeader from "../components/PageHeader";
-import { trpc } from "../utils/trpc";
-import { acceptTypeEnum, AcceptTypeEnumIndex } from "../constants/enums/acceptTypeEnum";
-import { useForm } from "react-hook-form";
+import { useEffect, useMemo, useState } from "react";
+import Button from "components/ui/Button";
+import { Loader, Select, Table } from "@mantine/core";
+import PageHeader from "components/PageHeader";
+import { trpc } from "utils/trpc";
+import { acceptTypeEnum, AcceptTypeEnumIndex } from "constants/enums/acceptTypeEnum";
 import Link from "next/link";
-import { semesterEnum, SemesterEnumIndex } from "../constants/enums/semesterEnum";
-import { levelEnum, LevelEnumIndex } from "../constants/enums/levelEnum";
-
-import { ArrowsPointingOutIcon, PrinterIcon } from "@heroicons/react/24/outline";
-import { useNotificationsStore } from "../stores/notificationsStore";
+import { semesterEnum, SemesterEnumIndex } from "constants/enums/semesterEnum";
+import { levelEnum, LevelEnumIndex } from "constants/enums/levelEnum";
+import { useNotificationsStore } from "stores/notificationsStore";
 
 function Index() {
 	const notificationStore = useNotificationsStore();
@@ -180,7 +173,6 @@ function Index() {
 											</Button>
 											<Link href={`/tables/preview/${id}`}>
 												<Button size="sm" intent="primary" icon="preview">
-													<ArrowsPointingOutIcon className="h-5 w-5"></ArrowsPointingOutIcon>
 													<span>عرض</span>
 												</Button>
 											</Link>

@@ -1,9 +1,9 @@
 import Image from "next/image";
 import React, { ReactNode } from "react";
 import { SideBarLink } from "./SideBarLink";
-import Logo from "../../public/images/logo.png";
+import Logo from "public/images/logo.png";
 import { PersonIcon, TableIcon, StackIcon, LayersIcon, HomeIcon, SquareIcon, BoxIcon, ArchiveIcon } from "@radix-ui/react-icons";
-import { useNotificationsStore } from "../../stores/notificationsStore";
+import { useNotificationsStore } from "stores/notificationsStore";
 
 const ROUTES: { name: string; slug: string; Icon: any }[] = [
 	{

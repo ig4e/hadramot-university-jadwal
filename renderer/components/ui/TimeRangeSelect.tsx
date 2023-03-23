@@ -1,6 +1,6 @@
 import { Select, SelectItem } from "@mantine/core";
 import React, { useEffect, useMemo, useState } from "react";
-import { formatDuration } from "../../utils/format";
+import { formatDuration } from "utils/format";
 
 function TimeRangeSelect({
 	value,

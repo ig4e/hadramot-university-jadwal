@@ -2,17 +2,16 @@ import { Select, Table } from "@mantine/core";
 import { PlusIcon, TrashIcon } from "@radix-ui/react-icons";
 import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import clsx from "clsx";
-import React, { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { Control, Controller, useFieldArray, useFormContext, useWatch } from "react-hook-form";
 import { v4 } from "uuid";
-import { CreateTableFormValues } from "../../pages/tables/create";
+import { CreateTableFormValues } from "pages/tables/create";
+import { trpc } from "utils/trpc";
+import { DaysIndex, localizeDays } from "components/teachers/TeacherForm";
+import Button from "components/ui/Button";
+import ComboBox from "components/ui/ComboBox";
+import TimeRangeSlider from "components/ui/TimeRangeSlider";
 import { AppRouter } from "../../../electron-src/server/routers/_app";
-import { isConflicting } from "../../utils/range";
-import { trpc } from "../../utils/trpc";
-import { DaysIndex, localizeDays } from "../teachers/TeacherForm";
-import Button from "../ui/Button";
-import ComboBox from "../ui/ComboBox";
-import TimeRangeSlider from "../ui/TimeRangeSlider";
 
 function DayTable({ control, day }: { control: Control<CreateTableFormValues>; day: DaysIndex }) {
 	const { fields, append, remove } = useFieldArray({ control, name: day });

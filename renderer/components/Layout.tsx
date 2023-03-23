@@ -3,7 +3,7 @@ import { Notification } from "@mantine/core";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
 import { AnimatePresence, motion } from "framer-motion";
 import React from "react";
-import { useNotificationsStore } from "../stores/notificationsStore";
+import { useNotificationsStore } from "stores/notificationsStore";
 import SideBar from "./SideBar";
 import Button from "./ui/Button";
 

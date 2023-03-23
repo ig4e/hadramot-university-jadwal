@@ -3,15 +3,14 @@ import { MultiSelect, TextInput } from "@mantine/core";
 import { Tabs } from "@mantine/core";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
-import { teacherValidationSchema } from "../../validation/teacherSchema";
-import { trpc } from "../../utils/trpc";
+import { teacherValidationSchema } from "validation/teacherSchema";
+import { trpc } from "utils/trpc";
 
-import Header from "../ui/Header";
-import P from "../ui/P";
-import Button from "../ui/Button";
+import Header from "components/ui/Header";
+import P from "components/ui/P";
+import Button from "components/ui/Button";
 import { v4 } from "uuid";
-import TimeRangeSlider from "../ui/TimeRangeSlider";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import TimeRangeSlider from "components/ui/TimeRangeSlider";
 
 export const days = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"] as const;
 

@@ -1,36 +1,17 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Loader, Select, Table } from "@mantine/core";
-import { PlusIcon, TrashIcon } from "@radix-ui/react-icons";
-import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
-import clsx from "clsx";
+import { Loader, Select } from "@mantine/core";
 import { useRouter } from "next/router";
-import React, { useEffect, useMemo, useState } from "react";
-import {
-	Control,
-	Controller,
-	FieldErrors,
-	FormProvider,
-	useFieldArray,
-	useForm,
-	UseFormGetValues,
-	UseFormRegister,
-	UseFormSetError,
-	UseFormSetValue,
-	useWatch,
-} from "react-hook-form";
+import { useEffect, useMemo } from "react";
+import { Controller, FormProvider, useForm, useWatch } from "react-hook-form";
 import { v4 } from "uuid";
-import PageHeader from "../../components/PageHeader";
-import DayTable from "../../components/tables/DayTable";
-import { days, DaysIndex, localizeDays } from "../../components/teachers/TeacherForm";
-import Button from "../../components/ui/Button";
-import ComboBox from "../../components/ui/ComboBox";
-import TimeRangeSelect from "../../components/ui/TimeRangeSelect";
-import TimeRangeSlider from "../../components/ui/TimeRangeSlider";
-import { AppRouter } from "../../../electron-src/server/routers/_app";
-import { useNotificationsStore } from "../../stores/notificationsStore";
-import { isIn, isConflicting } from "../../utils/range";
-import { trpc } from "../../utils/trpc";
-import { tableValidationSchema } from "../../validation/tableSchema";
+import PageHeader from "components/PageHeader";
+import DayTable from "components/tables/DayTable";
+import { days } from "components/teachers/TeacherForm";
+import Button from "components/ui/Button";
+
+import { useNotificationsStore } from "stores/notificationsStore";
+import { trpc } from "utils/trpc";
+import { tableValidationSchema } from "validation/tableSchema";
 export type CreateTableDayValue = { id: string; teacherId: string; subjectId: string; hallId: string; timeRange: [number, number] };
 
 export type CreateTableFormValues = {

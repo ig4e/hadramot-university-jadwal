@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import TimeRangeSlider from "../components/ui/TimeRangeSlider";
-import { isConflicting } from "../utils/range";
+import TimeRangeSlider from "components/ui/TimeRangeSlider";
+import { isConflicting } from "utils/range";
 
 function Test() {
 	const [sliderOne, setSliderOne] = useState<[number, number]>([0, 12]);

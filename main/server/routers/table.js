@@ -225,6 +225,11 @@ async function validateTable(input) {
         const { id, dayName, hallId, subjectId, teacherId, timeRange } = day;
         const dayIndex = days[dayName].findIndex((daySubject) => daySubject.id === id);
         errors[`${dayName}.${dayIndex}.timeRange`] = "";
+        errors[`${dayName}.${dayIndex}.hallId`] = "";
+        const hall = await prisma_1.prisma.hall.findUnique({
+            where: { id: hallId },
+            include: { tableSubjects: { where: { day: { name: dayName } } } },
+        });
         const teacher = await prisma_1.prisma.teacher.findUnique({
             where: { id: teacherId },
             include: {
@@ -232,18 +237,30 @@ async function validateTable(input) {
                 workDates: { where: { day: { name: dayName } } },
             },
         });
+        if (hall?.id) {
+            if ((0, range_1.isConflicting)(timeRange, hall?.tableSubjects.map(({ startsAt, endsAt }) => [startsAt, endsAt]))) {
+                errors[`${dayName}.${dayIndex}.hallId`] = "يوجد محاضرة اخرى فالقاعة فى هذة الوقت";
+            }
+            if ((0, range_1.isConflicting)(timeRange, days[dayName]
+                .filter((_, index) => index !== dayIndex && _.hallId === hallId)
+                .map(({ timeRange: [startsAt, endsAt] }) => [startsAt, endsAt]))) {
+                errors[`${dayName}.${dayIndex}.hallId`] = "القاعة بها محاضرة اخرى فنفس الوقت والجدول";
+            }
+        }
         if ((0, range_1.isConflicting)(timeRange, teacher?.tableSubjects.map(({ startsAt, endsAt }) => [startsAt, endsAt]))) {
-            errors[`${dayName}.${dayIndex}.timeRange`] = "المعلم فمحاضرة اخرى";
+            errors[`${dayName}.${dayIndex}.timeRange`] = "المعلم فمحاضرة اخرى فنفس الوقت";
         }
-        if ((0, range_1.isConflicting)(timeRange, days[dayName]
-            .filter((_, index) => index !== dayIndex && _.teacherId === teacherId)
-            .map(({ timeRange: [startsAt, endsAt] }) => [startsAt, endsAt]))) {
-            errors[`${dayName}.${dayIndex}.timeRange`] = "المعلم فمحاضرة اخرى فنفس الوقت والجدول";
-        }
-        if (!(0, range_1.isIn)(timeRange, teacher?.workDates.map(({ startsAt, endsAt }) => [startsAt, endsAt]))) {
-            errors[`${dayName}.${dayIndex}.timeRange`] = `المعلم غير متوفر.<br /> مواعيد توافر المعلم: ${teacher?.workDates
-                .map(({ startsAt, endsAt }) => `${(0, format_1.formatDuration)(startsAt)}-${(0, format_1.formatDuration)(endsAt)}`)
-                .join("<br />")}`;
+        if (teacher?.id) {
+            if ((0, range_1.isConflicting)(timeRange, days[dayName]
+                .filter((_, index) => index !== dayIndex && _.teacherId === teacherId)
+                .map(({ timeRange: [startsAt, endsAt] }) => [startsAt, endsAt]))) {
+                errors[`${dayName}.${dayIndex}.timeRange`] = "المعلم فمحاضرة اخرى فنفس الوقت والجدول";
+            }
+            if (!(0, range_1.isIn)(timeRange, teacher?.workDates.map(({ startsAt, endsAt }) => [startsAt, endsAt]))) {
+                errors[`${dayName}.${dayIndex}.timeRange`] = `المعلم غير متوفر.<br /> مواعيد توافر المعلم: ${teacher?.workDates
+                    .map(({ startsAt, endsAt }) => `${(0, format_1.formatDuration)(startsAt)}-${(0, format_1.formatDuration)(endsAt)}`)
+                    .join("<br />")}`;
+            }
         }
     }
     return { errors, error: Object.keys(errors).some((key) => errors[key]) };

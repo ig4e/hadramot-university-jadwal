@@ -23,8 +23,7 @@ function Halls() {
 						<HallModal
 							onComplete={() => halls.refetch()}
 							trigger={
-								<Button size="lg" className="flex items-center gap-2 min-w-max self-end">
-									<PlusIcon className="w-5 h-5 stroke-white stroke-[0.5]"></PlusIcon>
+								<Button size="lg" className=" min-w-max self-end" icon="plus">
 									<span>أنشئ قاعة جديد</span>
 								</Button>
 							}
@@ -38,8 +37,6 @@ function Halls() {
 					<tr>
 						<th className="!text-slate-50">أسم القاعة</th>
 						<th className="!text-slate-50">سعة القاعة</th>
-						<th className="!text-slate-50">تاريخ الانشاء</th>
-						<th className="!text-slate-50">أخر تعديل</th>
 						<th className="!text-slate-50">اجرائات</th>
 					</tr>
 				</thead>
@@ -49,18 +46,12 @@ function Halls() {
 							<tr key={id}>
 								<td>{name}</td>
 								<td>{studentsCount}</td>
-								<td>
-									<time dateTime={createdAt.toISOString()}>{createdAt.toLocaleString()}</time>
-								</td>
-								<td>
-									<time dateTime={updatedAt.toISOString()}>{createdAt.toLocaleString()}</time>
-								</td>
 								<td className="w-28">
 									<div className="flex items-center gap-2 w-fit">
 										<Button
 											size="sm"
 											intent="danger"
-											className="flex items-center gap-2"
+											icon="delete"
 											onClick={async () => {
 												try {
 													await hallDeleteHook.mutateAsync({ id });
@@ -79,7 +70,6 @@ function Halls() {
 												}
 											}}
 										>
-											<TrashIcon className="h-5 w-5"></TrashIcon>
 											<span>حذف</span>
 										</Button>
 
@@ -89,8 +79,7 @@ function Halls() {
 											}}
 											hallId={id}
 											trigger={
-												<Button size="sm" className="flex items-center gap-2">
-													<Pencil1Icon className="h-5 w-5"></Pencil1Icon>
+												<Button size="sm" icon="edit">
 													<span>تعديل</span>
 												</Button>
 											}

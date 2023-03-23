@@ -24,8 +24,7 @@ function Majors() {
 						<MajorModal
 							onComplete={() => majors.refetch()}
 							trigger={
-								<Button size="lg" className="flex items-center gap-2 min-w-max self-end">
-									<PlusIcon className="w-5 h-5 stroke-white stroke-[0.5]"></PlusIcon>
+								<Button size="lg" className="min-w-max self-end" icon="plus">
 									<span>أنشئ تخصص جديد</span>
 								</Button>
 							}
@@ -56,7 +55,7 @@ function Majors() {
 										<Button
 											size="sm"
 											intent="danger"
-											className="flex items-center gap-2"
+											icon="delete"
 											onClick={async () => {
 												try {
 													await majorDeleteHook.mutateAsync({ id });
@@ -75,7 +74,6 @@ function Majors() {
 												}
 											}}
 										>
-											<TrashIcon className="h-5 w-5"></TrashIcon>
 											<span>حذف</span>
 										</Button>
 
@@ -85,8 +83,7 @@ function Majors() {
 											}}
 											majorId={id}
 											trigger={
-												<Button size="sm" className="flex items-center gap-2">
-													<Pencil1Icon className="h-5 w-5"></Pencil1Icon>
+												<Button size="sm" icon="edit">
 													<span>تعديل</span>
 												</Button>
 											}

@@ -11,6 +11,7 @@ import P from "../ui/P";
 import Button from "../ui/Button";
 import { v4 } from "uuid";
 import TimeRangeSlider from "../ui/TimeRangeSlider";
+import { PlusIcon } from "@heroicons/react/24/outline";
 
 export const days = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"] as const;
 
@@ -135,6 +136,7 @@ function TeacherForm({ onSubmit, defaultData }: { onSubmit: (d: TeacherFormData)
 
 									<Button
 										size="md"
+										intent="secondary"
 										onClick={() =>
 											append({
 												day,
@@ -142,8 +144,9 @@ function TeacherForm({ onSubmit, defaultData }: { onSubmit: (d: TeacherFormData)
 												value: [16, 20],
 											})
 										}
+										className="flex items-center gap-2"
 									>
-										أضف وقت توفر
+										<span>أضف وقت توفر</span>
 									</Button>
 								</div>
 
@@ -177,7 +180,9 @@ function TeacherForm({ onSubmit, defaultData }: { onSubmit: (d: TeacherFormData)
 			</div>
 
 			<div className="border-t-2 border-slate-300 rounded"></div>
-			<Button type="submit">حفظ</Button>
+			<Button type="submit" className="w-full">
+				حفظ المعلم
+			</Button>
 		</form>
 	);
 }

@@ -51,8 +51,7 @@ function Preview() {
 		<div className="relative -mt-4 print:mt-0">
 			<div className="fixed bottom-4 print:hidden bg-slate-900 rounded-xl transition p-2 ">
 				<a href={"http://localhost:3000/generate/pdf?title=" + id}>
-					<Button size="lg" className="flex items-center gap-2">
-						<ArrowsPointingOutIcon className="w-6 h-6"></ArrowsPointingOutIcon>
+					<Button size="lg" icon="save">
 						<span>استخراج ألى PDF</span>
 					</Button>
 				</a>

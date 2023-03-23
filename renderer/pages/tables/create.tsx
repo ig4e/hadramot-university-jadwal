@@ -134,7 +134,7 @@ function CreateTable() {
 	}
 
 	return (
-		<div className="space-y-4">
+		<div className="space-y-4 mb-8">
 			<PageHeader header="أنشاء جدول جديد" description="هنا يمكنك أنشاء جدول"></PageHeader>
 
 			<div className="flex gap-4 items-center">
@@ -229,7 +229,9 @@ function CreateTable() {
 						})}
 					</div>
 
-					<Button type="submit">حفظ</Button>
+					<Button type="submit" className="w-full" icon="save">
+						حفظ الجدول
+					</Button>
 				</form>
 			</FormProvider>
 		</div>

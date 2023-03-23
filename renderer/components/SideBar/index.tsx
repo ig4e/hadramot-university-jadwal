@@ -57,7 +57,7 @@ function SideBar() {
 						notificationsStore.notify({
 							success: true,
 							title: "صنع ب ❤️ من محمد ابوبكر احمد باوزير",
-							description: "<a class='text-blue-600' href='https://www.google.com/'>كوكل</a>"
+							description: "",
 						})
 					}
 				>

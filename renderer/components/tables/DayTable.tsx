@@ -17,7 +17,7 @@ import TimeRangeSlider from "../ui/TimeRangeSlider";
 function DayTable({ control, day }: { control: Control<CreateTableFormValues>; day: DaysIndex }) {
 	const { fields, append, remove } = useFieldArray({ control, name: day });
 	return (
-		<div className="grid md:[grid-template-columns:_15%_85%;] lg:[grid-template-columns:_10%_90%;] xl:[grid-template-columns:_5%_95%;] ">
+		<div className="grid md:[grid-template-columns:_15%_85%;] lg:[grid-template-columns:_10%_90%;] xl:[grid-template-columns:_5%_95%;] border-2 border-slate-900 rounded-lg my-2">
 			<div className={clsx("py-2 w-full flex justify-center items-center bg-slate-900 text-slate-50")}>
 				<span>{localizeDays[day]}</span>
 			</div>
@@ -52,9 +52,10 @@ function DayTable({ control, day }: { control: Control<CreateTableFormValues>; d
 						<span className="text-lg ">يوم فارغ</span>
 					</div>
 				)}
-				<div className="mr-2.5 my-2">
+				<div className="mx-2.5 my-2">
 					<Button
 						size="md"
+						intent="secondary"
 						className="w-full flex gap-2 items-center justify-center"
 						onClick={() => append({ id: v4(), teacherId: "", subjectId: "", hallId: "", timeRange: [8, 16] })}
 					>

@@ -273,6 +273,12 @@ async function validateTable(input: {
 		const dayIndex = days[dayName].findIndex((daySubject) => daySubject.id === id);
 
 		errors[`${dayName}.${dayIndex}.timeRange`] = "";
+		errors[`${dayName}.${dayIndex}.hallId`] = "";
+
+		const hall = await prisma.hall.findUnique({
+			where: { id: hallId },
+			include: { tableSubjects: { where: { day: { name: dayName } } } },
+		});
 
 		const teacher = await prisma.teacher.findUnique({
 			where: { id: teacherId },
@@ -282,25 +288,49 @@ async function validateTable(input: {
 			},
 		});
 
+		if (hall?.id) {
+			if (
+				isConflicting(
+					timeRange,
+					hall?.tableSubjects.map(({ startsAt, endsAt }) => [startsAt, endsAt]),
+				)
+			) {
+				errors[`${dayName}.${dayIndex}.hallId`] = "يوجد محاضرة اخرى فالقاعة فى هذة الوقت";
+			}
+
+			if (
+				isConflicting(
+					timeRange,
+					days[dayName]
+						.filter((_, index) => index !== dayIndex && _.hallId === hallId)
+						.map(({ timeRange: [startsAt, endsAt] }) => [startsAt, endsAt]),
+				)
+			) {
+				errors[`${dayName}.${dayIndex}.hallId`] = "القاعة بها محاضرة اخرى فنفس الوقت والجدول";
+			}
+		}
+
 		if (isConflicting(timeRange, teacher?.tableSubjects.map(({ startsAt, endsAt }) => [startsAt, endsAt])!)) {
-			errors[`${dayName}.${dayIndex}.timeRange`] = "المعلم فمحاضرة اخرى";
+			errors[`${dayName}.${dayIndex}.timeRange`] = "المعلم فمحاضرة اخرى فنفس الوقت";
 		}
 
-		if (
-			isConflicting(
-				timeRange,
-				days[dayName]
-					.filter((_, index) => index !== dayIndex && _.teacherId === teacherId)
-					.map(({ timeRange: [startsAt, endsAt] }) => [startsAt, endsAt])!,
-			)
-		) {
-			errors[`${dayName}.${dayIndex}.timeRange`] = "المعلم فمحاضرة اخرى فنفس الوقت والجدول";
-		}
+		if (teacher?.id) {
+			if (
+				isConflicting(
+					timeRange,
+					days[dayName]
+						.filter((_, index) => index !== dayIndex && _.teacherId === teacherId)
+						.map(({ timeRange: [startsAt, endsAt] }) => [startsAt, endsAt])!,
+				)
+			) {
+				errors[`${dayName}.${dayIndex}.timeRange`] = "المعلم فمحاضرة اخرى فنفس الوقت والجدول";
+			}
 
-		if (!isIn(timeRange, teacher?.workDates.map(({ startsAt, endsAt }) => [startsAt, endsAt])!)) {
-			errors[`${dayName}.${dayIndex}.timeRange`] = `المعلم غير متوفر.<br /> مواعيد توافر المعلم: ${teacher?.workDates
-				.map(({ startsAt, endsAt }) => `${formatDuration(startsAt)}-${formatDuration(endsAt)}`)
-				.join("<br />")}`;
+			if (!isIn(timeRange, teacher?.workDates.map(({ startsAt, endsAt }) => [startsAt, endsAt])!)) {
+				errors[`${dayName}.${dayIndex}.timeRange`] = `المعلم غير متوفر.<br /> مواعيد توافر المعلم: ${teacher?.workDates
+					.map(({ startsAt, endsAt }) => `${formatDuration(startsAt)}-${formatDuration(endsAt)}`)
+					.join("<br />")}`;
+			}
 		}
 	}
 

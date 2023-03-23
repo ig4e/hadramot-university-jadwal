@@ -120,8 +120,7 @@ function Index() {
 					defaultValue={""}
 				/>
 				<Link href="/tables/create" className="self-end">
-					<Button size="md" className="flex items-center gap-2 min-w-max">
-						<PlusIcon className="w-5 h-5 stroke-white stroke-[0.5]"></PlusIcon>
+					<Button size="md" className="flex items-center gap-2 min-w-max" icon="plus">
 						<span>أنشئ جدول جديد</span>
 					</Button>
 				</Link>
@@ -160,7 +159,7 @@ function Index() {
 											<Button
 												size="sm"
 												intent="danger"
-												className="flex items-center gap-2"
+												icon="delete"
 												onClick={async () => {
 													try {
 														await tableDeleteHook.mutateAsync({ id });
@@ -177,11 +176,10 @@ function Index() {
 													}
 												}}
 											>
-												<TrashIcon className="h-5 w-5"></TrashIcon>
 												<span>حذف</span>
 											</Button>
 											<Link href={`/tables/preview/${id}`}>
-												<Button size="sm" intent="primary" className="flex items-center gap-2">
+												<Button size="sm" intent="primary" icon="preview">
 													<ArrowsPointingOutIcon className="h-5 w-5"></ArrowsPointingOutIcon>
 													<span>عرض</span>
 												</Button>

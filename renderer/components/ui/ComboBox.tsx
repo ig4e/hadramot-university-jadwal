@@ -83,7 +83,7 @@ function ComboBox({
 									<Combobox.Option
 										key={value.value}
 										className={({ active }) =>
-											`relative rounded cursor-default select-none py-2 pl-10 pr-4 ${
+											`relative rounded cursor-default select-none py-2 pl-10 pr-4  ${
 												active ? "bg-blue-600 text-white" : "text-gray-900"
 											}`
 										}

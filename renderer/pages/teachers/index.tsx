@@ -7,6 +7,8 @@ import { trpc } from "../../utils/trpc";
 import { useNotificationsStore } from "../../stores/notificationsStore";
 import Link from "next/link";
 import PageHeader from "../../components/PageHeader";
+import { uniqBy } from "lodash";
+import { DaysIndex, localizeDays } from "../../components/teachers/TeacherForm";
 
 function Teacher() {
 	const teacher = trpc.teacher.list.useQuery({ limit: 250 });
@@ -24,7 +26,7 @@ function Teacher() {
 					buttonChildren: (
 						<>
 							<PlusIcon className="w-5 h-5 stroke-white stroke-[0.5]"></PlusIcon>
-							<span>أنشئ عضو هيئة تعليم جديد</span>
+							<span>أنشئ معلم جديد</span>
 						</>
 					),
 				}}
@@ -33,20 +35,30 @@ function Teacher() {
 			<Table className="bg-slate-800 rounded-md">
 				<thead>
 					<tr>
-						<th className="!text-slate-50">أسم عضو هيئة التعليم</th>
-						<th className="!text-slate-50">مواد عضو هيئة التعليم</th>
+						<th className="!text-slate-50">أسم المعلم</th>
+						<th className="!text-slate-50">مواد المعلم</th>
+						<th className="!text-slate-50">أيام عمل المعلم</th>
 						<th className="!text-slate-50">اجرائات</th>
 					</tr>
 				</thead>
 				{(teacher.data?.items?.length || 0) > 0 && (
 					<tbody className="bg-slate-50 w-full border-b border-slate-300">
-						{teacher.data?.items.map(({ id, name, createdAt, updatedAt, subjects }) => (
+						{teacher.data?.items.map(({ id, name, createdAt, updatedAt, subjects, workDates }) => (
 							<tr key={id}>
 								<td>{name}</td>
-								<td className="flex flex-wrap gap-1">
-									{subjects.map((x) => (
-										<Badge variant="outline" color={"gray"}>
-											{x.name}
+
+								<td>
+									{subjects.map((subject) => (
+										<Badge key={subject.id} className="m-1" variant="outline" color={"gray"}>
+											{subject.name}
+										</Badge>
+									))}
+								</td>
+
+								<td>
+									{uniqBy(workDates, "day.name").map((workDate) => (
+										<Badge key={workDate.id} className="m-1" variant="outline" color={"gray"}>
+											{localizeDays[workDate.day.name as DaysIndex]}
 										</Badge>
 									))}
 								</td>
@@ -54,8 +66,7 @@ function Teacher() {
 								<td className="w-20">
 									<div className="flex items-center gap-2 w-fit">
 										<Link href={"/teachers/edit/" + id}>
-											<Button size="sm" className="flex items-center gap-2">
-												<Pencil1Icon className="h-5 w-5"></Pencil1Icon>
+											<Button size="sm" icon="edit">
 												<span>تعديل</span>
 											</Button>
 										</Link>
@@ -68,14 +79,14 @@ function Teacher() {
 												try {
 													await teacherDeleteHook.mutateAsync({ id });
 													notificationStore.notify({
-														title: "تم حذف عضو هيئة التعليم بنجاح!",
+														title: "تم حذف المعلم بنجاح!",
 														description: `تم حذف ${name} بنجاح.`,
 														success: true,
 													});
 													teacher.refetch();
 												} catch {
 													notificationStore.notify({
-														title: "تعذر حذف عضو هيئة التعليم!",
+														title: "تعذر حذف المعلم!",
 														description: `تعذر حذف ${name}.`,
 														success: false,
 													});

@@ -12,6 +12,7 @@ import Button from "components/ui/Button";
 import { useNotificationsStore } from "stores/notificationsStore";
 import { trpc } from "utils/trpc";
 import { tableValidationSchema } from "validation/tableSchema";
+import { ChevronLeftIcon } from "@radix-ui/react-icons";
 export type CreateTableDayValue = { id: string; teacherId: string; subjectId: string; hallId: string; timeRange: [number, number] };
 
 export type CreateTableFormValues = {
@@ -116,7 +117,19 @@ function CreateTable() {
 
 	return (
 		<div className="space-y-4 mb-8">
-			<PageHeader header="أنشاء جدول جديد" description="هنا يمكنك أنشاء جدول"></PageHeader>
+			<PageHeader
+				header="أنشاء جدول جديد"
+				description="هنا يمكنك أنشاء جدول"
+				link={{
+					href: "/",
+					buttonChildren: (
+						<>
+							<ChevronLeftIcon className="w-5 h-5 stroke-white stroke-[0.5]"></ChevronLeftIcon>
+							<span>رجوع</span>
+						</>
+					),
+				}}
+			></PageHeader>
 
 			<div className="flex gap-4 items-center">
 				<Controller

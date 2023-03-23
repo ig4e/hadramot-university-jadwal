@@ -5,6 +5,7 @@
 /.pnp
 .pnp.js
 /dist
+/main
 
 # testing
 /coverage
@@ -12,6 +13,8 @@
 # next.js
 /renderer/.next
 /renderer/out
+/prisma
+
 
 # production
 /build

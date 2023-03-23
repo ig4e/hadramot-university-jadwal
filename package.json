@@ -13,7 +13,7 @@
 		"build": "npm run build-renderer && npm run build-electron && npm run build-prisma",
 		"pack-app": "electron-builder --win --x64 --dir",
 		"pack-app-installer": "electron-builder --win nsis --x64 --dir",
-		"build-and-pack": "npm run build && pack-app-installer",
+		"build-and-pack": "npm run build && npm run pack-app-installer",
 		"dist": "npm run build && electron-builder",
 		"type-check": "tsc -p ./renderer/tsconfig.json && tsc -p ./electron-src/tsconfig.json"
 	},

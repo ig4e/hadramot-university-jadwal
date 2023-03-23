@@ -151,7 +151,12 @@ exports.teacherRouter = (0, trpc_1.router)({
                         },
                         create: {
                             id,
-                            day: { connect: { name: dayName } },
+                            day: {
+                                connectOrCreate: {
+                                    where: { name: dayName },
+                                    create: { name: dayName },
+                                },
+                            },
                             startsAt,
                             endsAt,
                         },

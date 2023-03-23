@@ -2,6 +2,7 @@ import { router, procedure } from "../trpc";
 import { z } from "zod";
 import { prisma, Prisma } from "../prisma";
 import { isConflicting, isIn } from "../../utils/range";
+import { formatDuration } from "../../utils/format";
 
 // const defaultTableSelect: Prisma.TableSelect = {
 // 	id: true,
@@ -297,7 +298,9 @@ async function validateTable(input: {
 		}
 
 		if (!isIn(timeRange, teacher?.workDates.map(({ startsAt, endsAt }) => [startsAt, endsAt])!)) {
-			errors[`${dayName}.${dayIndex}.timeRange`] = "المعلم غير متوفر";
+			errors[`${dayName}.${dayIndex}.timeRange`] = `المعلم غير متوفر.<br /> مواعيد توافر المعلم: ${teacher?.workDates
+				.map(({ startsAt, endsAt }) => `${formatDuration(startsAt)}-${formatDuration(endsAt)}`)
+				.join("<br />")}`;
 		}
 	}
 

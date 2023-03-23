@@ -94,7 +94,7 @@
 
 @layer base {
 	* {
-		font-family: Lora, DubaiW23, serif !important;
+		font-family: Lora, Cairo, serif !important;
 	}
 
 	th,

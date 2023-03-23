@@ -41,7 +41,7 @@ const trpcExpress = __importStar(require("@trpc/server/adapters/express"));
 const fs_1 = __importDefault(require("fs"));
 // Imports
 const _app_1 = require("./server/routers/_app");
-const prisma_client_1 = require("../generated/prisma-client");
+const client_1 = require("@prisma/client");
 exports.dbPath = electron_is_dev_1.default ? path_1.default.join(__dirname, "../prisma/dev.db") : path_1.default.join(electron_1.app.getPath("userData"), "database.db");
 if (!electron_is_dev_1.default) {
     try {
@@ -58,13 +58,13 @@ if (!electron_is_dev_1.default) {
         }
     }
 }
-exports.prisma = new prisma_client_1.PrismaClient({
+exports.prisma = new client_1.PrismaClient({
     log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
-    datasources: {
-        db: {
-            url: `file:${exports.dbPath}`,
-        },
-    },
+    // datasources: {
+    // 	db: {
+    // 		url: `file:${dbPath}`,
+    // 	},
+    // },
 });
 const expressApp = (0, express_1.default)();
 expressApp.use((0, cors_1.default)({
@@ -77,8 +77,8 @@ expressApp.use("/trpc", trpcExpress.createExpressMiddleware({
 electron_1.app.on("ready", async () => {
     await (0, electron_next_1.default)("./renderer");
     const mainWindow = new electron_1.BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 1200,
+        height: 800,
         autoHideMenuBar: true,
         webPreferences: {
             nodeIntegration: false,
@@ -94,6 +94,18 @@ electron_1.app.on("ready", async () => {
             slashes: true,
         });
     mainWindow.loadURL(url);
+    expressApp.get("/generate/pdf", async (req, res) => {
+        const { title } = req.query;
+        const pdf = await mainWindow.webContents.printToPDF({
+            marginsType: 1,
+            landscape: false,
+            printBackground: true,
+        });
+        res.setHeader("Content-Length", pdf.byteLength);
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", `attachment; filename=${title}.pdf`);
+        res.send(pdf);
+    });
 });
 // Quit the app once all windows are closed
 const server = expressApp.listen(3000, () => console.log("server started at 3000"));

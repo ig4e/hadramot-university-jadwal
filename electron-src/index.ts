@@ -34,11 +34,11 @@ if (!isDev) {
 
 export const prisma = new PrismaClient({
 	log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
-	datasources: {
-		db: {
-			url: `file:${dbPath}`,
-		},
-	},
+	// datasources: {
+	// 	db: {
+	// 		url: `file:${dbPath}`,
+	// 	},
+	// },
 });
 
 const expressApp = express();
@@ -61,8 +61,8 @@ app.on("ready", async () => {
 	await prepareNext("./renderer");
 
 	const mainWindow = new BrowserWindow({
-		width: 800,
-		height: 600,
+		width: 1200,
+		height: 800,
 		autoHideMenuBar: true,
 		webPreferences: {
 			nodeIntegration: false,
@@ -80,6 +80,21 @@ app.on("ready", async () => {
 		  });
 
 	mainWindow.loadURL(url);
+
+	expressApp.get("/generate/pdf", async (req, res) => {
+		const { title } = req.query;
+
+		const pdf = await mainWindow.webContents.printToPDF({
+			marginsType: 1,
+			landscape: false,
+			printBackground: true,
+		});
+
+		res.setHeader("Content-Length", pdf.byteLength);
+		res.setHeader("Content-Type", "application/pdf");
+		res.setHeader("Content-Disposition", `attachment; filename=${title}.pdf`);
+		res.send(pdf);
+	});
 });
 
 // Quit the app once all windows are closed

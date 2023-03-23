@@ -176,7 +176,12 @@ export const teacherRouter = router({
 							},
 							create: {
 								id,
-								day: { connect: { name: dayName } },
+								day: {
+									connectOrCreate: {
+										where: { name: dayName },
+										create: { name: dayName },
+									},
+								},
 								startsAt,
 								endsAt,
 							},

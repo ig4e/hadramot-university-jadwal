@@ -92,7 +92,7 @@ function Subject() {
 				)}
 			</Table>
 			{(subject.data?.items?.length || 0) <= 0 && !subject.isLoading && (
-				<span className="bg-slate-50 w-full text-center flex justify-center">لا يوجد مادات</span>
+				<span className="bg-slate-50 w-full text-center flex justify-center">لا يوجد مواد</span>
 			)}
 			{subject.isLoading && <Loader className="bg-slate-50 w-full text-center flex justify-center"></Loader>}
 		</div>

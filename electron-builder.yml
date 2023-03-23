@@ -4,3 +4,10 @@ copyright: Copyright © 2023 Ahmed Mohamed
 directories:
     output: dist
     buildResources: resources
+files:
+    - main
+    - renderer/out
+extraResources:
+- prisma/**/*
+- node_modules/.prisma/**/*
+- node_modules/@prisma/client/**/*

@@ -36,8 +36,8 @@ function CreateTeachertPage() {
 	return (
 		<div className="space-y-8">
 			<PageHeader
-				header="أنشاء معلم"
-				description="هنا يمكنك أنشاء معلم وتحديد وقت توفرة وأيام عملة"
+				header="أنشاء عضو هيئة التعليم"
+				description="هنا يمكنك أنشاء عضو هيئة التعليم وتحديد وقت توفرة وأيام عملة"
 				link={{
 					href: "/teachers",
 					buttonChildren: (

@@ -15,6 +15,8 @@ import { ArrowsPointingOutIcon } from "@heroicons/react/24/outline";
 
 import { saveAs } from "file-saver";
 
+import Logo from "../../../public/images/logo.png";
+
 const daysNumbers = {
 	SUNDAY: 1,
 	MONDAY: 2,
@@ -65,7 +67,7 @@ function Preview() {
 							</Header>
 						</div>
 						<div className="min-w-fit">
-							<Image src={"/images/logo.png"} className="w-32 lg:w-48" alt="logo" width={192} height={192} />
+							<Image src={Logo} className="w-32 lg:w-48" alt="logo" width={192} height={192} />
 						</div>
 						<div className="w-full self-center flex justify-start" dir={"ltr"}>
 							<Header size="md" className="">

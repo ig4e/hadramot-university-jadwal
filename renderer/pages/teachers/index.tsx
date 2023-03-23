@@ -17,14 +17,14 @@ function Teacher() {
 	return (
 		<div className="space-y-8">
 			<PageHeader
-				header="المعلمين"
-				description="هنا يوجد جميع المعلمين"
+				header="أعضاء هيئة التعليم"
+				description="هنا يوجد جميع أعضاء هيئة التعليم"
 				link={{
 					href: "/teachers/create",
 					buttonChildren: (
 						<>
 							<PlusIcon className="w-5 h-5 stroke-white stroke-[0.5]"></PlusIcon>
-							<span>أنشئ معلم جديد</span>
+							<span>أنشئ عضو هيئة تعليم جديد</span>
 						</>
 					),
 				}}
@@ -33,8 +33,8 @@ function Teacher() {
 			<Table className="bg-slate-800 rounded-md">
 				<thead>
 					<tr>
-						<th className="!text-slate-50">أسم المعلم</th>
-						<th className="!text-slate-50">مواد المعلم</th>
+						<th className="!text-slate-50">أسم عضو هيئة التعليم</th>
+						<th className="!text-slate-50">مواد عضو هيئة التعليم</th>
 						<th className="!text-slate-50">اجرائات</th>
 					</tr>
 				</thead>
@@ -68,14 +68,14 @@ function Teacher() {
 												try {
 													await teacherDeleteHook.mutateAsync({ id });
 													notificationStore.notify({
-														title: "تم حذف المعلم بنجاح!",
+														title: "تم حذف عضو هيئة التعليم بنجاح!",
 														description: `تم حذف ${name} بنجاح.`,
 														success: true,
 													});
 													teacher.refetch();
 												} catch {
 													notificationStore.notify({
-														title: "تعذر حذف المعلم!",
+														title: "تعذر حذف عضو هيئة التعليم!",
 														description: `تعذر حذف ${name}.`,
 														success: false,
 													});
@@ -93,7 +93,7 @@ function Teacher() {
 				)}
 			</Table>
 			{(teacher.data?.items?.length || 0) <= 0 && !teacher.isLoading && (
-				<span className="bg-slate-50 w-full text-center flex justify-center">لا يوجد معلمون</span>
+				<span className="bg-slate-50 w-full text-center flex justify-center">لا يوجد أعضاء هيئة تعليم</span>
 			)}
 			{teacher.isLoading && <Loader className="bg-slate-50 w-full text-center flex justify-center"></Loader>}
 		</div>

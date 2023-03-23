@@ -19,7 +19,7 @@ export type DaysIndex = "SUNDAY" | "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDA
 export const localizeDays = {
 	SUNDAY: "الأحد",
 	MONDAY: "الأثنين",
-	TUESDAY: "الثلثاء",
+	TUESDAY: "الثلاثاء",
 	WEDNESDAY: "الأربعاء",
 	THURSDAY: "الخميس",
 	FRIDAY: "الجمعة",

@@ -5,6 +5,7 @@ const trpc_1 = require("../trpc");
 const zod_1 = require("zod");
 const prisma_1 = require("../prisma");
 const range_1 = require("../../utils/range");
+const format_1 = require("../../utils/format");
 // const defaultTableSelect: Prisma.TableSelect = {
 // 	id: true,
 // 	createdAt: true,
@@ -240,7 +241,9 @@ async function validateTable(input) {
             errors[`${dayName}.${dayIndex}.timeRange`] = "المعلم فمحاضرة اخرى فنفس الوقت والجدول";
         }
         if (!(0, range_1.isIn)(timeRange, teacher?.workDates.map(({ startsAt, endsAt }) => [startsAt, endsAt]))) {
-            errors[`${dayName}.${dayIndex}.timeRange`] = "المعلم غير متوفر";
+            errors[`${dayName}.${dayIndex}.timeRange`] = `المعلم غير متوفر.<br /> مواعيد توافر المعلم: ${teacher?.workDates
+                .map(({ startsAt, endsAt }) => `${(0, format_1.formatDuration)(startsAt)}-${(0, format_1.formatDuration)(endsAt)}`)
+                .join("<br />")}`;
         }
     }
     return { errors, error: Object.keys(errors).some((key) => errors[key]) };

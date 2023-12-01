@@ -12,6 +12,7 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { db } from "~/server/db";
+import { DAYS_ARRAY } from "../constants";
 
 /**
  * 1. CONTEXT
@@ -99,4 +100,26 @@ export const createTRPCRouter = t.router;
  * guarantee that a user querying is authorized, but you can still access user session data if they
  * are logged in.
  */
-export const publicProcedure = t.procedure;
+export const middleware = t.middleware;
+
+const isDataSetup = middleware(async (opts) => {
+  const { ctx } = opts;
+
+  const daysCount = await ctx.db.day.count();
+
+  if (daysCount < 7) {
+    await Promise.all(
+      DAYS_ARRAY.map((day) => {
+        return ctx.db.day.create({
+          data: {
+            name: day,
+          },
+        });
+      }),
+    );
+  }
+
+  return opts.next({ ctx });
+});
+
+export const publicProcedure = t.procedure.use(isDataSetup);

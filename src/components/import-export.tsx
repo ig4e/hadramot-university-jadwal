@@ -19,7 +19,10 @@ import { RouterOutputs } from "~/trpc/shared";
 
 function ImportAndExport() {
   const [opened, { open, close }] = useDisclosure(false);
-  const { data, isLoading, isError, error } = api.data.export.useQuery({});
+  const { data, isLoading, isError, error } = api.data.export.useQuery(
+    {},
+    { enabled: opened },
+  );
   const [file, setFile] = useState<File | null>(null);
   const [importedData, setImportedData] =
     useState<RouterOutputs["data"]["export"]>();
@@ -51,7 +54,7 @@ function ImportAndExport() {
           <Text>الأصدار: {data?.version || "جارى التحميل..."}</Text>
 
           {importedData && (
-            <div className="bg-slate-900 rounded-md p-2 text-white font-mono">
+            <div className="rounded-md bg-slate-900 p-2 font-mono text-white">
               <Text>أصدار الامتصدر: {importedData.version}</Text>
               <Text>القاعات: {importedData.halls.length}</Text>
               <Text>المعلمين: {importedData.teachers.length}</Text>

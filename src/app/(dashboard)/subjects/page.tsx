@@ -85,9 +85,12 @@ export default function Home() {
       </PageHeader>
 
       <DataTable
+        isLoading={isLoading}
         columns={columns}
         data={data?.items}
-        additionalContext={{ subjectsRefetch: refetch }}
+        additionalContext={{ refetch }}
+        pageInfo={data?.pageInfo}
+        onPageChange={(page) => console.log(page)}
       ></DataTable>
     </main>
   );

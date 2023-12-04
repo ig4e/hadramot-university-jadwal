@@ -9,12 +9,16 @@ import { ColumnDef } from "@tanstack/react-table";
 import { useState } from "react";
 import DangerModal from "~/components/danger-modal";
 import { api } from "~/trpc/react";
-import SubjectModal from "./subject-modal";
-import { DocumentDuplicateIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/20/solid'
+import MajorModal from "./major-modal";
+import {
+  DocumentDuplicateIcon,
+  PencilSquareIcon,
+  TrashIcon,
+} from "@heroicons/react/20/solid";
 
-const subject = Prisma.validator<Prisma.SubjectDefaultArgs>()({});
+const major = Prisma.validator<Prisma.MajorDefaultArgs>()({});
 
-export type Subject = Prisma.SubjectGetPayload<typeof subject>;
+export type Major = Prisma.MajorGetPayload<typeof major>;
 
 declare module "@tanstack/react-table" {
   interface CellContext<TData extends RowData, TValue> {
@@ -22,7 +26,7 @@ declare module "@tanstack/react-table" {
   }
 }
 
-export const columns: ColumnDef<Subject>[] = [
+export const columns: ColumnDef<Major>[] = [
   {
     accessorKey: "id",
     header: "الرقم التسلسلى",
@@ -32,34 +36,38 @@ export const columns: ColumnDef<Subject>[] = [
     header: "الأسم",
   },
   {
+    accessorKey: "studentsCount",
+    header: "سعة الطلاب",
+  },
+  {
     id: "actions",
     cell: ({ row, refetch }) => {
       const [notificationIDs, setNotificationIDs] = useState<{
         [index: string]: string;
       }>({});
 
-      const subject = row.original;
+      const major = row.original;
 
-      const updateSubject = api.subject.update.useMutation({
+      const updateMajor = api.major.update.useMutation({
         onMutate(variables) {
           const id = notifications.show({
             loading: true,
             title: "يرجى الانتظار",
-            message: "جارى تعديل المادة",
+            message: "جارى تعديل التخصص",
             autoClose: false,
             withCloseButton: false,
           });
 
-          setNotificationIDs((state) => ({ ...state, [variables.name]: id }));
+          setNotificationIDs((state) => ({ ...state, [variables.id]: id }));
         },
         onSuccess(data, variables, context) {
-          const notificationId = notificationIDs[variables.name];
+          const notificationId = notificationIDs[variables.id];
           if (notificationId)
             notifications.update({
               id: notificationId,
               loading: false,
               title: "نجاح!",
-              message: "تم تعديل المادة",
+              message: "تم تعديل التخصص",
               color: "green",
               autoClose: 5000,
               withCloseButton: true,
@@ -68,13 +76,13 @@ export const columns: ColumnDef<Subject>[] = [
           refetch();
         },
         onError(error, variables, context) {
-          const notificationId = notificationIDs[variables.name];
+          const notificationId = notificationIDs[variables.id];
           if (notificationId)
             notifications.update({
               id: notificationId,
               loading: false,
               title: "فشل!",
-              message: `تعذر تعديل المادة بسبب :` + error.message,
+              message: `تعذر تعديل التخصص بسبب :` + error.message,
               color: "red",
               autoClose: 5000,
               withCloseButton: true,
@@ -82,12 +90,12 @@ export const columns: ColumnDef<Subject>[] = [
         },
       });
 
-      const deleteSubject = api.subject.delete.useMutation({
+      const deleteMajor = api.major.delete.useMutation({
         onMutate(variables) {
           const id = notifications.show({
             loading: true,
             title: "يرجى الانتظار",
-            message: "جارى حذف المادة",
+            message: "جارى حذف التخصص",
             autoClose: false,
             withCloseButton: false,
           });
@@ -101,7 +109,7 @@ export const columns: ColumnDef<Subject>[] = [
               id: notificationId,
               loading: false,
               title: "نجاح!",
-              message: "تم حذف المادة",
+              message: "تم حذف التخصص",
               color: "green",
               autoClose: 5000,
               withCloseButton: true,
@@ -116,7 +124,7 @@ export const columns: ColumnDef<Subject>[] = [
               id: notificationId,
               loading: false,
               title: "فشل!",
-              message: `تعذر حذف المادة بسبب :` + error.message,
+              message: `تعذر حذف التخصص بسبب :` + error.message,
               color: "red",
               autoClose: 5000,
               withCloseButton: true,
@@ -136,20 +144,25 @@ export const columns: ColumnDef<Subject>[] = [
             <Menu.Dropdown>
               <Menu.Label>الأوامر</Menu.Label>
               <Menu.Item
-                onClick={() =>
-                  navigator.clipboard.writeText(String(subject.id))
-                }
-                leftSection={<DocumentDuplicateIcon className="w-4 h-4" />}
+                onClick={() => navigator.clipboard.writeText(String(major.id))}
+                leftSection={<DocumentDuplicateIcon className="h-4 w-4" />}
               >
                 نسخ الرقم التسلسلى
               </Menu.Item>
               <Menu.Divider />
-              <SubjectModal
-                title="تعديل المادة"
-                initialValues={{ name: subject.name }}
+              <MajorModal
+                title="تعديل التخصص"
+                initialValues={{
+                  name: major.name,
+                  studentsCount: major.studentsCount,
+                }}
                 onSubmit={(data, close) => {
-                  updateSubject.mutate(
-                    { id: subject.id, name: data.name },
+                  updateMajor.mutate(
+                    {
+                      id: major.id,
+                      name: data.name,
+                      studentsCount: data.studentsCount,
+                    },
                     {
                       onSuccess() {
                         close();
@@ -158,18 +171,27 @@ export const columns: ColumnDef<Subject>[] = [
                   );
                 }}
               >
-                <Menu.Item leftSection={<PencilSquareIcon className="w-4 h-4" />}>تعديل</Menu.Item>
-              </SubjectModal>
+                <Menu.Item
+                  leftSection={<PencilSquareIcon className="h-4 w-4" />}
+                >
+                  تعديل
+                </Menu.Item>
+              </MajorModal>
               <DangerModal
-                title="حذف المادة"
-                description="هل انت متأكد من حذف هذة المادة؟"
+                title="حذف التخصص"
+                description="هل انت متأكد من حذف هذة التخصص؟"
                 onSubmit={(result) => {
                   if (result) {
-                    deleteSubject.mutate(subject.id);
+                    deleteMajor.mutate(major.id);
                   }
                 }}
               >
-                <Menu.Item leftSection={<TrashIcon className="w-4 h-4" />} color="red">حذف</Menu.Item>
+                <Menu.Item
+                  leftSection={<TrashIcon className="h-4 w-4" />}
+                  color="red"
+                >
+                  حذف
+                </Menu.Item>
               </DangerModal>
             </Menu.Dropdown>
           </Menu>

@@ -73,6 +73,8 @@ export const teacherRouter = createTRPCRouter({
       const items = await ctx.db.teacher.findMany({
         where: input.where,
         include: input.include,
+        take: paginationProps.limit,
+        skip: paginationProps.offset,
       });
 
       return {

@@ -75,6 +75,8 @@ export const tableRouter = createTRPCRouter({
 
       const items = await ctx.db.table.findMany({
         where: input.where,
+        take: paginationProps.limit,
+        skip: paginationProps.offset,
       });
 
       return {

@@ -50,6 +50,8 @@ export const majorRouter = createTRPCRouter({
 
       const items = await ctx.db.major.findMany({
         where: input.where,
+        take: paginationProps.limit,
+        skip: paginationProps.offset,
       });
 
       return {

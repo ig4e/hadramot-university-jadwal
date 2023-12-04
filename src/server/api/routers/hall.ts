@@ -52,6 +52,8 @@ export const hallRouter = createTRPCRouter({
 
       const items = await ctx.db.hall.findMany({
         where: input.where,
+        take: paginationProps.limit,
+        skip: paginationProps.offset,
       });
 
       return {

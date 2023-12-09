@@ -30,8 +30,8 @@ export function InnerDataTable<T, AContext>({
   additionalContext,
 }: ExternalTableProps<T, AContext>) {
   return (
-    <div className="relative space-y-4">
-      <div className="rounded-md border bg-neutral-100">
+    <div className="space-y-4">
+      <div className="relative rounded-md border bg-neutral-100">
         <LoadingOverlay
           visible={isLoading}
           zIndex={1000}
@@ -93,7 +93,6 @@ export function InnerDataTable<T, AContext>({
           <Pagination
             total={table.getPageCount() || 1}
             onChange={(page) => table.setPageIndex(page)}
-            disabled={isLoading}
           />
         </div>
       )}

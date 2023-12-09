@@ -1,4 +1,12 @@
-import { AppShell, Stack, Text, Title, UnstyledButton } from "@mantine/core";
+import {
+  AppShell,
+  ScrollArea,
+  ScrollAreaAutosize,
+  Stack,
+  Text,
+  Title,
+  UnstyledButton,
+} from "@mantine/core";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { dashboardRoutes } from "~/config/dashboard";
@@ -10,67 +18,72 @@ function Sidebar() {
 
   return (
     <AppShell.Navbar className="flex flex-col justify-between bg-slate-900 pt-4 text-white">
-      <div>
-        {dashboardRoutes.map((route) => {
-          const isActive =
-            route.href === pathname ||
-            route.items.some(
-              (r) =>
-                (pathname.includes(r.href!) && r.href !== "/") ||
-                r.href === pathname,
-            );
+      <ScrollAreaAutosize>
+        <div>
+          {dashboardRoutes.map((route) => {
+            const isActive =
+              route.href === pathname ||
+              route.items.some(
+                (r) =>
+                  (pathname.includes(r.href!) && r.href !== "/") ||
+                  r.href === pathname,
+              );
 
-          return (
-            <Stack
-              key={route.title}
-              gap={"sm"}
-              className={cn("px-4 py-4 transition", {
-                "rounded-lg bg-slate-700/25": isActive,
-              })}
-            >
-              <Title order={5}>{route.title}</Title>
-              <Stack gap={"xs"}>
-                {route.items.map((routeItem) => {
-                  const isActive = pathname === routeItem.href;
-
-                  return (
-                    <div
-                      key={routeItem.title}
-                      className="flex flex-col gap-2 rounded-md ring-1 ring-neutral-600"
-                    >
-                      <NavLink route={routeItem} isActive={isActive}></NavLink>
-                      {routeItem.items.length > 0 && (
-                        <div className="px-2 pb-2">
-                          {routeItem.items?.map((subRouteItem) => {
-                            const isActive = pathname.includes(
-                              subRouteItem.href!,
-                            );
-
-                            return (
-                              <NavLink
-                                variant="sub"
-                                key={subRouteItem.title}
-                                route={subRouteItem}
-                                isActive={isActive}
-                              ></NavLink>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
-                  );
+            return (
+              <Stack
+                key={route.title}
+                gap={"sm"}
+                className={cn("px-4 py-4 transition", {
+                  "rounded-lg bg-slate-700/25": isActive,
                 })}
-              </Stack>
-            </Stack>
-          );
-        })}
-      </div>
+              >
+                <Title order={5}>{route.title}</Title>
+                <Stack gap={"xs"}>
+                  {route.items.map((routeItem) => {
+                    const isActive = pathname === routeItem.href;
 
-      <div className="p-4">
-        <div className="rounded-md border border-neutral-600 p-2">
-          <p>صنع ب ❤️ من محمد ابوبكر احمد باوزير @ayak</p>
+                    return (
+                      <div
+                        key={routeItem.title}
+                        className="flex flex-col gap-2 rounded-md ring-1 ring-neutral-600"
+                      >
+                        <NavLink
+                          route={routeItem}
+                          isActive={isActive}
+                        ></NavLink>
+                        {routeItem.items.length > 0 && (
+                          <div className="px-2 pb-2">
+                            {routeItem.items?.map((subRouteItem) => {
+                              const isActive = pathname.includes(
+                                subRouteItem.href!,
+                              );
+
+                              return (
+                                <NavLink
+                                  variant="sub"
+                                  key={subRouteItem.title}
+                                  route={subRouteItem}
+                                  isActive={isActive}
+                                ></NavLink>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </Stack>
+              </Stack>
+            );
+          })}
         </div>
-      </div>
+
+        <div className="p-4">
+          <div className="rounded-md border border-neutral-600 p-2">
+            <p>صنع ب ❤️ من محمد ابوبكر احمد باوزير @ayak</p>
+          </div>
+        </div>
+      </ScrollAreaAutosize>
     </AppShell.Navbar>
   );
 }

@@ -4,12 +4,13 @@ import { Button } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import PageHeader from "~/components/page-header";
 import SubjectModal from "./subject-modal";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { RouterInputs } from "~/trpc/shared";
 import { api } from "~/trpc/react";
-import { DataTable } from "~/components/data-table";
+import { DataTable, InnerDataTable } from "~/components/data-table";
 import { columns } from "./columns";
 import { notifications } from "@mantine/notifications";
+import { usePaginatedTable } from "~/hooks/use-paginated-table";
 
 export default function Home() {
   const [notificationIDs, setNotificationIDs] = useState<{
@@ -19,8 +20,14 @@ export default function Home() {
     page: 1,
   });
 
-  const { data, isLoading, isError, refetch } =
-    api.subject.list.useQuery(pageProps);
+  const {
+    data: rawData,
+    isLoading,
+    isError,
+    refetch,
+  } = api.subject.list.useQuery(pageProps);
+
+  const data = useMemo(() => rawData, [rawData]);
 
   const createSubject = api.subject.create.useMutation({
     onMutate(variables) {
@@ -64,6 +71,19 @@ export default function Home() {
     },
   });
 
+  const table = usePaginatedTable({
+    pageCount: data?.pageInfo.totalPages,
+    data: data?.items,
+    columns,
+    onPaginationChange({ pageIndex, pageSize }) {
+      setPageProps((state) => ({ ...state, page: pageIndex, limit: pageSize }));
+    },
+    pagination: {
+      pageIndex: pageProps.page,
+      pageSize: pageProps.limit,
+    },
+  });
+
   return (
     <main className="space-y-8">
       <PageHeader title="المواد">
@@ -84,14 +104,12 @@ export default function Home() {
         </SubjectModal>
       </PageHeader>
 
-      <DataTable
+      <InnerDataTable
+        table={table}
         isLoading={isLoading}
-        columns={columns}
-        data={data?.items}
         additionalContext={{ refetch }}
-        pageInfo={data?.pageInfo}
-        onPageChange={(page) => console.log(page)}
-      ></DataTable>
+      ></InnerDataTable>
+
     </main>
   );
 }

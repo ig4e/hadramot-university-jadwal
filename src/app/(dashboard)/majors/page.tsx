@@ -1,15 +1,16 @@
 "use client";
 
-import { Button } from "@mantine/core";
-import { IconPlus } from "@tabler/icons-react";
-import PageHeader from "~/components/page-header";
-import MajorModal from "./major-modal";
-import { useState } from "react";
-import { RouterInputs } from "~/trpc/shared";
-import { api } from "~/trpc/react";
-import { DataTable } from "~/components/data-table";
-import { columns } from "./columns";
+import { Button, Pagination } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
+import { IconPlus } from "@tabler/icons-react";
+import { useState } from "react";
+import { InnerDataTable } from "~/components/data-table";
+import PageHeader from "~/components/page-header";
+import { api } from "~/trpc/react";
+import { RouterInputs } from "~/trpc/shared";
+import { columns } from "./columns";
+import MajorModal from "./major-modal";
+import { usePaginatedTable } from "~/hooks/use-paginated-table";
 
 export default function Home() {
   const [notificationIDs, setNotificationIDs] = useState<{
@@ -20,8 +21,15 @@ export default function Home() {
     page: 1,
   });
 
-  const { data, isLoading, isError, refetch } =
-    api.major.list.useQuery(pageProps);
+  const { data, isLoading, isFetching, isError, refetch } =
+    api.major.list.useQuery(
+      {
+        page: pageProps.page,
+        limit: pageProps.limit,
+        where: pageProps.where,
+      },
+      { keepPreviousData: true },
+    );
 
   const createMajor = api.major.create.useMutation({
     onMutate(variables) {
@@ -65,6 +73,19 @@ export default function Home() {
     },
   });
 
+  const table = usePaginatedTable({
+    pageCount: data?.pageInfo.totalPages,
+    data: data?.items,
+    columns,
+    onPaginationChange({ pageIndex, pageSize }) {
+      setPageProps((state) => ({ ...state, page: pageIndex, limit: pageSize }));
+    },
+    pagination: {
+      pageIndex: pageProps.page,
+      pageSize: pageProps.limit,
+    },
+  });
+
   return (
     <main className="space-y-8">
       <PageHeader title="التخصصات">
@@ -85,17 +106,11 @@ export default function Home() {
         </MajorModal>
       </PageHeader>
 
-      <DataTable
-        isLoading={isLoading}
-        columns={columns}
-        data={data?.items}
+      <InnerDataTable
+        isLoading={isFetching}
+        table={table}
         additionalContext={{ refetch }}
-        pageInfo={data?.pageInfo}
-        onPageChange={(page) => {
-          console.log(page);
-          setPageProps((pageProps) => ({ ...pageProps, page }));
-        }}
-      ></DataTable>
+      />
     </main>
   );
 }

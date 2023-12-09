@@ -1,47 +1,34 @@
 "use client";
+import _ from "lodash";
 
-import { Group, LoadingOverlay, Table } from "@mantine/core";
+import { LoadingOverlay, Pagination, Table } from "@mantine/core";
 import {
   ColumnDef,
+  Table as RTable,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { RouterInputs, RouterOutputs } from "~/trpc/shared";
-import { Pagination } from "@mantine/core";
-
-// import {
-//   Table,
-//   TableBody,
-//   Table.Td,
-//   TableHead,
-//   TableHeader,
-//   Table.Tr,
-// } from "~/components/ui/table";
+import { memo } from "react";
 
 interface DataTableProps<TData, TValue, AContext> {
   isLoading?: boolean | undefined;
   columns: ColumnDef<TData, TValue>[];
   data?: TData[] | undefined;
   additionalContext?: AContext;
-  pageInfo?: RouterOutputs["subject"]["list"]["pageInfo"];
-  onPageChange?: (page: number) => void;
 }
 
-export function DataTable<TData, TValue, AContext>({
-  columns,
-  data = [],
-  isLoading = false,
-  additionalContext,
-  pageInfo,
-  onPageChange,
-}: DataTableProps<TData, TValue, AContext>) {
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  });
+interface ExternalTableProps<T, AContext> {
+  table: RTable<T>;
+  isLoading?: boolean | undefined;
+  additionalContext?: AContext;
+}
 
+export function InnerDataTable<T, AContext>({
+  table,
+  isLoading,
+  additionalContext,
+}: ExternalTableProps<T, AContext>) {
   return (
     <div className="relative space-y-4">
       <div className="rounded-md border bg-neutral-100">
@@ -89,7 +76,10 @@ export function DataTable<TData, TValue, AContext>({
               ))
             ) : (
               <Table.Tr>
-                <Table.Td colSpan={columns.length} className="h-24 text-center">
+                <Table.Td
+                  colSpan={table.getAllColumns().length}
+                  className="h-24 text-center"
+                >
                   لا توجد نتائج.
                 </Table.Td>
               </Table.Tr>
@@ -98,15 +88,36 @@ export function DataTable<TData, TValue, AContext>({
         </Table>
       </div>
 
-      {pageInfo && (
+      {table.getPageCount() > 0 && (
         <div className="flex w-full items-center justify-center">
           <Pagination
+            total={table.getPageCount() || 1}
+            onChange={(page) => table.setPageIndex(page)}
             disabled={isLoading}
-            total={pageInfo.totalPages}
-            onChange={(v) => onPageChange?.(v)}
           />
         </div>
       )}
     </div>
+  );
+}
+
+export function DataTable<TData, TValue, AContext>({
+  columns,
+  data = [],
+  isLoading = false,
+  additionalContext,
+}: DataTableProps<TData, TValue, AContext>) {
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
+  return (
+    <InnerDataTable
+      table={table}
+      additionalContext={additionalContext}
+      isLoading={isLoading}
+    />
   );
 }

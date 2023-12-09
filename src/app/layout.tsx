@@ -33,14 +33,14 @@ export default function RootLayout({
       </head>
 
       <body className={cn("min-h-screen antialiased")}>
-        <DirectionProvider initialDirection="rtl" detectDirection={false}>
-          <MantineProvider theme={theme} defaultColorScheme="light">
-            <TRPCReactProvider cookies={cookies().toString()}>
+        <TRPCReactProvider cookies={cookies().toString()}>
+          <DirectionProvider initialDirection="rtl" detectDirection={false}>
+            <MantineProvider theme={theme} defaultColorScheme="light">
               <Notifications limit={3} />
               <App>{children}</App>
-            </TRPCReactProvider>
-          </MantineProvider>
-        </DirectionProvider>
+            </MantineProvider>
+          </DirectionProvider>
+        </TRPCReactProvider>
       </body>
     </html>
   );

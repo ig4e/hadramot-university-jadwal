@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+export const PAGE_SIZE = 15 as const;
+
 export const daysEnum = z.enum([
   "SUNDAY",
   "MONDAY",
@@ -27,8 +29,6 @@ export const DAYS_ARRAY: DaysEnum[] = [
   "FRIDAY",
   "SATURDAY",
 ];
-
-export const PAGE_SIZE = 50 as const;
 
 export const TeacherWorkDateCreateWithoutDayOrTeacherInputSchema = z.object({
   startsAt: HourSchema,

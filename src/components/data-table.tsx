@@ -34,7 +34,7 @@ export function InnerDataTable<T, AContext>({
       <div className="relative rounded-md border bg-neutral-100">
         <LoadingOverlay
           visible={isLoading}
-          zIndex={1000}
+          zIndex={10}
           overlayProps={{ radius: "md", blur: 2 }}
         ></LoadingOverlay>
 

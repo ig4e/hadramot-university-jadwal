@@ -16,6 +16,7 @@ export default function Home() {
   const [notificationIDs, setNotificationIDs] = useState<{
     [index: string]: string;
   }>({});
+
   const [pageProps, setPageProps] = useState<RouterInputs["subject"]["list"]>({
     page: 1,
   });
@@ -109,7 +110,6 @@ export default function Home() {
         isLoading={isLoading}
         additionalContext={{ refetch }}
       ></InnerDataTable>
-
     </main>
   );
 }

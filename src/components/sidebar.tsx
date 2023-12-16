@@ -18,7 +18,7 @@ function Sidebar() {
 
   return (
     <AppShell.Navbar className="flex flex-col justify-between bg-slate-900 pt-4 text-white">
-      <ScrollAreaAutosize>
+      <ScrollArea>
         <div>
           {dashboardRoutes.map((route) => {
             const isActive =
@@ -77,13 +77,12 @@ function Sidebar() {
             );
           })}
         </div>
-
-        <div className="p-4">
-          <div className="rounded-md border border-neutral-600 p-2">
-            <p>صنع ب ❤️ من محمد ابوبكر احمد باوزير @ayak</p>
-          </div>
+      </ScrollArea>
+      <div className="p-4">
+        <div className="rounded-md border border-neutral-600 p-2">
+          <p>صنع ب ❤️ من محمد ابوبكر احمد باوزير @ayak</p>
         </div>
-      </ScrollAreaAutosize>
+      </div>
     </AppShell.Navbar>
   );
 }

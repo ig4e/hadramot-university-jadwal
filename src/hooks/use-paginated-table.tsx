@@ -42,7 +42,6 @@ export function usePaginatedTable<TData, TValue>({
       pagination: pagination as PaginationState,
     },
     onPaginationChange: setPagination,
-
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
     debugTable: true,

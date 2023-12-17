@@ -13,7 +13,7 @@ import { dashboardRoutes } from "~/config/dashboard";
 import { cn } from "~/lib/utils";
 import { NavItemWithChildren } from "~/types/nav";
 
-function Sidebar() {
+function Sidebar({ close }: { close: () => void }) {
   const pathname = usePathname();
 
   return (
@@ -48,6 +48,7 @@ function Sidebar() {
                         className="flex flex-col gap-2 rounded-md ring-1 ring-neutral-600"
                       >
                         <NavLink
+                          close={close}
                           route={routeItem}
                           isActive={isActive}
                         ></NavLink>
@@ -60,6 +61,7 @@ function Sidebar() {
 
                               return (
                                 <NavLink
+                                  close={close}
                                   variant="sub"
                                   key={subRouteItem.title}
                                   route={subRouteItem}
@@ -91,10 +93,12 @@ function NavLink({
   route,
   isActive,
   variant = "default",
+  close,
 }: {
   route: NavItemWithChildren;
   isActive: boolean;
   variant?: "default" | "sub";
+  close: () => void;
 }) {
   if (route.sub) variant = "sub";
 
@@ -102,6 +106,7 @@ function NavLink({
     <UnstyledButton
       href={route.href!}
       component={Link}
+      onClick={close}
       className={cn(
         "group flex !cursor-pointer !select-none items-center gap-2 ring-1 transition",
         {

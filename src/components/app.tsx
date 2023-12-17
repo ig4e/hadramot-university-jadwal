@@ -10,13 +10,13 @@ import { useDisclosure } from "@mantine/hooks";
 import { Bars3Icon } from "@heroicons/react/20/solid";
 
 function App({ children }: { children: React.ReactNode }) {
-  const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
+  const [mobileOpened, { toggle: toggleMobile, close }] = useDisclosure();
 
   return (
     <AppShell
       header={{ height: 60 }}
       navbar={{
-        width: 300,
+        width: { base: "100vw", sm: 300 },
         breakpoint: "sm",
         collapsed: { mobile: !mobileOpened },
       }}
@@ -25,20 +25,20 @@ function App({ children }: { children: React.ReactNode }) {
       <AppShell.Header
         p="md"
         display={"flex"}
-        className="items-center justify-between "
+        className="items-center justify-between"
       >
         <div className="flex items-center gap-4">
           <ActionIcon
             onClick={toggleMobile}
             hiddenFrom="sm"
-            variant="filled"
             size={"lg"}
             aria-label="Menu"
           >
             <Bars3Icon className="h-5 w-5"></Bars3Icon>
           </ActionIcon>
 
-          <Image src={LogoTransparent} alt="Logo" className="h-10 w-10"></Image>
+          <Image src={LogoTransparent} alt="Logo" className="h-10 w-10 hidden md:block"></Image>
+          
           <div>
             <Title order={5}>جامعة حضرموت</Title>
             <Text size={"sm"}>برنامج الجداول فاكيو الاصدار الثانى</Text>
@@ -48,7 +48,7 @@ function App({ children }: { children: React.ReactNode }) {
         <ImportAndExport></ImportAndExport>
       </AppShell.Header>
 
-      <Sidebar></Sidebar>
+      <Sidebar close={close}></Sidebar>
 
       <AppShell.Main>
         <div className="pb-4">{children}</div>

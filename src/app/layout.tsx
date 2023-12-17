@@ -17,7 +17,7 @@ import { TRPCReactProvider } from "~/trpc/react";
 
 export const metadata = {
   title: "جامعة حضرموت",
-  description: "برنامج الجداول فاكيو الاصدار الثانى",
+  description: "برنامج الجداول الاصدار الثانى",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 

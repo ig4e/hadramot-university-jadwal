@@ -2,34 +2,36 @@
 
 import React, { useEffect } from "react";
 import { useDisclosure } from "@mantine/hooks";
-import { Modal, Button, TextInput, Group } from "@mantine/core";
+import { Modal, Button, TextInput, Group, NumberInput } from "@mantine/core";
 import { Slot } from "@radix-ui/react-slot";
 import { useForm, zodResolver } from "@mantine/form";
 import { z } from "zod";
 
-const subjectSchema = z.object({
+const hallSchema = z.object({
   name: z.string().min(2, { message: "الأسم يجب ان يكون اكثر من حرفين" }),
+  studentsCount: z.number().min(1, { message: "السعة يجب ان تكون اكثر من 1" }),
 });
 
-type SubjectSchema = z.infer<typeof subjectSchema>;
+type HallSchema = z.infer<typeof hallSchema>;
 
-interface SubjectModalProps {
+interface HallModalProps {
   title: string;
   children: React.ReactNode;
-  initialValues?: SubjectSchema;
-  onSubmit: (values: SubjectSchema, close: () => void) => void;
+  initialValues?: HallSchema;
+  onSubmit: (values: HallSchema, close: () => void) => void;
 }
 
-function SubjectModal({
+function HallModal({
   children,
   title,
   initialValues,
   onSubmit,
-}: SubjectModalProps) {
+}: HallModalProps) {
   const form = useForm({
-    validate: zodResolver(subjectSchema),
+    validate: zodResolver(hallSchema),
     initialValues: {
       name: "",
+      studentsCount: 1,
     },
   });
 
@@ -46,11 +48,20 @@ function SubjectModal({
       <Slot onClick={open}>{children}</Slot>
 
       <Modal opened={opened} onClose={close} title={title} centered>
-        <form onSubmit={form.onSubmit((data) => onSubmit(data, close))}>
+        <form
+          onSubmit={form.onSubmit((data) => onSubmit(data, close))}
+          className="space-y-2"
+        >
           <TextInput
-            label="أسم المادة"
-            placeholder="جبر"
+            label="أسم القاعة"
+            placeholder="م-1"
             {...form.getInputProps("name")}
+          />
+
+          <NumberInput
+            label="سعة طلاب القاعة"
+            placeholder="50"
+            {...form.getInputProps("studentsCount")}
           />
 
           <Group justify="flex-end" mt="xl" gap={"xs"}>
@@ -70,4 +81,4 @@ function SubjectModal({
   );
 }
 
-export default SubjectModal;
+export default HallModal;

@@ -107,7 +107,7 @@ export default function Home() {
       </PageHeader>
 
       <InnerDataTable
-        isLoading={isFetching}
+        isLoading={isLoading}
         table={table}
         additionalContext={{ refetch }}
       />

@@ -41,7 +41,7 @@ function App({ children }: { children: React.ReactNode }) {
           
           <div>
             <Title order={5}>جامعة حضرموت</Title>
-            <Text size={"sm"}>برنامج الجداول فاكيو الاصدار الثانى</Text>
+            <Text size={"sm"}>برنامج الجداول الاصدار الثانى</Text>
           </div>
         </div>
 

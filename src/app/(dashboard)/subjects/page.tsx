@@ -77,7 +77,11 @@ export default function Home() {
     data: data?.items,
     columns,
     onPaginationChange({ pageIndex, pageSize }) {
-      setPageProps((state) => ({ ...state, page: pageIndex, limit: pageSize }));
+      setPageProps((state) => ({
+        ...state,
+        page: pageIndex > 0 ? pageIndex : 1,
+        limit: pageSize,
+      }));
     },
     pagination: {
       pageIndex: pageProps.page,

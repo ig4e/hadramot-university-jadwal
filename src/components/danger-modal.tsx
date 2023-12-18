@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
 import { Modal, Button, TextInput, Text, Group } from "@mantine/core";
 import { Slot } from "@radix-ui/react-slot";
@@ -16,17 +16,15 @@ function DangerModal({
   title,
   description,
 }: DangerModalProps) {
-  const [once, setOnce] = useState<boolean>(false);
+  const [value, setValue] = useState(false);
+
+  const onClose = useCallback(() => {
+    onSubmit?.(value || false);
+  }, [value]);
 
   const [opened, { open, close }] = useDisclosure(false, {
-    onClose() {
-      if (!once) onSubmit?.(false);
-    },
+    onClose,
   });
-
-  useEffect(() => {
-    if (once) close();
-  }, [once]);
 
   return (
     <>
@@ -43,8 +41,8 @@ function DangerModal({
           </Button>
           <Button
             onClick={() => {
-              onSubmit?.(true);
-              setOnce(true);
+              setValue(true);
+              close();
             }}
             color="red"
           >

@@ -1,6 +1,7 @@
 import "~/styles/globals.css";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
+import "dayjs/locale/ar";
 
 import {
   ColorSchemeScript,
@@ -14,6 +15,7 @@ import App from "~/components/app";
 import { cn } from "~/lib/utils";
 import { theme } from "~/styles/theme-config";
 import { TRPCReactProvider } from "~/trpc/react";
+import { DatesProvider } from "@mantine/dates";
 
 export const metadata = {
   title: "جامعة حضرموت",
@@ -36,8 +38,16 @@ export default function RootLayout({
         <TRPCReactProvider cookies={cookies().toString()}>
           <DirectionProvider initialDirection="rtl" detectDirection={false}>
             <MantineProvider theme={theme} defaultColorScheme="light">
-              <Notifications limit={3} />
-              <App>{children}</App>
+              <DatesProvider
+                settings={{
+                  locale: "ar",
+                  firstDayOfWeek: 0,
+                  weekendDays: [6, 5],
+                }}
+              >
+                <Notifications limit={3} />
+                <App>{children}</App>
+              </DatesProvider>
             </MantineProvider>
           </DirectionProvider>
         </TRPCReactProvider>

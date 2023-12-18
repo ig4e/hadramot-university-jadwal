@@ -11,16 +11,16 @@ generator zod {
     output   = "./generated/zod"
 }
 
-// datasource db {
-//     provider = "sqlite"
-//     url      = env("DATABASE_URL")
-// }
-
 datasource db {
-    provider  = "postgresql"
-    url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-    directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+    provider = "sqlite"
+    url      = env("DATABASE_URL")
 }
+
+// datasource db {
+//     provider  = "postgresql"
+//     url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+//     directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+// }
 
 model Table {
     id       Int   @id @default(autoincrement())
@@ -48,7 +48,7 @@ model TableSubject {
     endsAt   Float
 
     tableId   Int
-    dayId     Int
+    dayId     String
     subjectId Int
     teacherId Int
     hallId    Int
@@ -76,7 +76,7 @@ model TeacherWorkDate {
     createdAt DateTime @default(now())
 
     teacherId Int
-    dayId     Int
+    dayId     String
 }
 
 model Major {
@@ -111,7 +111,7 @@ model Subject {
 }
 
 model Day {
-    id   Int    @id @default(autoincrement())
+    id   String @id
     name String @unique
 
     teacherWorkDates TeacherWorkDate[]

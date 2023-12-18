@@ -16,8 +16,11 @@ import { IconTableExport, IconTableImport } from "@tabler/icons-react";
 import Link from "next/link";
 import { api } from "~/trpc/react";
 import { RouterOutputs } from "~/trpc/shared";
+import DangerModal from "./danger-modal";
+import { notifications } from "@mantine/notifications";
 
 function ImportAndExport() {
+  const [notificationId, setNotificationId] = useState("");
   const [opened, { open, close }] = useDisclosure(false);
   const { data, isLoading, isError, error } = api.data.export.useQuery(
     {},
@@ -42,6 +45,44 @@ function ImportAndExport() {
     [data],
   );
 
+  const importData = api.data.import.useMutation({
+    onMutate(variables) {
+      const id = notifications.show({
+        loading: true,
+        title: "يرجى الانتظار",
+        message: "جارى أضافة المعلومات",
+        autoClose: 500000,
+        withCloseButton: false,
+      });
+
+      setNotificationId(id);
+    },
+    onSuccess(data, variables, context) {
+      if (notificationId)
+        notifications.update({
+          id: notificationId,
+          loading: false,
+          title: "نجاح!",
+          message: "تم أضافة المعلومات",
+          color: "green",
+          autoClose: 5000,
+          withCloseButton: true,
+        });
+    },
+    onError(error, variables, context) {
+      if (notificationId)
+        notifications.update({
+          id: notificationId,
+          loading: false,
+          title: "فشل!",
+          message: `تعذر أضافة المعلومات بسبب :` + error.message,
+          color: "red",
+          autoClose: 5000,
+          withCloseButton: true,
+        });
+    },
+  });
+
   return (
     <>
       <Modal
@@ -51,16 +92,37 @@ function ImportAndExport() {
         centered
       >
         <Stack>
-          <Text>الأصدار: {data?.version || "جارى التحميل..."}</Text>
+          <Text>الأصدار الحالي: {data?.version || "جارى التحميل..."}</Text>
 
           {importedData && (
             <div className="rounded-md bg-slate-900 p-2 font-mono text-white">
-              <Text>أصدار الامتصدر: {importedData.version}</Text>
+              <Text>أصدار النسخة: {importedData.version}</Text>
               <Text>القاعات: {importedData.halls.length}</Text>
               <Text>المعلمين: {importedData.teachers.length}</Text>
               <Text>المواد: {importedData.subjects.length}</Text>
               <Text>التخصصات: {importedData.majors.length}</Text>
               <Text>الجداول: {importedData.tables.length}</Text>
+
+              <DangerModal
+                title="تأكيد الاستيراد"
+                description="يُلحظ أن هذا الإجراء لا يمكن التراجع عنه، لذا يُفضل بشدة أخذ نسخة احتياطية قبل تنفيذ هذا الإجراء."
+                onSubmit={(result) => {
+                  if (result) {
+                    importData.mutate({
+                      version: importedData.version,
+                      data: importedData,
+                    });
+                  }
+                }}
+              >
+                <Button
+                  color="red"
+                  className="mt-4"
+                  leftSection={<IconTableImport></IconTableImport>}
+                >
+                  استيراد
+                </Button>
+              </DangerModal>
             </div>
           )}
 

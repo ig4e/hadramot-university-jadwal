@@ -112,6 +112,7 @@ const isDataSetup = middleware(async (opts) => {
       DAYS_ARRAY.map((day) => {
         return ctx.db.day.create({
           data: {
+            id: day,
             name: day,
           },
         });

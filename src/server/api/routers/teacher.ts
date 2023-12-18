@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import {
   TeacherIncludeSchema,
   TeacherWhereInputSchema,
@@ -42,13 +43,27 @@ export const teacherRouter = createTRPCRouter({
               startsAt: workDate.startsAt,
               endsAt: workDate.endsAt,
               teacherId: teacher.id,
-              dayId: dayNameToId(workDate.day),
+              dayId: workDate.day,
             },
           }),
         ),
       );
 
       return { ...teacher, workDates: teacherWorkingDates };
+    }),
+
+  get: publicProcedure
+    .input(
+      z.object({
+        where: TeacherWhereInputSchema,
+        include: TeacherIncludeSchema.optional(),
+      }),
+    )
+    .query(({ input, ctx }) => {
+      return ctx.db.teacher.findFirst({
+        where: input.where,
+        include: input.include,
+      });
     }),
 
   list: publicProcedure
@@ -89,23 +104,58 @@ export const teacherRouter = createTRPCRouter({
         where: TeacherWhereUniqueInputSchema,
         name: z.string().optional(),
         subjectIDs: z.number().array().min(1).optional(),
-        workDates: TeacherWorkDateCreateWithoutDayOrTeacherInputSchema.array()
+        workDates: z
+          .object({
+            id: z.number().optional(),
+            startsAt: z.number(),
+            endsAt: z.number(),
+            day: z.enum([
+              "SUNDAY",
+              "MONDAY",
+              "TUESDAY",
+              "WEDNESDAY",
+              "THURSDAY",
+              "FRIDAY",
+              "SATURDAY",
+            ]),
+          })
+          .array()
           .min(1)
           .optional(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
+      const oldTeacher = await ctx.db.teacher.findFirst({
+        where: input.where,
+        include: { subjects: true },
+      });
+
+      if (!oldTeacher)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "تعذر الحصول على المعلم",
+        });
+
       const teacher = await ctx.db.teacher.update({
         where: input.where,
         data: {
           name: input.name,
           subjects: input.subjectIDs && {
+            disconnect: oldTeacher.subjects
+              .map(({ id }) => ({ id }))
+              .filter(({ id }) => !input.subjectIDs?.includes(id)),
             connect: input.subjectIDs.map((id) => ({ id })),
           },
         },
         include: {
           workDates: true,
           subjects: true,
+        },
+      });
+
+      await ctx.db.teacherWorkDate.deleteMany({
+        where: {
+          teacherId: teacher.id,
         },
       });
 
@@ -118,7 +168,7 @@ export const teacherRouter = createTRPCRouter({
                 startsAt: workDate.startsAt,
                 endsAt: workDate.endsAt,
                 teacherId: teacher.id,
-                dayId: dayNameToId(workDate.day),
+                dayId: workDate.day,
               },
             }),
           ),

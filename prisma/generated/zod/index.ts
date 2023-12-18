@@ -10,7 +10,7 @@ import type { Prisma } from '@prisma/client';
 // ENUMS
 /////////////////////////////////////////
 
-export const TransactionIsolationLevelSchema = z.enum(['ReadUncommitted','ReadCommitted','RepeatableRead','Serializable']);
+export const TransactionIsolationLevelSchema = z.enum(['Serializable']);
 
 export const TableScalarFieldEnumSchema = z.enum(['id','type','level','semester','majorId','updatedAt','createdAt']);
 
@@ -29,8 +29,6 @@ export const SubjectScalarFieldEnumSchema = z.enum(['id','name','updatedAt','cre
 export const DayScalarFieldEnumSchema = z.enum(['id','name']);
 
 export const SortOrderSchema = z.enum(['asc','desc']);
-
-export const QueryModeSchema = z.enum(['default','insensitive']);
 /////////////////////////////////////////
 // MODELS
 /////////////////////////////////////////
@@ -60,7 +58,7 @@ export const TableSubjectSchema = z.object({
   startsAt: z.number(),
   endsAt: z.number(),
   tableId: z.number().int(),
-  dayId: z.number().int(),
+  dayId: z.string(),
   subjectId: z.number().int(),
   teacherId: z.number().int(),
   hallId: z.number().int(),
@@ -92,7 +90,7 @@ export const TeacherWorkDateSchema = z.object({
   updatedAt: z.coerce.date(),
   createdAt: z.coerce.date(),
   teacherId: z.number().int(),
-  dayId: z.number().int(),
+  dayId: z.string(),
 })
 
 export type TeacherWorkDate = z.infer<typeof TeacherWorkDateSchema>
@@ -144,7 +142,7 @@ export type Subject = z.infer<typeof SubjectSchema>
 /////////////////////////////////////////
 
 export const DaySchema = z.object({
-  id: z.number().int(),
+  id: z.string(),
   name: z.string(),
 })
 
@@ -495,7 +493,7 @@ export const TableSubjectWhereInputSchema: z.ZodType<Prisma.TableSubjectWhereInp
   startsAt: z.union([ z.lazy(() => FloatFilterSchema),z.number() ]).optional(),
   endsAt: z.union([ z.lazy(() => FloatFilterSchema),z.number() ]).optional(),
   tableId: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
-  dayId: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  dayId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   subjectId: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   teacherId: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   hallId: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
@@ -533,7 +531,7 @@ export const TableSubjectWhereUniqueInputSchema: z.ZodType<Prisma.TableSubjectWh
   startsAt: z.union([ z.lazy(() => FloatFilterSchema),z.number() ]).optional(),
   endsAt: z.union([ z.lazy(() => FloatFilterSchema),z.number() ]).optional(),
   tableId: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
-  dayId: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  dayId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   subjectId: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
   teacherId: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
   hallId: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
@@ -568,7 +566,7 @@ export const TableSubjectScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.
   startsAt: z.union([ z.lazy(() => FloatWithAggregatesFilterSchema),z.number() ]).optional(),
   endsAt: z.union([ z.lazy(() => FloatWithAggregatesFilterSchema),z.number() ]).optional(),
   tableId: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
-  dayId: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  dayId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   subjectId: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
   teacherId: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
   hallId: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
@@ -654,7 +652,7 @@ export const TeacherWorkDateWhereInputSchema: z.ZodType<Prisma.TeacherWorkDateWh
   updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   teacherId: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
-  dayId: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  dayId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   day: z.union([ z.lazy(() => DayRelationFilterSchema),z.lazy(() => DayWhereInputSchema) ]).optional(),
   teacher: z.union([ z.lazy(() => TeacherRelationFilterSchema),z.lazy(() => TeacherWhereInputSchema) ]).optional(),
 }).strict();
@@ -684,7 +682,7 @@ export const TeacherWorkDateWhereUniqueInputSchema: z.ZodType<Prisma.TeacherWork
   updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   teacherId: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
-  dayId: z.union([ z.lazy(() => IntFilterSchema),z.number().int() ]).optional(),
+  dayId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   day: z.union([ z.lazy(() => DayRelationFilterSchema),z.lazy(() => DayWhereInputSchema) ]).optional(),
   teacher: z.union([ z.lazy(() => TeacherRelationFilterSchema),z.lazy(() => TeacherWhereInputSchema) ]).optional(),
 }).strict());
@@ -714,7 +712,7 @@ export const TeacherWorkDateScalarWhereWithAggregatesInputSchema: z.ZodType<Pris
   updatedAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema),z.coerce.date() ]).optional(),
   teacherId: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
-  dayId: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  dayId: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
 }).strict();
 
 export const MajorWhereInputSchema: z.ZodType<Prisma.MajorWhereInput> = z.object({
@@ -922,7 +920,7 @@ export const DayWhereInputSchema: z.ZodType<Prisma.DayWhereInput> = z.object({
   AND: z.union([ z.lazy(() => DayWhereInputSchema),z.lazy(() => DayWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => DayWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => DayWhereInputSchema),z.lazy(() => DayWhereInputSchema).array() ]).optional(),
-  id: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  id: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   name: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   teacherWorkDates: z.lazy(() => TeacherWorkDateListRelationFilterSchema).optional(),
   tableSubjects: z.lazy(() => TableSubjectListRelationFilterSchema).optional()
@@ -937,18 +935,18 @@ export const DayOrderByWithRelationInputSchema: z.ZodType<Prisma.DayOrderByWithR
 
 export const DayWhereUniqueInputSchema: z.ZodType<Prisma.DayWhereUniqueInput> = z.union([
   z.object({
-    id: z.number().int(),
+    id: z.string(),
     name: z.string()
   }),
   z.object({
-    id: z.number().int(),
+    id: z.string(),
   }),
   z.object({
     name: z.string(),
   }),
 ])
 .and(z.object({
-  id: z.number().int().optional(),
+  id: z.string().optional(),
   name: z.string().optional(),
   AND: z.union([ z.lazy(() => DayWhereInputSchema),z.lazy(() => DayWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => DayWhereInputSchema).array().optional(),
@@ -961,17 +959,15 @@ export const DayOrderByWithAggregationInputSchema: z.ZodType<Prisma.DayOrderByWi
   id: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional(),
   _count: z.lazy(() => DayCountOrderByAggregateInputSchema).optional(),
-  _avg: z.lazy(() => DayAvgOrderByAggregateInputSchema).optional(),
   _max: z.lazy(() => DayMaxOrderByAggregateInputSchema).optional(),
-  _min: z.lazy(() => DayMinOrderByAggregateInputSchema).optional(),
-  _sum: z.lazy(() => DaySumOrderByAggregateInputSchema).optional()
+  _min: z.lazy(() => DayMinOrderByAggregateInputSchema).optional()
 }).strict();
 
 export const DayScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.DayScalarWhereWithAggregatesInput> = z.object({
   AND: z.union([ z.lazy(() => DayScalarWhereWithAggregatesInputSchema),z.lazy(() => DayScalarWhereWithAggregatesInputSchema).array() ]).optional(),
   OR: z.lazy(() => DayScalarWhereWithAggregatesInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => DayScalarWhereWithAggregatesInputSchema),z.lazy(() => DayScalarWhereWithAggregatesInputSchema).array() ]).optional(),
-  id: z.union([ z.lazy(() => IntWithAggregatesFilterSchema),z.number() ]).optional(),
+  id: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
   name: z.union([ z.lazy(() => StringWithAggregatesFilterSchema),z.string() ]).optional(),
 }).strict();
 
@@ -1017,16 +1013,6 @@ export const TableUncheckedUpdateInputSchema: z.ZodType<Prisma.TableUncheckedUpd
   subjects: z.lazy(() => TableSubjectUncheckedUpdateManyWithoutTableNestedInputSchema).optional()
 }).strict();
 
-export const TableCreateManyInputSchema: z.ZodType<Prisma.TableCreateManyInput> = z.object({
-  id: z.number().int().optional(),
-  type: z.number().int(),
-  level: z.number().int(),
-  semester: z.number().int(),
-  majorId: z.number().int(),
-  updatedAt: z.coerce.date().optional(),
-  createdAt: z.coerce.date().optional()
-}).strict();
-
 export const TableUpdateManyMutationInputSchema: z.ZodType<Prisma.TableUpdateManyMutationInput> = z.object({
   type: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   level: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
@@ -1060,7 +1046,7 @@ export const TableSubjectUncheckedCreateInputSchema: z.ZodType<Prisma.TableSubje
   startsAt: z.number(),
   endsAt: z.number(),
   tableId: z.number().int(),
-  dayId: z.number().int(),
+  dayId: z.string(),
   subjectId: z.number().int(),
   teacherId: z.number().int(),
   hallId: z.number().int()
@@ -1081,21 +1067,10 @@ export const TableSubjectUncheckedUpdateInputSchema: z.ZodType<Prisma.TableSubje
   startsAt: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   endsAt: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   tableId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  dayId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  dayId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   subjectId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   teacherId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   hallId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-}).strict();
-
-export const TableSubjectCreateManyInputSchema: z.ZodType<Prisma.TableSubjectCreateManyInput> = z.object({
-  id: z.number().int().optional(),
-  startsAt: z.number(),
-  endsAt: z.number(),
-  tableId: z.number().int(),
-  dayId: z.number().int(),
-  subjectId: z.number().int(),
-  teacherId: z.number().int(),
-  hallId: z.number().int()
 }).strict();
 
 export const TableSubjectUpdateManyMutationInputSchema: z.ZodType<Prisma.TableSubjectUpdateManyMutationInput> = z.object({
@@ -1108,7 +1083,7 @@ export const TableSubjectUncheckedUpdateManyInputSchema: z.ZodType<Prisma.TableS
   startsAt: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   endsAt: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   tableId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  dayId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  dayId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   subjectId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   teacherId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   hallId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
@@ -1152,13 +1127,6 @@ export const TeacherUncheckedUpdateInputSchema: z.ZodType<Prisma.TeacherUnchecke
   tableSubjects: z.lazy(() => TableSubjectUncheckedUpdateManyWithoutTeacherNestedInputSchema).optional()
 }).strict();
 
-export const TeacherCreateManyInputSchema: z.ZodType<Prisma.TeacherCreateManyInput> = z.object({
-  id: z.number().int().optional(),
-  name: z.string(),
-  updatedAt: z.coerce.date().optional(),
-  createdAt: z.coerce.date().optional()
-}).strict();
-
 export const TeacherUpdateManyMutationInputSchema: z.ZodType<Prisma.TeacherUpdateManyMutationInput> = z.object({
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -1188,7 +1156,7 @@ export const TeacherWorkDateUncheckedCreateInputSchema: z.ZodType<Prisma.Teacher
   updatedAt: z.coerce.date().optional(),
   createdAt: z.coerce.date().optional(),
   teacherId: z.number().int(),
-  dayId: z.number().int()
+  dayId: z.string()
 }).strict();
 
 export const TeacherWorkDateUpdateInputSchema: z.ZodType<Prisma.TeacherWorkDateUpdateInput> = z.object({
@@ -1207,17 +1175,7 @@ export const TeacherWorkDateUncheckedUpdateInputSchema: z.ZodType<Prisma.Teacher
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   teacherId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  dayId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-}).strict();
-
-export const TeacherWorkDateCreateManyInputSchema: z.ZodType<Prisma.TeacherWorkDateCreateManyInput> = z.object({
-  id: z.number().int().optional(),
-  startsAt: z.number(),
-  endsAt: z.number(),
-  updatedAt: z.coerce.date().optional(),
-  createdAt: z.coerce.date().optional(),
-  teacherId: z.number().int(),
-  dayId: z.number().int()
+  dayId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const TeacherWorkDateUpdateManyMutationInputSchema: z.ZodType<Prisma.TeacherWorkDateUpdateManyMutationInput> = z.object({
@@ -1234,7 +1192,7 @@ export const TeacherWorkDateUncheckedUpdateManyInputSchema: z.ZodType<Prisma.Tea
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   teacherId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  dayId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  dayId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const MajorCreateInputSchema: z.ZodType<Prisma.MajorCreateInput> = z.object({
@@ -1273,15 +1231,6 @@ export const MajorUncheckedUpdateInputSchema: z.ZodType<Prisma.MajorUncheckedUpd
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   tables: z.lazy(() => TableUncheckedUpdateManyWithoutMajorNestedInputSchema).optional()
-}).strict();
-
-export const MajorCreateManyInputSchema: z.ZodType<Prisma.MajorCreateManyInput> = z.object({
-  id: z.number().int().optional(),
-  type: z.number().int().optional(),
-  name: z.string(),
-  studentsCount: z.number().int(),
-  updatedAt: z.coerce.date().optional(),
-  createdAt: z.coerce.date().optional()
 }).strict();
 
 export const MajorUpdateManyMutationInputSchema: z.ZodType<Prisma.MajorUpdateManyMutationInput> = z.object({
@@ -1335,14 +1284,6 @@ export const HallUncheckedUpdateInputSchema: z.ZodType<Prisma.HallUncheckedUpdat
   tableSubjects: z.lazy(() => TableSubjectUncheckedUpdateManyWithoutHallNestedInputSchema).optional()
 }).strict();
 
-export const HallCreateManyInputSchema: z.ZodType<Prisma.HallCreateManyInput> = z.object({
-  id: z.number().int().optional(),
-  name: z.string(),
-  studentsCount: z.number().int(),
-  updatedAt: z.coerce.date().optional(),
-  createdAt: z.coerce.date().optional()
-}).strict();
-
 export const HallUpdateManyMutationInputSchema: z.ZodType<Prisma.HallUpdateManyMutationInput> = z.object({
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   studentsCount: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
@@ -1392,13 +1333,6 @@ export const SubjectUncheckedUpdateInputSchema: z.ZodType<Prisma.SubjectUnchecke
   tableSubjects: z.lazy(() => TableSubjectUncheckedUpdateManyWithoutSubjectNestedInputSchema).optional()
 }).strict();
 
-export const SubjectCreateManyInputSchema: z.ZodType<Prisma.SubjectCreateManyInput> = z.object({
-  id: z.number().int().optional(),
-  name: z.string(),
-  updatedAt: z.coerce.date().optional(),
-  createdAt: z.coerce.date().optional()
-}).strict();
-
 export const SubjectUpdateManyMutationInputSchema: z.ZodType<Prisma.SubjectUpdateManyMutationInput> = z.object({
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
@@ -1413,42 +1347,40 @@ export const SubjectUncheckedUpdateManyInputSchema: z.ZodType<Prisma.SubjectUnch
 }).strict();
 
 export const DayCreateInputSchema: z.ZodType<Prisma.DayCreateInput> = z.object({
+  id: z.string(),
   name: z.string(),
   teacherWorkDates: z.lazy(() => TeacherWorkDateCreateNestedManyWithoutDayInputSchema).optional(),
   tableSubjects: z.lazy(() => TableSubjectCreateNestedManyWithoutDayInputSchema).optional()
 }).strict();
 
 export const DayUncheckedCreateInputSchema: z.ZodType<Prisma.DayUncheckedCreateInput> = z.object({
-  id: z.number().int().optional(),
+  id: z.string(),
   name: z.string(),
   teacherWorkDates: z.lazy(() => TeacherWorkDateUncheckedCreateNestedManyWithoutDayInputSchema).optional(),
   tableSubjects: z.lazy(() => TableSubjectUncheckedCreateNestedManyWithoutDayInputSchema).optional()
 }).strict();
 
 export const DayUpdateInputSchema: z.ZodType<Prisma.DayUpdateInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   teacherWorkDates: z.lazy(() => TeacherWorkDateUpdateManyWithoutDayNestedInputSchema).optional(),
   tableSubjects: z.lazy(() => TableSubjectUpdateManyWithoutDayNestedInputSchema).optional()
 }).strict();
 
 export const DayUncheckedUpdateInputSchema: z.ZodType<Prisma.DayUncheckedUpdateInput> = z.object({
-  id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   teacherWorkDates: z.lazy(() => TeacherWorkDateUncheckedUpdateManyWithoutDayNestedInputSchema).optional(),
   tableSubjects: z.lazy(() => TableSubjectUncheckedUpdateManyWithoutDayNestedInputSchema).optional()
 }).strict();
 
-export const DayCreateManyInputSchema: z.ZodType<Prisma.DayCreateManyInput> = z.object({
-  id: z.number().int().optional(),
-  name: z.string()
-}).strict();
-
 export const DayUpdateManyMutationInputSchema: z.ZodType<Prisma.DayUpdateManyMutationInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const DayUncheckedUpdateManyInputSchema: z.ZodType<Prisma.DayUncheckedUpdateManyInput> = z.object({
-  id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
@@ -1576,6 +1508,20 @@ export const FloatFilterSchema: z.ZodType<Prisma.FloatFilter> = z.object({
   not: z.union([ z.number(),z.lazy(() => NestedFloatFilterSchema) ]).optional(),
 }).strict();
 
+export const StringFilterSchema: z.ZodType<Prisma.StringFilter> = z.object({
+  equals: z.string().optional(),
+  in: z.string().array().optional(),
+  notIn: z.string().array().optional(),
+  lt: z.string().optional(),
+  lte: z.string().optional(),
+  gt: z.string().optional(),
+  gte: z.string().optional(),
+  contains: z.string().optional(),
+  startsWith: z.string().optional(),
+  endsWith: z.string().optional(),
+  not: z.union([ z.string(),z.lazy(() => NestedStringFilterSchema) ]).optional(),
+}).strict();
+
 export const TableRelationFilterSchema: z.ZodType<Prisma.TableRelationFilter> = z.object({
   is: z.lazy(() => TableWhereInputSchema).optional(),
   isNot: z.lazy(() => TableWhereInputSchema).optional()
@@ -1617,7 +1563,6 @@ export const TableSubjectAvgOrderByAggregateInputSchema: z.ZodType<Prisma.TableS
   startsAt: z.lazy(() => SortOrderSchema).optional(),
   endsAt: z.lazy(() => SortOrderSchema).optional(),
   tableId: z.lazy(() => SortOrderSchema).optional(),
-  dayId: z.lazy(() => SortOrderSchema).optional(),
   subjectId: z.lazy(() => SortOrderSchema).optional(),
   teacherId: z.lazy(() => SortOrderSchema).optional(),
   hallId: z.lazy(() => SortOrderSchema).optional()
@@ -1650,7 +1595,6 @@ export const TableSubjectSumOrderByAggregateInputSchema: z.ZodType<Prisma.TableS
   startsAt: z.lazy(() => SortOrderSchema).optional(),
   endsAt: z.lazy(() => SortOrderSchema).optional(),
   tableId: z.lazy(() => SortOrderSchema).optional(),
-  dayId: z.lazy(() => SortOrderSchema).optional(),
   subjectId: z.lazy(() => SortOrderSchema).optional(),
   teacherId: z.lazy(() => SortOrderSchema).optional(),
   hallId: z.lazy(() => SortOrderSchema).optional()
@@ -1672,7 +1616,7 @@ export const FloatWithAggregatesFilterSchema: z.ZodType<Prisma.FloatWithAggregat
   _max: z.lazy(() => NestedFloatFilterSchema).optional()
 }).strict();
 
-export const StringFilterSchema: z.ZodType<Prisma.StringFilter> = z.object({
+export const StringWithAggregatesFilterSchema: z.ZodType<Prisma.StringWithAggregatesFilter> = z.object({
   equals: z.string().optional(),
   in: z.string().array().optional(),
   notIn: z.string().array().optional(),
@@ -1683,8 +1627,10 @@ export const StringFilterSchema: z.ZodType<Prisma.StringFilter> = z.object({
   contains: z.string().optional(),
   startsWith: z.string().optional(),
   endsWith: z.string().optional(),
-  mode: z.lazy(() => QueryModeSchema).optional(),
-  not: z.union([ z.string(),z.lazy(() => NestedStringFilterSchema) ]).optional(),
+  not: z.union([ z.string(),z.lazy(() => NestedStringWithAggregatesFilterSchema) ]).optional(),
+  _count: z.lazy(() => NestedIntFilterSchema).optional(),
+  _min: z.lazy(() => NestedStringFilterSchema).optional(),
+  _max: z.lazy(() => NestedStringFilterSchema).optional()
 }).strict();
 
 export const SubjectListRelationFilterSchema: z.ZodType<Prisma.SubjectListRelationFilter> = z.object({
@@ -1736,24 +1682,6 @@ export const TeacherSumOrderByAggregateInputSchema: z.ZodType<Prisma.TeacherSumO
   id: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
-export const StringWithAggregatesFilterSchema: z.ZodType<Prisma.StringWithAggregatesFilter> = z.object({
-  equals: z.string().optional(),
-  in: z.string().array().optional(),
-  notIn: z.string().array().optional(),
-  lt: z.string().optional(),
-  lte: z.string().optional(),
-  gt: z.string().optional(),
-  gte: z.string().optional(),
-  contains: z.string().optional(),
-  startsWith: z.string().optional(),
-  endsWith: z.string().optional(),
-  mode: z.lazy(() => QueryModeSchema).optional(),
-  not: z.union([ z.string(),z.lazy(() => NestedStringWithAggregatesFilterSchema) ]).optional(),
-  _count: z.lazy(() => NestedIntFilterSchema).optional(),
-  _min: z.lazy(() => NestedStringFilterSchema).optional(),
-  _max: z.lazy(() => NestedStringFilterSchema).optional()
-}).strict();
-
 export const TeacherWorkDateCountOrderByAggregateInputSchema: z.ZodType<Prisma.TeacherWorkDateCountOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   startsAt: z.lazy(() => SortOrderSchema).optional(),
@@ -1768,8 +1696,7 @@ export const TeacherWorkDateAvgOrderByAggregateInputSchema: z.ZodType<Prisma.Tea
   id: z.lazy(() => SortOrderSchema).optional(),
   startsAt: z.lazy(() => SortOrderSchema).optional(),
   endsAt: z.lazy(() => SortOrderSchema).optional(),
-  teacherId: z.lazy(() => SortOrderSchema).optional(),
-  dayId: z.lazy(() => SortOrderSchema).optional()
+  teacherId: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const TeacherWorkDateMaxOrderByAggregateInputSchema: z.ZodType<Prisma.TeacherWorkDateMaxOrderByAggregateInput> = z.object({
@@ -1796,8 +1723,7 @@ export const TeacherWorkDateSumOrderByAggregateInputSchema: z.ZodType<Prisma.Tea
   id: z.lazy(() => SortOrderSchema).optional(),
   startsAt: z.lazy(() => SortOrderSchema).optional(),
   endsAt: z.lazy(() => SortOrderSchema).optional(),
-  teacherId: z.lazy(() => SortOrderSchema).optional(),
-  dayId: z.lazy(() => SortOrderSchema).optional()
+  teacherId: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const TableListRelationFilterSchema: z.ZodType<Prisma.TableListRelationFilter> = z.object({
@@ -1927,10 +1853,6 @@ export const DayCountOrderByAggregateInputSchema: z.ZodType<Prisma.DayCountOrder
   name: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
-export const DayAvgOrderByAggregateInputSchema: z.ZodType<Prisma.DayAvgOrderByAggregateInput> = z.object({
-  id: z.lazy(() => SortOrderSchema).optional()
-}).strict();
-
 export const DayMaxOrderByAggregateInputSchema: z.ZodType<Prisma.DayMaxOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional()
@@ -1939,10 +1861,6 @@ export const DayMaxOrderByAggregateInputSchema: z.ZodType<Prisma.DayMaxOrderByAg
 export const DayMinOrderByAggregateInputSchema: z.ZodType<Prisma.DayMinOrderByAggregateInput> = z.object({
   id: z.lazy(() => SortOrderSchema).optional(),
   name: z.lazy(() => SortOrderSchema).optional()
-}).strict();
-
-export const DaySumOrderByAggregateInputSchema: z.ZodType<Prisma.DaySumOrderByAggregateInput> = z.object({
-  id: z.lazy(() => SortOrderSchema).optional()
 }).strict();
 
 export const MajorCreateNestedOneWithoutTablesInputSchema: z.ZodType<Prisma.MajorCreateNestedOneWithoutTablesInput> = z.object({
@@ -1954,14 +1872,12 @@ export const MajorCreateNestedOneWithoutTablesInputSchema: z.ZodType<Prisma.Majo
 export const TableSubjectCreateNestedManyWithoutTableInputSchema: z.ZodType<Prisma.TableSubjectCreateNestedManyWithoutTableInput> = z.object({
   create: z.union([ z.lazy(() => TableSubjectCreateWithoutTableInputSchema),z.lazy(() => TableSubjectCreateWithoutTableInputSchema).array(),z.lazy(() => TableSubjectUncheckedCreateWithoutTableInputSchema),z.lazy(() => TableSubjectUncheckedCreateWithoutTableInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TableSubjectCreateOrConnectWithoutTableInputSchema),z.lazy(() => TableSubjectCreateOrConnectWithoutTableInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TableSubjectCreateManyTableInputEnvelopeSchema).optional(),
   connect: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
 export const TableSubjectUncheckedCreateNestedManyWithoutTableInputSchema: z.ZodType<Prisma.TableSubjectUncheckedCreateNestedManyWithoutTableInput> = z.object({
   create: z.union([ z.lazy(() => TableSubjectCreateWithoutTableInputSchema),z.lazy(() => TableSubjectCreateWithoutTableInputSchema).array(),z.lazy(() => TableSubjectUncheckedCreateWithoutTableInputSchema),z.lazy(() => TableSubjectUncheckedCreateWithoutTableInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TableSubjectCreateOrConnectWithoutTableInputSchema),z.lazy(() => TableSubjectCreateOrConnectWithoutTableInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TableSubjectCreateManyTableInputEnvelopeSchema).optional(),
   connect: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
@@ -1989,7 +1905,6 @@ export const TableSubjectUpdateManyWithoutTableNestedInputSchema: z.ZodType<Pris
   create: z.union([ z.lazy(() => TableSubjectCreateWithoutTableInputSchema),z.lazy(() => TableSubjectCreateWithoutTableInputSchema).array(),z.lazy(() => TableSubjectUncheckedCreateWithoutTableInputSchema),z.lazy(() => TableSubjectUncheckedCreateWithoutTableInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TableSubjectCreateOrConnectWithoutTableInputSchema),z.lazy(() => TableSubjectCreateOrConnectWithoutTableInputSchema).array() ]).optional(),
   upsert: z.union([ z.lazy(() => TableSubjectUpsertWithWhereUniqueWithoutTableInputSchema),z.lazy(() => TableSubjectUpsertWithWhereUniqueWithoutTableInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TableSubjectCreateManyTableInputEnvelopeSchema).optional(),
   set: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
   disconnect: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
   delete: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
@@ -2003,7 +1918,6 @@ export const TableSubjectUncheckedUpdateManyWithoutTableNestedInputSchema: z.Zod
   create: z.union([ z.lazy(() => TableSubjectCreateWithoutTableInputSchema),z.lazy(() => TableSubjectCreateWithoutTableInputSchema).array(),z.lazy(() => TableSubjectUncheckedCreateWithoutTableInputSchema),z.lazy(() => TableSubjectUncheckedCreateWithoutTableInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TableSubjectCreateOrConnectWithoutTableInputSchema),z.lazy(() => TableSubjectCreateOrConnectWithoutTableInputSchema).array() ]).optional(),
   upsert: z.union([ z.lazy(() => TableSubjectUpsertWithWhereUniqueWithoutTableInputSchema),z.lazy(() => TableSubjectUpsertWithWhereUniqueWithoutTableInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TableSubjectCreateManyTableInputEnvelopeSchema).optional(),
   set: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
   disconnect: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
   delete: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
@@ -2091,6 +2005,10 @@ export const HallUpdateOneRequiredWithoutTableSubjectsNestedInputSchema: z.ZodTy
   update: z.union([ z.lazy(() => HallUpdateToOneWithWhereWithoutTableSubjectsInputSchema),z.lazy(() => HallUpdateWithoutTableSubjectsInputSchema),z.lazy(() => HallUncheckedUpdateWithoutTableSubjectsInputSchema) ]).optional(),
 }).strict();
 
+export const StringFieldUpdateOperationsInputSchema: z.ZodType<Prisma.StringFieldUpdateOperationsInput> = z.object({
+  set: z.string().optional()
+}).strict();
+
 export const SubjectCreateNestedManyWithoutTeachersInputSchema: z.ZodType<Prisma.SubjectCreateNestedManyWithoutTeachersInput> = z.object({
   create: z.union([ z.lazy(() => SubjectCreateWithoutTeachersInputSchema),z.lazy(() => SubjectCreateWithoutTeachersInputSchema).array(),z.lazy(() => SubjectUncheckedCreateWithoutTeachersInputSchema),z.lazy(() => SubjectUncheckedCreateWithoutTeachersInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => SubjectCreateOrConnectWithoutTeachersInputSchema),z.lazy(() => SubjectCreateOrConnectWithoutTeachersInputSchema).array() ]).optional(),
@@ -2100,14 +2018,12 @@ export const SubjectCreateNestedManyWithoutTeachersInputSchema: z.ZodType<Prisma
 export const TeacherWorkDateCreateNestedManyWithoutTeacherInputSchema: z.ZodType<Prisma.TeacherWorkDateCreateNestedManyWithoutTeacherInput> = z.object({
   create: z.union([ z.lazy(() => TeacherWorkDateCreateWithoutTeacherInputSchema),z.lazy(() => TeacherWorkDateCreateWithoutTeacherInputSchema).array(),z.lazy(() => TeacherWorkDateUncheckedCreateWithoutTeacherInputSchema),z.lazy(() => TeacherWorkDateUncheckedCreateWithoutTeacherInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TeacherWorkDateCreateOrConnectWithoutTeacherInputSchema),z.lazy(() => TeacherWorkDateCreateOrConnectWithoutTeacherInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TeacherWorkDateCreateManyTeacherInputEnvelopeSchema).optional(),
   connect: z.union([ z.lazy(() => TeacherWorkDateWhereUniqueInputSchema),z.lazy(() => TeacherWorkDateWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
 export const TableSubjectCreateNestedManyWithoutTeacherInputSchema: z.ZodType<Prisma.TableSubjectCreateNestedManyWithoutTeacherInput> = z.object({
   create: z.union([ z.lazy(() => TableSubjectCreateWithoutTeacherInputSchema),z.lazy(() => TableSubjectCreateWithoutTeacherInputSchema).array(),z.lazy(() => TableSubjectUncheckedCreateWithoutTeacherInputSchema),z.lazy(() => TableSubjectUncheckedCreateWithoutTeacherInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TableSubjectCreateOrConnectWithoutTeacherInputSchema),z.lazy(() => TableSubjectCreateOrConnectWithoutTeacherInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TableSubjectCreateManyTeacherInputEnvelopeSchema).optional(),
   connect: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
@@ -2120,19 +2036,13 @@ export const SubjectUncheckedCreateNestedManyWithoutTeachersInputSchema: z.ZodTy
 export const TeacherWorkDateUncheckedCreateNestedManyWithoutTeacherInputSchema: z.ZodType<Prisma.TeacherWorkDateUncheckedCreateNestedManyWithoutTeacherInput> = z.object({
   create: z.union([ z.lazy(() => TeacherWorkDateCreateWithoutTeacherInputSchema),z.lazy(() => TeacherWorkDateCreateWithoutTeacherInputSchema).array(),z.lazy(() => TeacherWorkDateUncheckedCreateWithoutTeacherInputSchema),z.lazy(() => TeacherWorkDateUncheckedCreateWithoutTeacherInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TeacherWorkDateCreateOrConnectWithoutTeacherInputSchema),z.lazy(() => TeacherWorkDateCreateOrConnectWithoutTeacherInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TeacherWorkDateCreateManyTeacherInputEnvelopeSchema).optional(),
   connect: z.union([ z.lazy(() => TeacherWorkDateWhereUniqueInputSchema),z.lazy(() => TeacherWorkDateWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
 export const TableSubjectUncheckedCreateNestedManyWithoutTeacherInputSchema: z.ZodType<Prisma.TableSubjectUncheckedCreateNestedManyWithoutTeacherInput> = z.object({
   create: z.union([ z.lazy(() => TableSubjectCreateWithoutTeacherInputSchema),z.lazy(() => TableSubjectCreateWithoutTeacherInputSchema).array(),z.lazy(() => TableSubjectUncheckedCreateWithoutTeacherInputSchema),z.lazy(() => TableSubjectUncheckedCreateWithoutTeacherInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TableSubjectCreateOrConnectWithoutTeacherInputSchema),z.lazy(() => TableSubjectCreateOrConnectWithoutTeacherInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TableSubjectCreateManyTeacherInputEnvelopeSchema).optional(),
   connect: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
-}).strict();
-
-export const StringFieldUpdateOperationsInputSchema: z.ZodType<Prisma.StringFieldUpdateOperationsInput> = z.object({
-  set: z.string().optional()
 }).strict();
 
 export const SubjectUpdateManyWithoutTeachersNestedInputSchema: z.ZodType<Prisma.SubjectUpdateManyWithoutTeachersNestedInput> = z.object({
@@ -2152,7 +2062,6 @@ export const TeacherWorkDateUpdateManyWithoutTeacherNestedInputSchema: z.ZodType
   create: z.union([ z.lazy(() => TeacherWorkDateCreateWithoutTeacherInputSchema),z.lazy(() => TeacherWorkDateCreateWithoutTeacherInputSchema).array(),z.lazy(() => TeacherWorkDateUncheckedCreateWithoutTeacherInputSchema),z.lazy(() => TeacherWorkDateUncheckedCreateWithoutTeacherInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TeacherWorkDateCreateOrConnectWithoutTeacherInputSchema),z.lazy(() => TeacherWorkDateCreateOrConnectWithoutTeacherInputSchema).array() ]).optional(),
   upsert: z.union([ z.lazy(() => TeacherWorkDateUpsertWithWhereUniqueWithoutTeacherInputSchema),z.lazy(() => TeacherWorkDateUpsertWithWhereUniqueWithoutTeacherInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TeacherWorkDateCreateManyTeacherInputEnvelopeSchema).optional(),
   set: z.union([ z.lazy(() => TeacherWorkDateWhereUniqueInputSchema),z.lazy(() => TeacherWorkDateWhereUniqueInputSchema).array() ]).optional(),
   disconnect: z.union([ z.lazy(() => TeacherWorkDateWhereUniqueInputSchema),z.lazy(() => TeacherWorkDateWhereUniqueInputSchema).array() ]).optional(),
   delete: z.union([ z.lazy(() => TeacherWorkDateWhereUniqueInputSchema),z.lazy(() => TeacherWorkDateWhereUniqueInputSchema).array() ]).optional(),
@@ -2166,7 +2075,6 @@ export const TableSubjectUpdateManyWithoutTeacherNestedInputSchema: z.ZodType<Pr
   create: z.union([ z.lazy(() => TableSubjectCreateWithoutTeacherInputSchema),z.lazy(() => TableSubjectCreateWithoutTeacherInputSchema).array(),z.lazy(() => TableSubjectUncheckedCreateWithoutTeacherInputSchema),z.lazy(() => TableSubjectUncheckedCreateWithoutTeacherInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TableSubjectCreateOrConnectWithoutTeacherInputSchema),z.lazy(() => TableSubjectCreateOrConnectWithoutTeacherInputSchema).array() ]).optional(),
   upsert: z.union([ z.lazy(() => TableSubjectUpsertWithWhereUniqueWithoutTeacherInputSchema),z.lazy(() => TableSubjectUpsertWithWhereUniqueWithoutTeacherInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TableSubjectCreateManyTeacherInputEnvelopeSchema).optional(),
   set: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
   disconnect: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
   delete: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
@@ -2193,7 +2101,6 @@ export const TeacherWorkDateUncheckedUpdateManyWithoutTeacherNestedInputSchema: 
   create: z.union([ z.lazy(() => TeacherWorkDateCreateWithoutTeacherInputSchema),z.lazy(() => TeacherWorkDateCreateWithoutTeacherInputSchema).array(),z.lazy(() => TeacherWorkDateUncheckedCreateWithoutTeacherInputSchema),z.lazy(() => TeacherWorkDateUncheckedCreateWithoutTeacherInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TeacherWorkDateCreateOrConnectWithoutTeacherInputSchema),z.lazy(() => TeacherWorkDateCreateOrConnectWithoutTeacherInputSchema).array() ]).optional(),
   upsert: z.union([ z.lazy(() => TeacherWorkDateUpsertWithWhereUniqueWithoutTeacherInputSchema),z.lazy(() => TeacherWorkDateUpsertWithWhereUniqueWithoutTeacherInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TeacherWorkDateCreateManyTeacherInputEnvelopeSchema).optional(),
   set: z.union([ z.lazy(() => TeacherWorkDateWhereUniqueInputSchema),z.lazy(() => TeacherWorkDateWhereUniqueInputSchema).array() ]).optional(),
   disconnect: z.union([ z.lazy(() => TeacherWorkDateWhereUniqueInputSchema),z.lazy(() => TeacherWorkDateWhereUniqueInputSchema).array() ]).optional(),
   delete: z.union([ z.lazy(() => TeacherWorkDateWhereUniqueInputSchema),z.lazy(() => TeacherWorkDateWhereUniqueInputSchema).array() ]).optional(),
@@ -2207,7 +2114,6 @@ export const TableSubjectUncheckedUpdateManyWithoutTeacherNestedInputSchema: z.Z
   create: z.union([ z.lazy(() => TableSubjectCreateWithoutTeacherInputSchema),z.lazy(() => TableSubjectCreateWithoutTeacherInputSchema).array(),z.lazy(() => TableSubjectUncheckedCreateWithoutTeacherInputSchema),z.lazy(() => TableSubjectUncheckedCreateWithoutTeacherInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TableSubjectCreateOrConnectWithoutTeacherInputSchema),z.lazy(() => TableSubjectCreateOrConnectWithoutTeacherInputSchema).array() ]).optional(),
   upsert: z.union([ z.lazy(() => TableSubjectUpsertWithWhereUniqueWithoutTeacherInputSchema),z.lazy(() => TableSubjectUpsertWithWhereUniqueWithoutTeacherInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TableSubjectCreateManyTeacherInputEnvelopeSchema).optional(),
   set: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
   disconnect: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
   delete: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
@@ -2248,14 +2154,12 @@ export const TeacherUpdateOneRequiredWithoutWorkDatesNestedInputSchema: z.ZodTyp
 export const TableCreateNestedManyWithoutMajorInputSchema: z.ZodType<Prisma.TableCreateNestedManyWithoutMajorInput> = z.object({
   create: z.union([ z.lazy(() => TableCreateWithoutMajorInputSchema),z.lazy(() => TableCreateWithoutMajorInputSchema).array(),z.lazy(() => TableUncheckedCreateWithoutMajorInputSchema),z.lazy(() => TableUncheckedCreateWithoutMajorInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TableCreateOrConnectWithoutMajorInputSchema),z.lazy(() => TableCreateOrConnectWithoutMajorInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TableCreateManyMajorInputEnvelopeSchema).optional(),
   connect: z.union([ z.lazy(() => TableWhereUniqueInputSchema),z.lazy(() => TableWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
 export const TableUncheckedCreateNestedManyWithoutMajorInputSchema: z.ZodType<Prisma.TableUncheckedCreateNestedManyWithoutMajorInput> = z.object({
   create: z.union([ z.lazy(() => TableCreateWithoutMajorInputSchema),z.lazy(() => TableCreateWithoutMajorInputSchema).array(),z.lazy(() => TableUncheckedCreateWithoutMajorInputSchema),z.lazy(() => TableUncheckedCreateWithoutMajorInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TableCreateOrConnectWithoutMajorInputSchema),z.lazy(() => TableCreateOrConnectWithoutMajorInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TableCreateManyMajorInputEnvelopeSchema).optional(),
   connect: z.union([ z.lazy(() => TableWhereUniqueInputSchema),z.lazy(() => TableWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
@@ -2263,7 +2167,6 @@ export const TableUpdateManyWithoutMajorNestedInputSchema: z.ZodType<Prisma.Tabl
   create: z.union([ z.lazy(() => TableCreateWithoutMajorInputSchema),z.lazy(() => TableCreateWithoutMajorInputSchema).array(),z.lazy(() => TableUncheckedCreateWithoutMajorInputSchema),z.lazy(() => TableUncheckedCreateWithoutMajorInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TableCreateOrConnectWithoutMajorInputSchema),z.lazy(() => TableCreateOrConnectWithoutMajorInputSchema).array() ]).optional(),
   upsert: z.union([ z.lazy(() => TableUpsertWithWhereUniqueWithoutMajorInputSchema),z.lazy(() => TableUpsertWithWhereUniqueWithoutMajorInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TableCreateManyMajorInputEnvelopeSchema).optional(),
   set: z.union([ z.lazy(() => TableWhereUniqueInputSchema),z.lazy(() => TableWhereUniqueInputSchema).array() ]).optional(),
   disconnect: z.union([ z.lazy(() => TableWhereUniqueInputSchema),z.lazy(() => TableWhereUniqueInputSchema).array() ]).optional(),
   delete: z.union([ z.lazy(() => TableWhereUniqueInputSchema),z.lazy(() => TableWhereUniqueInputSchema).array() ]).optional(),
@@ -2277,7 +2180,6 @@ export const TableUncheckedUpdateManyWithoutMajorNestedInputSchema: z.ZodType<Pr
   create: z.union([ z.lazy(() => TableCreateWithoutMajorInputSchema),z.lazy(() => TableCreateWithoutMajorInputSchema).array(),z.lazy(() => TableUncheckedCreateWithoutMajorInputSchema),z.lazy(() => TableUncheckedCreateWithoutMajorInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TableCreateOrConnectWithoutMajorInputSchema),z.lazy(() => TableCreateOrConnectWithoutMajorInputSchema).array() ]).optional(),
   upsert: z.union([ z.lazy(() => TableUpsertWithWhereUniqueWithoutMajorInputSchema),z.lazy(() => TableUpsertWithWhereUniqueWithoutMajorInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TableCreateManyMajorInputEnvelopeSchema).optional(),
   set: z.union([ z.lazy(() => TableWhereUniqueInputSchema),z.lazy(() => TableWhereUniqueInputSchema).array() ]).optional(),
   disconnect: z.union([ z.lazy(() => TableWhereUniqueInputSchema),z.lazy(() => TableWhereUniqueInputSchema).array() ]).optional(),
   delete: z.union([ z.lazy(() => TableWhereUniqueInputSchema),z.lazy(() => TableWhereUniqueInputSchema).array() ]).optional(),
@@ -2290,14 +2192,12 @@ export const TableUncheckedUpdateManyWithoutMajorNestedInputSchema: z.ZodType<Pr
 export const TableSubjectCreateNestedManyWithoutHallInputSchema: z.ZodType<Prisma.TableSubjectCreateNestedManyWithoutHallInput> = z.object({
   create: z.union([ z.lazy(() => TableSubjectCreateWithoutHallInputSchema),z.lazy(() => TableSubjectCreateWithoutHallInputSchema).array(),z.lazy(() => TableSubjectUncheckedCreateWithoutHallInputSchema),z.lazy(() => TableSubjectUncheckedCreateWithoutHallInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TableSubjectCreateOrConnectWithoutHallInputSchema),z.lazy(() => TableSubjectCreateOrConnectWithoutHallInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TableSubjectCreateManyHallInputEnvelopeSchema).optional(),
   connect: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
 export const TableSubjectUncheckedCreateNestedManyWithoutHallInputSchema: z.ZodType<Prisma.TableSubjectUncheckedCreateNestedManyWithoutHallInput> = z.object({
   create: z.union([ z.lazy(() => TableSubjectCreateWithoutHallInputSchema),z.lazy(() => TableSubjectCreateWithoutHallInputSchema).array(),z.lazy(() => TableSubjectUncheckedCreateWithoutHallInputSchema),z.lazy(() => TableSubjectUncheckedCreateWithoutHallInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TableSubjectCreateOrConnectWithoutHallInputSchema),z.lazy(() => TableSubjectCreateOrConnectWithoutHallInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TableSubjectCreateManyHallInputEnvelopeSchema).optional(),
   connect: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
@@ -2305,7 +2205,6 @@ export const TableSubjectUpdateManyWithoutHallNestedInputSchema: z.ZodType<Prism
   create: z.union([ z.lazy(() => TableSubjectCreateWithoutHallInputSchema),z.lazy(() => TableSubjectCreateWithoutHallInputSchema).array(),z.lazy(() => TableSubjectUncheckedCreateWithoutHallInputSchema),z.lazy(() => TableSubjectUncheckedCreateWithoutHallInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TableSubjectCreateOrConnectWithoutHallInputSchema),z.lazy(() => TableSubjectCreateOrConnectWithoutHallInputSchema).array() ]).optional(),
   upsert: z.union([ z.lazy(() => TableSubjectUpsertWithWhereUniqueWithoutHallInputSchema),z.lazy(() => TableSubjectUpsertWithWhereUniqueWithoutHallInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TableSubjectCreateManyHallInputEnvelopeSchema).optional(),
   set: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
   disconnect: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
   delete: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
@@ -2319,7 +2218,6 @@ export const TableSubjectUncheckedUpdateManyWithoutHallNestedInputSchema: z.ZodT
   create: z.union([ z.lazy(() => TableSubjectCreateWithoutHallInputSchema),z.lazy(() => TableSubjectCreateWithoutHallInputSchema).array(),z.lazy(() => TableSubjectUncheckedCreateWithoutHallInputSchema),z.lazy(() => TableSubjectUncheckedCreateWithoutHallInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TableSubjectCreateOrConnectWithoutHallInputSchema),z.lazy(() => TableSubjectCreateOrConnectWithoutHallInputSchema).array() ]).optional(),
   upsert: z.union([ z.lazy(() => TableSubjectUpsertWithWhereUniqueWithoutHallInputSchema),z.lazy(() => TableSubjectUpsertWithWhereUniqueWithoutHallInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TableSubjectCreateManyHallInputEnvelopeSchema).optional(),
   set: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
   disconnect: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
   delete: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
@@ -2338,7 +2236,6 @@ export const TeacherCreateNestedManyWithoutSubjectsInputSchema: z.ZodType<Prisma
 export const TableSubjectCreateNestedManyWithoutSubjectInputSchema: z.ZodType<Prisma.TableSubjectCreateNestedManyWithoutSubjectInput> = z.object({
   create: z.union([ z.lazy(() => TableSubjectCreateWithoutSubjectInputSchema),z.lazy(() => TableSubjectCreateWithoutSubjectInputSchema).array(),z.lazy(() => TableSubjectUncheckedCreateWithoutSubjectInputSchema),z.lazy(() => TableSubjectUncheckedCreateWithoutSubjectInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TableSubjectCreateOrConnectWithoutSubjectInputSchema),z.lazy(() => TableSubjectCreateOrConnectWithoutSubjectInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TableSubjectCreateManySubjectInputEnvelopeSchema).optional(),
   connect: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
@@ -2351,7 +2248,6 @@ export const TeacherUncheckedCreateNestedManyWithoutSubjectsInputSchema: z.ZodTy
 export const TableSubjectUncheckedCreateNestedManyWithoutSubjectInputSchema: z.ZodType<Prisma.TableSubjectUncheckedCreateNestedManyWithoutSubjectInput> = z.object({
   create: z.union([ z.lazy(() => TableSubjectCreateWithoutSubjectInputSchema),z.lazy(() => TableSubjectCreateWithoutSubjectInputSchema).array(),z.lazy(() => TableSubjectUncheckedCreateWithoutSubjectInputSchema),z.lazy(() => TableSubjectUncheckedCreateWithoutSubjectInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TableSubjectCreateOrConnectWithoutSubjectInputSchema),z.lazy(() => TableSubjectCreateOrConnectWithoutSubjectInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TableSubjectCreateManySubjectInputEnvelopeSchema).optional(),
   connect: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
@@ -2372,7 +2268,6 @@ export const TableSubjectUpdateManyWithoutSubjectNestedInputSchema: z.ZodType<Pr
   create: z.union([ z.lazy(() => TableSubjectCreateWithoutSubjectInputSchema),z.lazy(() => TableSubjectCreateWithoutSubjectInputSchema).array(),z.lazy(() => TableSubjectUncheckedCreateWithoutSubjectInputSchema),z.lazy(() => TableSubjectUncheckedCreateWithoutSubjectInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TableSubjectCreateOrConnectWithoutSubjectInputSchema),z.lazy(() => TableSubjectCreateOrConnectWithoutSubjectInputSchema).array() ]).optional(),
   upsert: z.union([ z.lazy(() => TableSubjectUpsertWithWhereUniqueWithoutSubjectInputSchema),z.lazy(() => TableSubjectUpsertWithWhereUniqueWithoutSubjectInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TableSubjectCreateManySubjectInputEnvelopeSchema).optional(),
   set: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
   disconnect: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
   delete: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
@@ -2399,7 +2294,6 @@ export const TableSubjectUncheckedUpdateManyWithoutSubjectNestedInputSchema: z.Z
   create: z.union([ z.lazy(() => TableSubjectCreateWithoutSubjectInputSchema),z.lazy(() => TableSubjectCreateWithoutSubjectInputSchema).array(),z.lazy(() => TableSubjectUncheckedCreateWithoutSubjectInputSchema),z.lazy(() => TableSubjectUncheckedCreateWithoutSubjectInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TableSubjectCreateOrConnectWithoutSubjectInputSchema),z.lazy(() => TableSubjectCreateOrConnectWithoutSubjectInputSchema).array() ]).optional(),
   upsert: z.union([ z.lazy(() => TableSubjectUpsertWithWhereUniqueWithoutSubjectInputSchema),z.lazy(() => TableSubjectUpsertWithWhereUniqueWithoutSubjectInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TableSubjectCreateManySubjectInputEnvelopeSchema).optional(),
   set: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
   disconnect: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
   delete: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
@@ -2412,28 +2306,24 @@ export const TableSubjectUncheckedUpdateManyWithoutSubjectNestedInputSchema: z.Z
 export const TeacherWorkDateCreateNestedManyWithoutDayInputSchema: z.ZodType<Prisma.TeacherWorkDateCreateNestedManyWithoutDayInput> = z.object({
   create: z.union([ z.lazy(() => TeacherWorkDateCreateWithoutDayInputSchema),z.lazy(() => TeacherWorkDateCreateWithoutDayInputSchema).array(),z.lazy(() => TeacherWorkDateUncheckedCreateWithoutDayInputSchema),z.lazy(() => TeacherWorkDateUncheckedCreateWithoutDayInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TeacherWorkDateCreateOrConnectWithoutDayInputSchema),z.lazy(() => TeacherWorkDateCreateOrConnectWithoutDayInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TeacherWorkDateCreateManyDayInputEnvelopeSchema).optional(),
   connect: z.union([ z.lazy(() => TeacherWorkDateWhereUniqueInputSchema),z.lazy(() => TeacherWorkDateWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
 export const TableSubjectCreateNestedManyWithoutDayInputSchema: z.ZodType<Prisma.TableSubjectCreateNestedManyWithoutDayInput> = z.object({
   create: z.union([ z.lazy(() => TableSubjectCreateWithoutDayInputSchema),z.lazy(() => TableSubjectCreateWithoutDayInputSchema).array(),z.lazy(() => TableSubjectUncheckedCreateWithoutDayInputSchema),z.lazy(() => TableSubjectUncheckedCreateWithoutDayInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TableSubjectCreateOrConnectWithoutDayInputSchema),z.lazy(() => TableSubjectCreateOrConnectWithoutDayInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TableSubjectCreateManyDayInputEnvelopeSchema).optional(),
   connect: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
 export const TeacherWorkDateUncheckedCreateNestedManyWithoutDayInputSchema: z.ZodType<Prisma.TeacherWorkDateUncheckedCreateNestedManyWithoutDayInput> = z.object({
   create: z.union([ z.lazy(() => TeacherWorkDateCreateWithoutDayInputSchema),z.lazy(() => TeacherWorkDateCreateWithoutDayInputSchema).array(),z.lazy(() => TeacherWorkDateUncheckedCreateWithoutDayInputSchema),z.lazy(() => TeacherWorkDateUncheckedCreateWithoutDayInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TeacherWorkDateCreateOrConnectWithoutDayInputSchema),z.lazy(() => TeacherWorkDateCreateOrConnectWithoutDayInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TeacherWorkDateCreateManyDayInputEnvelopeSchema).optional(),
   connect: z.union([ z.lazy(() => TeacherWorkDateWhereUniqueInputSchema),z.lazy(() => TeacherWorkDateWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
 export const TableSubjectUncheckedCreateNestedManyWithoutDayInputSchema: z.ZodType<Prisma.TableSubjectUncheckedCreateNestedManyWithoutDayInput> = z.object({
   create: z.union([ z.lazy(() => TableSubjectCreateWithoutDayInputSchema),z.lazy(() => TableSubjectCreateWithoutDayInputSchema).array(),z.lazy(() => TableSubjectUncheckedCreateWithoutDayInputSchema),z.lazy(() => TableSubjectUncheckedCreateWithoutDayInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TableSubjectCreateOrConnectWithoutDayInputSchema),z.lazy(() => TableSubjectCreateOrConnectWithoutDayInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TableSubjectCreateManyDayInputEnvelopeSchema).optional(),
   connect: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
 }).strict();
 
@@ -2441,7 +2331,6 @@ export const TeacherWorkDateUpdateManyWithoutDayNestedInputSchema: z.ZodType<Pri
   create: z.union([ z.lazy(() => TeacherWorkDateCreateWithoutDayInputSchema),z.lazy(() => TeacherWorkDateCreateWithoutDayInputSchema).array(),z.lazy(() => TeacherWorkDateUncheckedCreateWithoutDayInputSchema),z.lazy(() => TeacherWorkDateUncheckedCreateWithoutDayInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TeacherWorkDateCreateOrConnectWithoutDayInputSchema),z.lazy(() => TeacherWorkDateCreateOrConnectWithoutDayInputSchema).array() ]).optional(),
   upsert: z.union([ z.lazy(() => TeacherWorkDateUpsertWithWhereUniqueWithoutDayInputSchema),z.lazy(() => TeacherWorkDateUpsertWithWhereUniqueWithoutDayInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TeacherWorkDateCreateManyDayInputEnvelopeSchema).optional(),
   set: z.union([ z.lazy(() => TeacherWorkDateWhereUniqueInputSchema),z.lazy(() => TeacherWorkDateWhereUniqueInputSchema).array() ]).optional(),
   disconnect: z.union([ z.lazy(() => TeacherWorkDateWhereUniqueInputSchema),z.lazy(() => TeacherWorkDateWhereUniqueInputSchema).array() ]).optional(),
   delete: z.union([ z.lazy(() => TeacherWorkDateWhereUniqueInputSchema),z.lazy(() => TeacherWorkDateWhereUniqueInputSchema).array() ]).optional(),
@@ -2455,7 +2344,6 @@ export const TableSubjectUpdateManyWithoutDayNestedInputSchema: z.ZodType<Prisma
   create: z.union([ z.lazy(() => TableSubjectCreateWithoutDayInputSchema),z.lazy(() => TableSubjectCreateWithoutDayInputSchema).array(),z.lazy(() => TableSubjectUncheckedCreateWithoutDayInputSchema),z.lazy(() => TableSubjectUncheckedCreateWithoutDayInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TableSubjectCreateOrConnectWithoutDayInputSchema),z.lazy(() => TableSubjectCreateOrConnectWithoutDayInputSchema).array() ]).optional(),
   upsert: z.union([ z.lazy(() => TableSubjectUpsertWithWhereUniqueWithoutDayInputSchema),z.lazy(() => TableSubjectUpsertWithWhereUniqueWithoutDayInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TableSubjectCreateManyDayInputEnvelopeSchema).optional(),
   set: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
   disconnect: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
   delete: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
@@ -2469,7 +2357,6 @@ export const TeacherWorkDateUncheckedUpdateManyWithoutDayNestedInputSchema: z.Zo
   create: z.union([ z.lazy(() => TeacherWorkDateCreateWithoutDayInputSchema),z.lazy(() => TeacherWorkDateCreateWithoutDayInputSchema).array(),z.lazy(() => TeacherWorkDateUncheckedCreateWithoutDayInputSchema),z.lazy(() => TeacherWorkDateUncheckedCreateWithoutDayInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TeacherWorkDateCreateOrConnectWithoutDayInputSchema),z.lazy(() => TeacherWorkDateCreateOrConnectWithoutDayInputSchema).array() ]).optional(),
   upsert: z.union([ z.lazy(() => TeacherWorkDateUpsertWithWhereUniqueWithoutDayInputSchema),z.lazy(() => TeacherWorkDateUpsertWithWhereUniqueWithoutDayInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TeacherWorkDateCreateManyDayInputEnvelopeSchema).optional(),
   set: z.union([ z.lazy(() => TeacherWorkDateWhereUniqueInputSchema),z.lazy(() => TeacherWorkDateWhereUniqueInputSchema).array() ]).optional(),
   disconnect: z.union([ z.lazy(() => TeacherWorkDateWhereUniqueInputSchema),z.lazy(() => TeacherWorkDateWhereUniqueInputSchema).array() ]).optional(),
   delete: z.union([ z.lazy(() => TeacherWorkDateWhereUniqueInputSchema),z.lazy(() => TeacherWorkDateWhereUniqueInputSchema).array() ]).optional(),
@@ -2483,7 +2370,6 @@ export const TableSubjectUncheckedUpdateManyWithoutDayNestedInputSchema: z.ZodTy
   create: z.union([ z.lazy(() => TableSubjectCreateWithoutDayInputSchema),z.lazy(() => TableSubjectCreateWithoutDayInputSchema).array(),z.lazy(() => TableSubjectUncheckedCreateWithoutDayInputSchema),z.lazy(() => TableSubjectUncheckedCreateWithoutDayInputSchema).array() ]).optional(),
   connectOrCreate: z.union([ z.lazy(() => TableSubjectCreateOrConnectWithoutDayInputSchema),z.lazy(() => TableSubjectCreateOrConnectWithoutDayInputSchema).array() ]).optional(),
   upsert: z.union([ z.lazy(() => TableSubjectUpsertWithWhereUniqueWithoutDayInputSchema),z.lazy(() => TableSubjectUpsertWithWhereUniqueWithoutDayInputSchema).array() ]).optional(),
-  createMany: z.lazy(() => TableSubjectCreateManyDayInputEnvelopeSchema).optional(),
   set: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
   disconnect: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
   delete: z.union([ z.lazy(() => TableSubjectWhereUniqueInputSchema),z.lazy(() => TableSubjectWhereUniqueInputSchema).array() ]).optional(),
@@ -2556,6 +2442,20 @@ export const NestedDateTimeWithAggregatesFilterSchema: z.ZodType<Prisma.NestedDa
   _max: z.lazy(() => NestedDateTimeFilterSchema).optional()
 }).strict();
 
+export const NestedStringFilterSchema: z.ZodType<Prisma.NestedStringFilter> = z.object({
+  equals: z.string().optional(),
+  in: z.string().array().optional(),
+  notIn: z.string().array().optional(),
+  lt: z.string().optional(),
+  lte: z.string().optional(),
+  gt: z.string().optional(),
+  gte: z.string().optional(),
+  contains: z.string().optional(),
+  startsWith: z.string().optional(),
+  endsWith: z.string().optional(),
+  not: z.union([ z.string(),z.lazy(() => NestedStringFilterSchema) ]).optional(),
+}).strict();
+
 export const NestedFloatWithAggregatesFilterSchema: z.ZodType<Prisma.NestedFloatWithAggregatesFilter> = z.object({
   equals: z.number().optional(),
   in: z.number().array().optional(),
@@ -2570,20 +2470,6 @@ export const NestedFloatWithAggregatesFilterSchema: z.ZodType<Prisma.NestedFloat
   _sum: z.lazy(() => NestedFloatFilterSchema).optional(),
   _min: z.lazy(() => NestedFloatFilterSchema).optional(),
   _max: z.lazy(() => NestedFloatFilterSchema).optional()
-}).strict();
-
-export const NestedStringFilterSchema: z.ZodType<Prisma.NestedStringFilter> = z.object({
-  equals: z.string().optional(),
-  in: z.string().array().optional(),
-  notIn: z.string().array().optional(),
-  lt: z.string().optional(),
-  lte: z.string().optional(),
-  gt: z.string().optional(),
-  gte: z.string().optional(),
-  contains: z.string().optional(),
-  startsWith: z.string().optional(),
-  endsWith: z.string().optional(),
-  not: z.union([ z.string(),z.lazy(() => NestedStringFilterSchema) ]).optional(),
 }).strict();
 
 export const NestedStringWithAggregatesFilterSchema: z.ZodType<Prisma.NestedStringWithAggregatesFilter> = z.object({
@@ -2638,7 +2524,7 @@ export const TableSubjectUncheckedCreateWithoutTableInputSchema: z.ZodType<Prism
   id: z.number().int().optional(),
   startsAt: z.number(),
   endsAt: z.number(),
-  dayId: z.number().int(),
+  dayId: z.string(),
   subjectId: z.number().int(),
   teacherId: z.number().int(),
   hallId: z.number().int()
@@ -2647,11 +2533,6 @@ export const TableSubjectUncheckedCreateWithoutTableInputSchema: z.ZodType<Prism
 export const TableSubjectCreateOrConnectWithoutTableInputSchema: z.ZodType<Prisma.TableSubjectCreateOrConnectWithoutTableInput> = z.object({
   where: z.lazy(() => TableSubjectWhereUniqueInputSchema),
   create: z.union([ z.lazy(() => TableSubjectCreateWithoutTableInputSchema),z.lazy(() => TableSubjectUncheckedCreateWithoutTableInputSchema) ]),
-}).strict();
-
-export const TableSubjectCreateManyTableInputEnvelopeSchema: z.ZodType<Prisma.TableSubjectCreateManyTableInputEnvelope> = z.object({
-  data: z.union([ z.lazy(() => TableSubjectCreateManyTableInputSchema),z.lazy(() => TableSubjectCreateManyTableInputSchema).array() ]),
-  skipDuplicates: z.boolean().optional()
 }).strict();
 
 export const MajorUpsertWithoutTablesInputSchema: z.ZodType<Prisma.MajorUpsertWithoutTablesInput> = z.object({
@@ -2706,7 +2587,7 @@ export const TableSubjectScalarWhereInputSchema: z.ZodType<Prisma.TableSubjectSc
   startsAt: z.union([ z.lazy(() => FloatFilterSchema),z.number() ]).optional(),
   endsAt: z.union([ z.lazy(() => FloatFilterSchema),z.number() ]).optional(),
   tableId: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
-  dayId: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  dayId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
   subjectId: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   teacherId: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
   hallId: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
@@ -2737,12 +2618,13 @@ export const TableCreateOrConnectWithoutSubjectsInputSchema: z.ZodType<Prisma.Ta
 }).strict();
 
 export const DayCreateWithoutTableSubjectsInputSchema: z.ZodType<Prisma.DayCreateWithoutTableSubjectsInput> = z.object({
+  id: z.string(),
   name: z.string(),
   teacherWorkDates: z.lazy(() => TeacherWorkDateCreateNestedManyWithoutDayInputSchema).optional()
 }).strict();
 
 export const DayUncheckedCreateWithoutTableSubjectsInputSchema: z.ZodType<Prisma.DayUncheckedCreateWithoutTableSubjectsInput> = z.object({
-  id: z.number().int().optional(),
+  id: z.string(),
   name: z.string(),
   teacherWorkDates: z.lazy(() => TeacherWorkDateUncheckedCreateNestedManyWithoutDayInputSchema).optional()
 }).strict();
@@ -2856,12 +2738,13 @@ export const DayUpdateToOneWithWhereWithoutTableSubjectsInputSchema: z.ZodType<P
 }).strict();
 
 export const DayUpdateWithoutTableSubjectsInputSchema: z.ZodType<Prisma.DayUpdateWithoutTableSubjectsInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   teacherWorkDates: z.lazy(() => TeacherWorkDateUpdateManyWithoutDayNestedInputSchema).optional()
 }).strict();
 
 export const DayUncheckedUpdateWithoutTableSubjectsInputSchema: z.ZodType<Prisma.DayUncheckedUpdateWithoutTableSubjectsInput> = z.object({
-  id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   teacherWorkDates: z.lazy(() => TeacherWorkDateUncheckedUpdateManyWithoutDayNestedInputSchema).optional()
 }).strict();
@@ -2980,17 +2863,12 @@ export const TeacherWorkDateUncheckedCreateWithoutTeacherInputSchema: z.ZodType<
   endsAt: z.number(),
   updatedAt: z.coerce.date().optional(),
   createdAt: z.coerce.date().optional(),
-  dayId: z.number().int()
+  dayId: z.string()
 }).strict();
 
 export const TeacherWorkDateCreateOrConnectWithoutTeacherInputSchema: z.ZodType<Prisma.TeacherWorkDateCreateOrConnectWithoutTeacherInput> = z.object({
   where: z.lazy(() => TeacherWorkDateWhereUniqueInputSchema),
   create: z.union([ z.lazy(() => TeacherWorkDateCreateWithoutTeacherInputSchema),z.lazy(() => TeacherWorkDateUncheckedCreateWithoutTeacherInputSchema) ]),
-}).strict();
-
-export const TeacherWorkDateCreateManyTeacherInputEnvelopeSchema: z.ZodType<Prisma.TeacherWorkDateCreateManyTeacherInputEnvelope> = z.object({
-  data: z.union([ z.lazy(() => TeacherWorkDateCreateManyTeacherInputSchema),z.lazy(() => TeacherWorkDateCreateManyTeacherInputSchema).array() ]),
-  skipDuplicates: z.boolean().optional()
 }).strict();
 
 export const TableSubjectCreateWithoutTeacherInputSchema: z.ZodType<Prisma.TableSubjectCreateWithoutTeacherInput> = z.object({
@@ -3007,7 +2885,7 @@ export const TableSubjectUncheckedCreateWithoutTeacherInputSchema: z.ZodType<Pri
   startsAt: z.number(),
   endsAt: z.number(),
   tableId: z.number().int(),
-  dayId: z.number().int(),
+  dayId: z.string(),
   subjectId: z.number().int(),
   hallId: z.number().int()
 }).strict();
@@ -3015,11 +2893,6 @@ export const TableSubjectUncheckedCreateWithoutTeacherInputSchema: z.ZodType<Pri
 export const TableSubjectCreateOrConnectWithoutTeacherInputSchema: z.ZodType<Prisma.TableSubjectCreateOrConnectWithoutTeacherInput> = z.object({
   where: z.lazy(() => TableSubjectWhereUniqueInputSchema),
   create: z.union([ z.lazy(() => TableSubjectCreateWithoutTeacherInputSchema),z.lazy(() => TableSubjectUncheckedCreateWithoutTeacherInputSchema) ]),
-}).strict();
-
-export const TableSubjectCreateManyTeacherInputEnvelopeSchema: z.ZodType<Prisma.TableSubjectCreateManyTeacherInputEnvelope> = z.object({
-  data: z.union([ z.lazy(() => TableSubjectCreateManyTeacherInputSchema),z.lazy(() => TableSubjectCreateManyTeacherInputSchema).array() ]),
-  skipDuplicates: z.boolean().optional()
 }).strict();
 
 export const SubjectUpsertWithWhereUniqueWithoutTeachersInputSchema: z.ZodType<Prisma.SubjectUpsertWithWhereUniqueWithoutTeachersInput> = z.object({
@@ -3074,7 +2947,7 @@ export const TeacherWorkDateScalarWhereInputSchema: z.ZodType<Prisma.TeacherWork
   updatedAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   createdAt: z.union([ z.lazy(() => DateTimeFilterSchema),z.coerce.date() ]).optional(),
   teacherId: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
-  dayId: z.union([ z.lazy(() => IntFilterSchema),z.number() ]).optional(),
+  dayId: z.union([ z.lazy(() => StringFilterSchema),z.string() ]).optional(),
 }).strict();
 
 export const TableSubjectUpsertWithWhereUniqueWithoutTeacherInputSchema: z.ZodType<Prisma.TableSubjectUpsertWithWhereUniqueWithoutTeacherInput> = z.object({
@@ -3094,12 +2967,13 @@ export const TableSubjectUpdateManyWithWhereWithoutTeacherInputSchema: z.ZodType
 }).strict();
 
 export const DayCreateWithoutTeacherWorkDatesInputSchema: z.ZodType<Prisma.DayCreateWithoutTeacherWorkDatesInput> = z.object({
+  id: z.string(),
   name: z.string(),
   tableSubjects: z.lazy(() => TableSubjectCreateNestedManyWithoutDayInputSchema).optional()
 }).strict();
 
 export const DayUncheckedCreateWithoutTeacherWorkDatesInputSchema: z.ZodType<Prisma.DayUncheckedCreateWithoutTeacherWorkDatesInput> = z.object({
-  id: z.number().int().optional(),
+  id: z.string(),
   name: z.string(),
   tableSubjects: z.lazy(() => TableSubjectUncheckedCreateNestedManyWithoutDayInputSchema).optional()
 }).strict();
@@ -3143,12 +3017,13 @@ export const DayUpdateToOneWithWhereWithoutTeacherWorkDatesInputSchema: z.ZodTyp
 }).strict();
 
 export const DayUpdateWithoutTeacherWorkDatesInputSchema: z.ZodType<Prisma.DayUpdateWithoutTeacherWorkDatesInput> = z.object({
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   tableSubjects: z.lazy(() => TableSubjectUpdateManyWithoutDayNestedInputSchema).optional()
 }).strict();
 
 export const DayUncheckedUpdateWithoutTeacherWorkDatesInputSchema: z.ZodType<Prisma.DayUncheckedUpdateWithoutTeacherWorkDatesInput> = z.object({
-  id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  id: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   name: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   tableSubjects: z.lazy(() => TableSubjectUncheckedUpdateManyWithoutDayNestedInputSchema).optional()
 }).strict();
@@ -3205,11 +3080,6 @@ export const TableCreateOrConnectWithoutMajorInputSchema: z.ZodType<Prisma.Table
   create: z.union([ z.lazy(() => TableCreateWithoutMajorInputSchema),z.lazy(() => TableUncheckedCreateWithoutMajorInputSchema) ]),
 }).strict();
 
-export const TableCreateManyMajorInputEnvelopeSchema: z.ZodType<Prisma.TableCreateManyMajorInputEnvelope> = z.object({
-  data: z.union([ z.lazy(() => TableCreateManyMajorInputSchema),z.lazy(() => TableCreateManyMajorInputSchema).array() ]),
-  skipDuplicates: z.boolean().optional()
-}).strict();
-
 export const TableUpsertWithWhereUniqueWithoutMajorInputSchema: z.ZodType<Prisma.TableUpsertWithWhereUniqueWithoutMajorInput> = z.object({
   where: z.lazy(() => TableWhereUniqueInputSchema),
   update: z.union([ z.lazy(() => TableUpdateWithoutMajorInputSchema),z.lazy(() => TableUncheckedUpdateWithoutMajorInputSchema) ]),
@@ -3253,7 +3123,7 @@ export const TableSubjectUncheckedCreateWithoutHallInputSchema: z.ZodType<Prisma
   startsAt: z.number(),
   endsAt: z.number(),
   tableId: z.number().int(),
-  dayId: z.number().int(),
+  dayId: z.string(),
   subjectId: z.number().int(),
   teacherId: z.number().int()
 }).strict();
@@ -3261,11 +3131,6 @@ export const TableSubjectUncheckedCreateWithoutHallInputSchema: z.ZodType<Prisma
 export const TableSubjectCreateOrConnectWithoutHallInputSchema: z.ZodType<Prisma.TableSubjectCreateOrConnectWithoutHallInput> = z.object({
   where: z.lazy(() => TableSubjectWhereUniqueInputSchema),
   create: z.union([ z.lazy(() => TableSubjectCreateWithoutHallInputSchema),z.lazy(() => TableSubjectUncheckedCreateWithoutHallInputSchema) ]),
-}).strict();
-
-export const TableSubjectCreateManyHallInputEnvelopeSchema: z.ZodType<Prisma.TableSubjectCreateManyHallInputEnvelope> = z.object({
-  data: z.union([ z.lazy(() => TableSubjectCreateManyHallInputSchema),z.lazy(() => TableSubjectCreateManyHallInputSchema).array() ]),
-  skipDuplicates: z.boolean().optional()
 }).strict();
 
 export const TableSubjectUpsertWithWhereUniqueWithoutHallInputSchema: z.ZodType<Prisma.TableSubjectUpsertWithWhereUniqueWithoutHallInput> = z.object({
@@ -3320,7 +3185,7 @@ export const TableSubjectUncheckedCreateWithoutSubjectInputSchema: z.ZodType<Pri
   startsAt: z.number(),
   endsAt: z.number(),
   tableId: z.number().int(),
-  dayId: z.number().int(),
+  dayId: z.string(),
   teacherId: z.number().int(),
   hallId: z.number().int()
 }).strict();
@@ -3328,11 +3193,6 @@ export const TableSubjectUncheckedCreateWithoutSubjectInputSchema: z.ZodType<Pri
 export const TableSubjectCreateOrConnectWithoutSubjectInputSchema: z.ZodType<Prisma.TableSubjectCreateOrConnectWithoutSubjectInput> = z.object({
   where: z.lazy(() => TableSubjectWhereUniqueInputSchema),
   create: z.union([ z.lazy(() => TableSubjectCreateWithoutSubjectInputSchema),z.lazy(() => TableSubjectUncheckedCreateWithoutSubjectInputSchema) ]),
-}).strict();
-
-export const TableSubjectCreateManySubjectInputEnvelopeSchema: z.ZodType<Prisma.TableSubjectCreateManySubjectInputEnvelope> = z.object({
-  data: z.union([ z.lazy(() => TableSubjectCreateManySubjectInputSchema),z.lazy(() => TableSubjectCreateManySubjectInputSchema).array() ]),
-  skipDuplicates: z.boolean().optional()
 }).strict();
 
 export const TeacherUpsertWithWhereUniqueWithoutSubjectsInputSchema: z.ZodType<Prisma.TeacherUpsertWithWhereUniqueWithoutSubjectsInput> = z.object({
@@ -3399,11 +3259,6 @@ export const TeacherWorkDateCreateOrConnectWithoutDayInputSchema: z.ZodType<Pris
   create: z.union([ z.lazy(() => TeacherWorkDateCreateWithoutDayInputSchema),z.lazy(() => TeacherWorkDateUncheckedCreateWithoutDayInputSchema) ]),
 }).strict();
 
-export const TeacherWorkDateCreateManyDayInputEnvelopeSchema: z.ZodType<Prisma.TeacherWorkDateCreateManyDayInputEnvelope> = z.object({
-  data: z.union([ z.lazy(() => TeacherWorkDateCreateManyDayInputSchema),z.lazy(() => TeacherWorkDateCreateManyDayInputSchema).array() ]),
-  skipDuplicates: z.boolean().optional()
-}).strict();
-
 export const TableSubjectCreateWithoutDayInputSchema: z.ZodType<Prisma.TableSubjectCreateWithoutDayInput> = z.object({
   startsAt: z.number(),
   endsAt: z.number(),
@@ -3426,11 +3281,6 @@ export const TableSubjectUncheckedCreateWithoutDayInputSchema: z.ZodType<Prisma.
 export const TableSubjectCreateOrConnectWithoutDayInputSchema: z.ZodType<Prisma.TableSubjectCreateOrConnectWithoutDayInput> = z.object({
   where: z.lazy(() => TableSubjectWhereUniqueInputSchema),
   create: z.union([ z.lazy(() => TableSubjectCreateWithoutDayInputSchema),z.lazy(() => TableSubjectUncheckedCreateWithoutDayInputSchema) ]),
-}).strict();
-
-export const TableSubjectCreateManyDayInputEnvelopeSchema: z.ZodType<Prisma.TableSubjectCreateManyDayInputEnvelope> = z.object({
-  data: z.union([ z.lazy(() => TableSubjectCreateManyDayInputSchema),z.lazy(() => TableSubjectCreateManyDayInputSchema).array() ]),
-  skipDuplicates: z.boolean().optional()
 }).strict();
 
 export const TeacherWorkDateUpsertWithWhereUniqueWithoutDayInputSchema: z.ZodType<Prisma.TeacherWorkDateUpsertWithWhereUniqueWithoutDayInput> = z.object({
@@ -3465,16 +3315,6 @@ export const TableSubjectUpdateManyWithWhereWithoutDayInputSchema: z.ZodType<Pri
   data: z.union([ z.lazy(() => TableSubjectUpdateManyMutationInputSchema),z.lazy(() => TableSubjectUncheckedUpdateManyWithoutDayInputSchema) ]),
 }).strict();
 
-export const TableSubjectCreateManyTableInputSchema: z.ZodType<Prisma.TableSubjectCreateManyTableInput> = z.object({
-  id: z.number().int().optional(),
-  startsAt: z.number(),
-  endsAt: z.number(),
-  dayId: z.number().int(),
-  subjectId: z.number().int(),
-  teacherId: z.number().int(),
-  hallId: z.number().int()
-}).strict();
-
 export const TableSubjectUpdateWithoutTableInputSchema: z.ZodType<Prisma.TableSubjectUpdateWithoutTableInput> = z.object({
   startsAt: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   endsAt: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
@@ -3488,7 +3328,7 @@ export const TableSubjectUncheckedUpdateWithoutTableInputSchema: z.ZodType<Prism
   id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   startsAt: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   endsAt: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
-  dayId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  dayId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   subjectId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   teacherId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   hallId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
@@ -3498,29 +3338,10 @@ export const TableSubjectUncheckedUpdateManyWithoutTableInputSchema: z.ZodType<P
   id: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   startsAt: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   endsAt: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
-  dayId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  dayId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   subjectId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   teacherId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   hallId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-}).strict();
-
-export const TeacherWorkDateCreateManyTeacherInputSchema: z.ZodType<Prisma.TeacherWorkDateCreateManyTeacherInput> = z.object({
-  id: z.number().int().optional(),
-  startsAt: z.number(),
-  endsAt: z.number(),
-  updatedAt: z.coerce.date().optional(),
-  createdAt: z.coerce.date().optional(),
-  dayId: z.number().int()
-}).strict();
-
-export const TableSubjectCreateManyTeacherInputSchema: z.ZodType<Prisma.TableSubjectCreateManyTeacherInput> = z.object({
-  id: z.number().int().optional(),
-  startsAt: z.number(),
-  endsAt: z.number(),
-  tableId: z.number().int(),
-  dayId: z.number().int(),
-  subjectId: z.number().int(),
-  hallId: z.number().int()
 }).strict();
 
 export const SubjectUpdateWithoutTeachersInputSchema: z.ZodType<Prisma.SubjectUpdateWithoutTeachersInput> = z.object({
@@ -3559,7 +3380,7 @@ export const TeacherWorkDateUncheckedUpdateWithoutTeacherInputSchema: z.ZodType<
   endsAt: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  dayId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  dayId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const TeacherWorkDateUncheckedUpdateManyWithoutTeacherInputSchema: z.ZodType<Prisma.TeacherWorkDateUncheckedUpdateManyWithoutTeacherInput> = z.object({
@@ -3568,7 +3389,7 @@ export const TeacherWorkDateUncheckedUpdateManyWithoutTeacherInputSchema: z.ZodT
   endsAt: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   updatedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
-  dayId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  dayId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
 export const TableSubjectUpdateWithoutTeacherInputSchema: z.ZodType<Prisma.TableSubjectUpdateWithoutTeacherInput> = z.object({
@@ -3585,7 +3406,7 @@ export const TableSubjectUncheckedUpdateWithoutTeacherInputSchema: z.ZodType<Pri
   startsAt: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   endsAt: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   tableId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  dayId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  dayId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   subjectId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   hallId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
@@ -3595,18 +3416,9 @@ export const TableSubjectUncheckedUpdateManyWithoutTeacherInputSchema: z.ZodType
   startsAt: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   endsAt: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   tableId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  dayId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  dayId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   subjectId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   hallId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-}).strict();
-
-export const TableCreateManyMajorInputSchema: z.ZodType<Prisma.TableCreateManyMajorInput> = z.object({
-  id: z.number().int().optional(),
-  type: z.number().int(),
-  level: z.number().int(),
-  semester: z.number().int(),
-  updatedAt: z.coerce.date().optional(),
-  createdAt: z.coerce.date().optional()
 }).strict();
 
 export const TableUpdateWithoutMajorInputSchema: z.ZodType<Prisma.TableUpdateWithoutMajorInput> = z.object({
@@ -3637,16 +3449,6 @@ export const TableUncheckedUpdateManyWithoutMajorInputSchema: z.ZodType<Prisma.T
   createdAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
 
-export const TableSubjectCreateManyHallInputSchema: z.ZodType<Prisma.TableSubjectCreateManyHallInput> = z.object({
-  id: z.number().int().optional(),
-  startsAt: z.number(),
-  endsAt: z.number(),
-  tableId: z.number().int(),
-  dayId: z.number().int(),
-  subjectId: z.number().int(),
-  teacherId: z.number().int()
-}).strict();
-
 export const TableSubjectUpdateWithoutHallInputSchema: z.ZodType<Prisma.TableSubjectUpdateWithoutHallInput> = z.object({
   startsAt: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   endsAt: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
@@ -3661,7 +3463,7 @@ export const TableSubjectUncheckedUpdateWithoutHallInputSchema: z.ZodType<Prisma
   startsAt: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   endsAt: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   tableId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  dayId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  dayId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   subjectId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   teacherId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
@@ -3671,19 +3473,9 @@ export const TableSubjectUncheckedUpdateManyWithoutHallInputSchema: z.ZodType<Pr
   startsAt: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   endsAt: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   tableId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  dayId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  dayId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   subjectId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   teacherId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-}).strict();
-
-export const TableSubjectCreateManySubjectInputSchema: z.ZodType<Prisma.TableSubjectCreateManySubjectInput> = z.object({
-  id: z.number().int().optional(),
-  startsAt: z.number(),
-  endsAt: z.number(),
-  tableId: z.number().int(),
-  dayId: z.number().int(),
-  teacherId: z.number().int(),
-  hallId: z.number().int()
 }).strict();
 
 export const TeacherUpdateWithoutSubjectsInputSchema: z.ZodType<Prisma.TeacherUpdateWithoutSubjectsInput> = z.object({
@@ -3724,7 +3516,7 @@ export const TableSubjectUncheckedUpdateWithoutSubjectInputSchema: z.ZodType<Pri
   startsAt: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   endsAt: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   tableId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  dayId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  dayId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   teacherId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   hallId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
 }).strict();
@@ -3734,28 +3526,9 @@ export const TableSubjectUncheckedUpdateManyWithoutSubjectInputSchema: z.ZodType
   startsAt: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   endsAt: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   tableId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-  dayId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  dayId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   teacherId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
   hallId: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
-}).strict();
-
-export const TeacherWorkDateCreateManyDayInputSchema: z.ZodType<Prisma.TeacherWorkDateCreateManyDayInput> = z.object({
-  id: z.number().int().optional(),
-  startsAt: z.number(),
-  endsAt: z.number(),
-  updatedAt: z.coerce.date().optional(),
-  createdAt: z.coerce.date().optional(),
-  teacherId: z.number().int()
-}).strict();
-
-export const TableSubjectCreateManyDayInputSchema: z.ZodType<Prisma.TableSubjectCreateManyDayInput> = z.object({
-  id: z.number().int().optional(),
-  startsAt: z.number(),
-  endsAt: z.number(),
-  tableId: z.number().int(),
-  subjectId: z.number().int(),
-  teacherId: z.number().int(),
-  hallId: z.number().int()
 }).strict();
 
 export const TeacherWorkDateUpdateWithoutDayInputSchema: z.ZodType<Prisma.TeacherWorkDateUpdateWithoutDayInput> = z.object({
@@ -4327,11 +4100,6 @@ export const TableUpsertArgsSchema: z.ZodType<Prisma.TableUpsertArgs> = z.object
   update: z.union([ TableUpdateInputSchema,TableUncheckedUpdateInputSchema ]),
 }).strict() ;
 
-export const TableCreateManyArgsSchema: z.ZodType<Prisma.TableCreateManyArgs> = z.object({
-  data: z.union([ TableCreateManyInputSchema,TableCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
-}).strict() ;
-
 export const TableDeleteArgsSchema: z.ZodType<Prisma.TableDeleteArgs> = z.object({
   select: TableSelectSchema.optional(),
   include: TableIncludeSchema.optional(),
@@ -4366,11 +4134,6 @@ export const TableSubjectUpsertArgsSchema: z.ZodType<Prisma.TableSubjectUpsertAr
   where: TableSubjectWhereUniqueInputSchema,
   create: z.union([ TableSubjectCreateInputSchema,TableSubjectUncheckedCreateInputSchema ]),
   update: z.union([ TableSubjectUpdateInputSchema,TableSubjectUncheckedUpdateInputSchema ]),
-}).strict() ;
-
-export const TableSubjectCreateManyArgsSchema: z.ZodType<Prisma.TableSubjectCreateManyArgs> = z.object({
-  data: z.union([ TableSubjectCreateManyInputSchema,TableSubjectCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
 }).strict() ;
 
 export const TableSubjectDeleteArgsSchema: z.ZodType<Prisma.TableSubjectDeleteArgs> = z.object({
@@ -4409,11 +4172,6 @@ export const TeacherUpsertArgsSchema: z.ZodType<Prisma.TeacherUpsertArgs> = z.ob
   update: z.union([ TeacherUpdateInputSchema,TeacherUncheckedUpdateInputSchema ]),
 }).strict() ;
 
-export const TeacherCreateManyArgsSchema: z.ZodType<Prisma.TeacherCreateManyArgs> = z.object({
-  data: z.union([ TeacherCreateManyInputSchema,TeacherCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
-}).strict() ;
-
 export const TeacherDeleteArgsSchema: z.ZodType<Prisma.TeacherDeleteArgs> = z.object({
   select: TeacherSelectSchema.optional(),
   include: TeacherIncludeSchema.optional(),
@@ -4448,11 +4206,6 @@ export const TeacherWorkDateUpsertArgsSchema: z.ZodType<Prisma.TeacherWorkDateUp
   where: TeacherWorkDateWhereUniqueInputSchema,
   create: z.union([ TeacherWorkDateCreateInputSchema,TeacherWorkDateUncheckedCreateInputSchema ]),
   update: z.union([ TeacherWorkDateUpdateInputSchema,TeacherWorkDateUncheckedUpdateInputSchema ]),
-}).strict() ;
-
-export const TeacherWorkDateCreateManyArgsSchema: z.ZodType<Prisma.TeacherWorkDateCreateManyArgs> = z.object({
-  data: z.union([ TeacherWorkDateCreateManyInputSchema,TeacherWorkDateCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
 }).strict() ;
 
 export const TeacherWorkDateDeleteArgsSchema: z.ZodType<Prisma.TeacherWorkDateDeleteArgs> = z.object({
@@ -4491,11 +4244,6 @@ export const MajorUpsertArgsSchema: z.ZodType<Prisma.MajorUpsertArgs> = z.object
   update: z.union([ MajorUpdateInputSchema,MajorUncheckedUpdateInputSchema ]),
 }).strict() ;
 
-export const MajorCreateManyArgsSchema: z.ZodType<Prisma.MajorCreateManyArgs> = z.object({
-  data: z.union([ MajorCreateManyInputSchema,MajorCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
-}).strict() ;
-
 export const MajorDeleteArgsSchema: z.ZodType<Prisma.MajorDeleteArgs> = z.object({
   select: MajorSelectSchema.optional(),
   include: MajorIncludeSchema.optional(),
@@ -4530,11 +4278,6 @@ export const HallUpsertArgsSchema: z.ZodType<Prisma.HallUpsertArgs> = z.object({
   where: HallWhereUniqueInputSchema,
   create: z.union([ HallCreateInputSchema,HallUncheckedCreateInputSchema ]),
   update: z.union([ HallUpdateInputSchema,HallUncheckedUpdateInputSchema ]),
-}).strict() ;
-
-export const HallCreateManyArgsSchema: z.ZodType<Prisma.HallCreateManyArgs> = z.object({
-  data: z.union([ HallCreateManyInputSchema,HallCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
 }).strict() ;
 
 export const HallDeleteArgsSchema: z.ZodType<Prisma.HallDeleteArgs> = z.object({
@@ -4573,11 +4316,6 @@ export const SubjectUpsertArgsSchema: z.ZodType<Prisma.SubjectUpsertArgs> = z.ob
   update: z.union([ SubjectUpdateInputSchema,SubjectUncheckedUpdateInputSchema ]),
 }).strict() ;
 
-export const SubjectCreateManyArgsSchema: z.ZodType<Prisma.SubjectCreateManyArgs> = z.object({
-  data: z.union([ SubjectCreateManyInputSchema,SubjectCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
-}).strict() ;
-
 export const SubjectDeleteArgsSchema: z.ZodType<Prisma.SubjectDeleteArgs> = z.object({
   select: SubjectSelectSchema.optional(),
   include: SubjectIncludeSchema.optional(),
@@ -4612,11 +4350,6 @@ export const DayUpsertArgsSchema: z.ZodType<Prisma.DayUpsertArgs> = z.object({
   where: DayWhereUniqueInputSchema,
   create: z.union([ DayCreateInputSchema,DayUncheckedCreateInputSchema ]),
   update: z.union([ DayUpdateInputSchema,DayUncheckedUpdateInputSchema ]),
-}).strict() ;
-
-export const DayCreateManyArgsSchema: z.ZodType<Prisma.DayCreateManyArgs> = z.object({
-  data: z.union([ DayCreateManyInputSchema,DayCreateManyInputSchema.array() ]),
-  skipDuplicates: z.boolean().optional(),
 }).strict() ;
 
 export const DayDeleteArgsSchema: z.ZodType<Prisma.DayDeleteArgs> = z.object({

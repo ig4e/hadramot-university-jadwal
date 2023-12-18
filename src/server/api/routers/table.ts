@@ -35,6 +35,7 @@ export const tableRouter = createTRPCRouter({
           semester: input.semester,
           majorId: input.majorId,
           subjects: {
+            //@ts-expect-error
             create: input.subjects,
           },
         },
@@ -109,6 +110,7 @@ export const tableRouter = createTRPCRouter({
           semester: input.semester,
           majorId: input.majorId,
           subjects: {
+            //@ts-expect-error
             upsert: input.subjects.map((tSubject) => ({
               where: { id: tSubject.id },
               create: { ...tSubject, id: undefined },

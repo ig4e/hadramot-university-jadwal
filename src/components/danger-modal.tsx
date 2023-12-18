@@ -1,13 +1,14 @@
-import React, { useCallback, useEffect, useState } from "react";
+"use client";
+import { Button, Group, Modal, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { Modal, Button, TextInput, Text, Group } from "@mantine/core";
 import { Slot } from "@radix-ui/react-slot";
+import React, { useCallback } from "react";
 
 interface DangerModalProps {
   title: string;
   description?: string;
   children: React.ReactNode;
-  onSubmit: (result: boolean) => void;
+  onSubmit: (confirm: boolean) => void;
 }
 
 function DangerModal({
@@ -16,19 +17,29 @@ function DangerModal({
   title,
   description,
 }: DangerModalProps) {
-  const [value, setValue] = useState(false);
+  const [opened, { open, close }] = useDisclosure(false, {});
 
-  const onClose = useCallback(() => {
-    onSubmit?.(value || false);
-  }, [value]);
+  const handleCancel = useCallback(() => {
+    close();
+    onSubmit(false);
+  }, [close, onSubmit]);
 
-  const [opened, { open, close }] = useDisclosure(false, {
-    onClose,
-  });
+  const handleContinue = useCallback(() => {
+    close();
+    onSubmit(true);
+  }, [close, onSubmit]);
 
   return (
     <>
-      <Modal opened={opened} onClose={close} title={title} centered>
+      <Modal
+        opened={opened}
+        onClose={close}
+        title={title}
+        centered
+        closeOnClickOutside={false}
+        closeOnEscape={false}
+        withCloseButton={false}
+      >
         <Text>
           {description
             ? description
@@ -36,16 +47,10 @@ function DangerModal({
         </Text>
 
         <Group justify="flex-end" mt="xl" gap={"xs"}>
-          <Button variant="outline" color="gray" onClick={close}>
+          <Button variant="outline" color="gray" onClick={handleCancel}>
             ألغاء
           </Button>
-          <Button
-            onClick={() => {
-              setValue(true);
-              close();
-            }}
-            color="red"
-          >
+          <Button onClick={handleContinue} color="red">
             متابعة
           </Button>
         </Group>

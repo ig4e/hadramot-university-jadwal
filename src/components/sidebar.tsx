@@ -17,8 +17,16 @@ function Sidebar({ close }: { close: () => void }) {
   const pathname = usePathname();
 
   return (
-    <AppShell.Navbar className="flex flex-col justify-between bg-slate-800 pt-4 text-white dark:bg-slate-950">
-      <ScrollArea>
+    <AppShell.Navbar
+      className="flex flex-col justify-between bg-slate-900 text-white dark:bg-slate-950"
+      withBorder={false}
+    >
+      <ScrollArea
+        type="auto"
+        classNames={{
+          thumb: "scroll-area-thumb",
+        }}
+      >
         <div>
           {dashboardRoutes.map((route) => {
             const isActive =
@@ -43,7 +51,7 @@ function Sidebar({ close }: { close: () => void }) {
                     return (
                       <div
                         key={routeItem.title}
-                        className="flex flex-col gap-2 rounded-md ring-1 ring-neutral-600 dark:ring-neutral-700"
+                        className="flex flex-col gap-2"
                       >
                         <NavLink
                           close={close}
@@ -79,7 +87,7 @@ function Sidebar({ close }: { close: () => void }) {
         </div>
       </ScrollArea>
       <div className="p-4">
-        <div className="rounded-md border border-neutral-600 p-2 dark:ring-neutral-700">
+        <div className="rounded-lg border border-neutral-600 p-2 dark:ring-neutral-700">
           <p>صنع ب ❤️ من محمد ابوبكر احمد باوزير @ayak</p>
         </div>
       </div>
@@ -108,11 +116,11 @@ function NavLink({
       className={cn(
         "group flex !cursor-pointer !select-none items-center gap-2 ring-1 transition",
         {
-          "rounded-md bg-slate-600/10 p-2": variant === "default",
-          "rounded bg-slate-600/25 px-2 py-1.5 ring-0": variant === "sub",
+          "rounded-xl bg-slate-600/10 p-2": variant === "default",
+          "rounded-lg bg-slate-600/25 px-2 py-[7px] ring-0": variant === "sub",
         },
         {
-          "ring-neutral-600 hover:bg-blue-700 hover:text-white dark:ring-neutral-700":
+          "ring-neutral-600 hover:bg-blue-700 hover:text-white hover:ring-neutral-500 dark:ring-neutral-700":
             "hover",
           "bg-blue-600 text-white": isActive,
         },
@@ -120,10 +128,10 @@ function NavLink({
     >
       <div
         className={cn(
-          "w-fit rounded-md bg-blue-600  text-white transition",
+          "w-fit rounded-lg bg-blue-600  text-white transition",
           {
             "p-1.5": variant === "default",
-            "p-1": variant === "sub",
+            "p-[5px]": variant === "sub",
           },
           {
             "group-hover:bg-white group-hover:text-neutral-900": "hover",

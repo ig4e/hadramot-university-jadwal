@@ -20,6 +20,7 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { convertNumberToTimeString, timeStringToNumber } from "~/lib/utils";
 import { api } from "~/trpc/react";
+import SectionHeader from "~/components/section-header";
 
 const schema = z.object({
   name: z.string().min(2, { message: "الاسم يجب ان يكون حرفين على الاقل" }),
@@ -44,7 +45,7 @@ const schema = z.object({
 
 type TeacherCreateSchema = z.infer<typeof schema>;
 
-export const days = [
+const days = [
   "SUNDAY",
   "MONDAY",
   "TUESDAY",
@@ -63,7 +64,7 @@ export type DaysIndex =
   | "FRIDAY"
   | "SATURDAY";
 
-export const localizeDays = {
+const localizeDays = {
   SUNDAY: "الأحد",
   MONDAY: "الأثنين",
   TUESDAY: "الثلاثاء",
@@ -186,7 +187,8 @@ export function TeacherForm({ onSubmit, initialValues }: TeacherFormProps) {
       <div className="space-y-4">
         <Title order={3}>توافر المعلم</Title>
         <Text color="red">{form.errors.workDates}</Text>
-        <Tabs defaultValue={"SUNDAY"}>
+
+        <Tabs defaultValue={"SUNDAY"} variant="pills">
           <Tabs.List>
             {days.map((day) => {
               return (
@@ -205,16 +207,10 @@ export function TeacherForm({ onSubmit, initialValues }: TeacherFormProps) {
                 pt="md"
                 className="space-y-4"
               >
-                <div className="flex justify-between">
-                  <div>
-                    <Title order={4}>
-                      توافر المعلم يوم {localizeDays[day]}
-                    </Title>
-                    <Text size={"sm"}>
-                      هنا يمكنك تحديد توافر المعلم فى يوم {localizeDays[day]}
-                    </Text>
-                  </div>
-
+                <SectionHeader
+                  title={`توافر المعلم يوم ${localizeDays[day]}`}
+                  description={`هنا يمكنك تحديد توافر المعلم فى يوم ${localizeDays[day]}`}
+                >
                   <Button
                     onClick={() =>
                       form.insertListItem("workDates", {
@@ -227,7 +223,7 @@ export function TeacherForm({ onSubmit, initialValues }: TeacherFormProps) {
                   >
                     <span>أضف وقت</span>
                   </Button>
-                </div>
+                </SectionHeader>
 
                 <div className="space-y-2">
                   {form.values.workDates.map(

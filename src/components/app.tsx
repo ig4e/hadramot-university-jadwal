@@ -44,9 +44,13 @@ function App({ children }: { children: React.ReactNode }) {
             className="hidden h-10 w-10 md:block"
           ></Image>
 
-          <div>
+          <div className="hidden md:block">
             <Title order={5}>جامعة حضرموت</Title>
             <Text size={"sm"}>برنامج الجداول الاصدار الثانى</Text>
+          </div>
+          <div className="md:hidden">
+            <Title order={5}>جامعة حضرموت</Title>
+            <Text size={"xs"}>برنامج الجداول الاصدار الثانى</Text>
           </div>
         </div>
 

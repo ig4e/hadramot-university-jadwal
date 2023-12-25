@@ -31,20 +31,20 @@ export function InnerDataTable<T, AContext>({
 }: ExternalTableProps<T, AContext>) {
   return (
     <div className="space-y-4">
-      <div className="relative rounded-md border bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900 pt-0.5">
+      <div className="relative overflow-x-auto rounded-xl border-2 border-slate-300  bg-neutral-200/50 dark:border-zinc-700 dark:bg-neutral-950">
         <LoadingOverlay
           visible={isLoading}
           zIndex={10}
           overlayProps={{ radius: "md", blur: 2 }}
         ></LoadingOverlay>
 
-        <Table stickyHeader>
+        <Table stickyHeader pt={"md"}>
           <Table.Thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <Table.Tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <Table.Th key={header.id}>
+                    <Table.Th key={header.id} className="">
                       {header.isPlaceholder
                         ? null
                         : flexRender(

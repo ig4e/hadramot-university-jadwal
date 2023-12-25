@@ -1,20 +1,30 @@
 import { ActionIcon, Tooltip, useMantineColorScheme } from "@mantine/core";
-import { IconDeviceDesktop, IconMoon, IconSun } from "@tabler/icons-react";
+import {
+  IconColorPicker,
+  IconColorSwatch,
+  IconDeviceDesktop,
+  IconMoon,
+  IconSun,
+} from "@tabler/icons-react";
 import { Menu, Button, Text, rem } from "@mantine/core";
 
 import React from "react";
 
 function ThemeToggle() {
-  const { setColorScheme, clearColorScheme, colorScheme } =
-    useMantineColorScheme();
+  const { setColorScheme } = useMantineColorScheme({
+    keepTransitions: true,
+  });
   return (
     <Menu shadow="md" position="bottom-end">
       <Menu.Target>
         <Tooltip label="الوان البرنامج">
-          <ActionIcon variant="filled" size={"lg"} aria-label="الوان البرنامج">
-            {colorScheme === "auto" && <IconDeviceDesktop></IconDeviceDesktop>}
-            {colorScheme === "light" && <IconSun></IconSun>}
-            {colorScheme === "dark" && <IconMoon></IconMoon>}
+          <ActionIcon
+            variant="filled"
+            size={"lg"}
+            aria-label="الوان البرنامج"
+            suppressHydrationWarning
+          >
+            <IconColorSwatch></IconColorSwatch>
           </ActionIcon>
         </Tooltip>
       </Menu.Target>

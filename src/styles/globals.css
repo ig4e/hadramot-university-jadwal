@@ -69,3 +69,7 @@
     border-color: theme("borderColor.DEFAULT", currentColor);
   }
 }
+
+.scroll-area-thumb {
+  background-color: var(--mantine-color-blue-6);
+}

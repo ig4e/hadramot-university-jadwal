@@ -1,35 +1,41 @@
-import { createTheme } from "@mantine/core";
+"use client";
+
+import { createTheme, LoadingOverlay, Modal } from "@mantine/core";
+import colors from "tailwindcss/colors";
 
 export const theme = createTheme({
-  /** Your theme override here */
   primaryColor: "blue",
-  primaryShade: 6,
+  primaryShade: { light: 6, dark: 7 },
   colors: {
-    blue: [
-      "#eff6ff",
-      "#dbeafe",
-      "#bfdbfe",
-      "#93c5fd",
-      "#60a5fa",
-      "#3b82f6",
-      "#2563eb",
-      "#1d4ed8",
-      "#1e40af",
-      "#1e3a8a",
-      "#172554",
-    ],
-    gray: [
-      "#f9fafb",
-      "#f3f4f6",
-      "#e5e7eb",
-      "#d1d5db",
-      "#9ca3af",
-      "#6b7280",
-      "#4b5563",
-      "#374151",
-      "#1f2937",
-      "#111827",
-      "#030712",
-    ],
+    green: Object.values(colors.emerald).slice(1, -1) as any,
+    red: Object.values(colors.red).slice(1, -1) as any,
+    blue: Object.values(colors.blue).slice(1, -1) as any,
+    gray: Object.values(colors.slate).slice(1, -1) as any,
+    dark: Object.values(colors.zinc).slice(2, -1) as any,
+  },
+  defaultRadius: "md",
+  components: {
+    Modal: Modal.extend({
+      defaultProps: {
+        overlayProps: {
+          blur: 3,
+        },
+      },
+    }),
+
+    LoadingOverlay: LoadingOverlay.extend({
+      styles(theme, props, ctx) {
+        return {
+          overlay: {
+            borderRadius: theme.radius.md,
+          },
+        };
+      },
+      defaultProps: {
+        overlayProps: {
+          blur: 3,
+        },
+      },
+    }),
   },
 });

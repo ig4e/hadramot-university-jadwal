@@ -39,7 +39,7 @@ const schema = z.object({
       }),
     })
     .array()
-    .min(1, { message: "يجب ان يكون للمعلم معاد عمل واحد على الاقل"}),
+    .min(1, { message: "يجب ان يكون للمعلم معاد عمل واحد على الاقل" }),
 });
 
 type TeacherCreateSchema = z.infer<typeof schema>;
@@ -199,7 +199,12 @@ export function TeacherForm({ onSubmit, initialValues }: TeacherFormProps) {
 
           {days.map((day, index) => {
             return (
-              <Tabs.Panel key={day + "tabPanel"} value={day} pt="md" className="space-y-4">
+              <Tabs.Panel
+                key={day + "tabPanel"}
+                value={day}
+                pt="md"
+                className="space-y-4"
+              >
                 <div className="flex justify-between">
                   <div>
                     <Title order={4}>

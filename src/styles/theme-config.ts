@@ -8,8 +8,8 @@ export const theme = createTheme({
   primaryShade: { light: 6, dark: 7 },
   colors: {
     green: Object.values(colors.emerald).slice(1, -1) as any,
-    red: Object.values(colors.red).slice(1, -1) as any,
-    blue: Object.values(colors.blue).slice(1, -1) as any,
+    red: Object.values(colors.red).slice(0, -1) as any,
+    blue: Object.values(colors.blue).slice(0, -1) as any,
     gray: Object.values(colors.slate).slice(1, -1) as any,
     dark: Object.values(colors.zinc).slice(2, -1) as any,
   },

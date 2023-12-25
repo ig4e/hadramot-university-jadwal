@@ -9,10 +9,10 @@ interface SectionHeaderProps {
 
 function SectionHeader({ title, description, children }: SectionHeaderProps) {
   return (
-    <div className="mb-2 flex items-center justify-between gap-4">
+    <div className="mb-2 flex items-start justify-between gap-4">
       <div className="flex flex-col">
-        <Title order={3}>{title}</Title>
-        {description && <Text>{description}</Text>}
+        <Title order={4}>{title}</Title>
+        {description && <Text size="sm">{description}</Text>}
       </div>
       {children}
     </div>

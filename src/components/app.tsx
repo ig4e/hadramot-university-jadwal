@@ -8,6 +8,7 @@ import ImportAndExport from "~/components/import-export";
 import { LogoTransparent } from "~/components/logo";
 import { useDisclosure } from "@mantine/hooks";
 import { Bars3Icon } from "@heroicons/react/20/solid";
+import ThemeToggle from "./theme-toggle";
 
 function App({ children }: { children: React.ReactNode }) {
   const [mobileOpened, { toggle: toggleMobile, close }] = useDisclosure();
@@ -37,15 +38,22 @@ function App({ children }: { children: React.ReactNode }) {
             <Bars3Icon className="h-5 w-5"></Bars3Icon>
           </ActionIcon>
 
-          <Image src={LogoTransparent} alt="Logo" className="h-10 w-10 hidden md:block"></Image>
-          
+          <Image
+            src={LogoTransparent}
+            alt="Logo"
+            className="hidden h-10 w-10 md:block"
+          ></Image>
+
           <div>
             <Title order={5}>جامعة حضرموت</Title>
             <Text size={"sm"}>برنامج الجداول الاصدار الثانى</Text>
           </div>
         </div>
 
-        <ImportAndExport></ImportAndExport>
+        <div className="flex items-center gap-2">
+          <ImportAndExport></ImportAndExport>
+          <ThemeToggle></ThemeToggle>
+        </div>
       </AppShell.Header>
 
       <Sidebar close={close}></Sidebar>

@@ -17,7 +17,7 @@ function Sidebar({ close }: { close: () => void }) {
   const pathname = usePathname();
 
   return (
-    <AppShell.Navbar className="flex flex-col justify-between bg-slate-900 pt-4 text-white">
+    <AppShell.Navbar className="flex flex-col justify-between bg-slate-800 pt-4 text-white dark:bg-slate-950">
       <ScrollArea>
         <div>
           {dashboardRoutes.map((route) => {
@@ -33,9 +33,7 @@ function Sidebar({ close }: { close: () => void }) {
               <Stack
                 key={route.title}
                 gap={"sm"}
-                className={cn("px-4 py-4 transition", {
-                  "rounded-lg bg-slate-700/25": isActive,
-                })}
+                className={cn("px-4 py-4 transition", {})}
               >
                 <Title order={5}>{route.title}</Title>
                 <Stack gap={"xs"}>
@@ -45,7 +43,7 @@ function Sidebar({ close }: { close: () => void }) {
                     return (
                       <div
                         key={routeItem.title}
-                        className="flex flex-col gap-2 rounded-md ring-1 ring-neutral-600"
+                        className="flex flex-col gap-2 rounded-md ring-1 ring-neutral-600 dark:ring-neutral-700"
                       >
                         <NavLink
                           close={close}
@@ -81,7 +79,7 @@ function Sidebar({ close }: { close: () => void }) {
         </div>
       </ScrollArea>
       <div className="p-4">
-        <div className="rounded-md border border-neutral-600 p-2">
+        <div className="rounded-md border border-neutral-600 p-2 dark:ring-neutral-700">
           <p>صنع ب ❤️ من محمد ابوبكر احمد باوزير @ayak</p>
         </div>
       </div>
@@ -114,7 +112,8 @@ function NavLink({
           "rounded bg-slate-600/25 px-2 py-1.5 ring-0": variant === "sub",
         },
         {
-          "ring-neutral-600 hover:bg-blue-700 hover:text-white": "hover",
+          "ring-neutral-600 hover:bg-blue-700 hover:text-white dark:ring-neutral-700":
+            "hover",
           "bg-blue-600 text-white": isActive,
         },
       )}

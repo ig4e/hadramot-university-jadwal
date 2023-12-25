@@ -26,7 +26,8 @@ export default function Home() {
     isLoading,
     isError,
     refetch,
-  } = api.hall.list.useQuery(pageProps);
+    isPreviousData,
+  } = api.hall.list.useQuery(pageProps, { keepPreviousData: true });
 
   const data = useMemo(() => rawData, [rawData]);
 
@@ -111,7 +112,7 @@ export default function Home() {
 
       <InnerDataTable
         table={table}
-        isLoading={isLoading}
+        isLoading={isLoading || isPreviousData}
         additionalContext={{ refetch }}
       ></InnerDataTable>
     </main>

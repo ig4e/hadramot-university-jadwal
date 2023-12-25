@@ -133,7 +133,7 @@ export const columns: ColumnDef<Major>[] = [
       });
 
       return (
-        <div className="flex w-full justify-end pe-4">
+        <div className="flex w-full justify-end">
           <Menu position="bottom-end" keepMounted>
             <Menu.Target>
               <Button variant="light" className="h-8 w-8 p-0">

@@ -35,22 +35,22 @@ export default function RootLayout({
       </head>
 
       <body className={cn("min-h-screen antialiased")}>
-        <TRPCReactProvider cookies={cookies().toString()}>
-          <DirectionProvider initialDirection="rtl" detectDirection={false}>
-            <MantineProvider theme={theme} defaultColorScheme="light">
-              <DatesProvider
-                settings={{
-                  locale: "ar",
-                  firstDayOfWeek: 0,
-                  weekendDays: [6, 5],
-                }}
-              >
+        <DirectionProvider initialDirection="rtl" detectDirection={false}>
+          <MantineProvider theme={theme} defaultColorScheme="auto">
+            <DatesProvider
+              settings={{
+                locale: "ar",
+                firstDayOfWeek: 0,
+                weekendDays: [6, 5],
+              }}
+            >
+              <TRPCReactProvider cookies={cookies().toString()}>
                 <Notifications limit={3} />
                 <App>{children}</App>
-              </DatesProvider>
-            </MantineProvider>
-          </DirectionProvider>
-        </TRPCReactProvider>
+              </TRPCReactProvider>
+            </DatesProvider>
+          </MantineProvider>
+        </DirectionProvider>
       </body>
     </html>
   );

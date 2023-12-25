@@ -16,10 +16,14 @@ export default function Home() {
     page: 1,
     include: {
       subjects: true,
+      workDates: true,
     },
   });
 
-  const { data, isLoading, isError } = api.teacher.list.useQuery(pageProps);
+  const { data, refetch, isLoading, isError, isPreviousData } =
+    api.teacher.list.useQuery(pageProps, {
+      keepPreviousData: true,
+    });
 
   const table = usePaginatedTable({
     pageCount: data?.pageInfo.totalPages,
@@ -46,7 +50,11 @@ export default function Home() {
         </Link>
       </PageHeader>
 
-      <InnerDataTable table={table} isLoading={isLoading}></InnerDataTable>
+      <InnerDataTable
+        table={table}
+        isLoading={isLoading}
+        additionalContext={{ refetch }}
+      ></InnerDataTable>
     </main>
   );
 }

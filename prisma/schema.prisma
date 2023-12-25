@@ -11,16 +11,16 @@ generator zod {
     output   = "./generated/zod"
 }
 
-// datasource db {
-//     provider = "sqlite"
-//     url      = env("DATABASE_URL")
-// }
-
 datasource db {
-    provider  = "postgresql"
-    url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-    directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+    provider = "sqlite"
+    url      = env("DATABASE_URL")
 }
+
+// datasource db {
+//     provider  = "postgresql"
+//     url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+//     directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+// }
 
 model Table {
     id       Int   @id @default(autoincrement())
@@ -82,7 +82,7 @@ model TeacherWorkDate {
 model Major {
     id            Int     @id @default(autoincrement())
     type          Int     @default(1) // 1 = 3am, 2 = thanwy
-    name          String //@unique
+    name          String
     studentsCount Int
     tables        Table[]
 

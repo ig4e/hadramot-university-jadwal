@@ -31,7 +31,7 @@ export function InnerDataTable<T, AContext>({
 }: ExternalTableProps<T, AContext>) {
   return (
     <div className="space-y-4">
-      <div className="relative rounded-md border bg-neutral-100">
+      <div className="relative rounded-md border bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900 pt-0.5">
         <LoadingOverlay
           visible={isLoading}
           zIndex={10}

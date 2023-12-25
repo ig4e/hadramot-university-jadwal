@@ -39,7 +39,7 @@ const schema = z.object({
       }),
     })
     .array()
-    .min(1),
+    .min(1, { message: "يجب ان يكون للمعلم معاد عمل واحد على الاقل"}),
 });
 
 type TeacherCreateSchema = z.infer<typeof schema>;
@@ -150,43 +150,42 @@ export function TeacherForm({ onSubmit, initialValues }: TeacherFormProps) {
 
   return (
     <form
-      onSubmit={form.onSubmit((values) => onSubmit(values as unknown as TeacherSchema))}
+      onSubmit={form.onSubmit((values) =>
+        onSubmit(values as unknown as TeacherSchema),
+      )}
+      className="space-y-8"
     >
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        <div>
-          <label htmlFor="name">الاسم</label>
-          <TextInput
-            id="name"
-            type="text"
-            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            {...form.getInputProps("name")}
-          />
-        </div>
-        <div>
-          <label htmlFor="subjects">المواد</label>
-          <MultiSelect
-            rightSection={
-              subjectsLoading ? <Loader size={"xs"}></Loader> : undefined
-            }
-            searchable
-            searchValue={searchValue}
-            onSearchChange={setSearchValue}
-            type="subjects"
-            id="subjects"
-            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            data={
-              subjectsData?.items.map((subject) => ({
-                label: subject.name,
-                value: String(subject.id),
-              })) || []
-            }
-            {...form.getInputProps("subjectIDs")}
-          />
-        </div>
+        <TextInput
+          label="الأسم"
+          id="name"
+          type="text"
+          {...form.getInputProps("name")}
+        />
+
+        <MultiSelect
+          label="المواد"
+          rightSection={
+            subjectsLoading ? <Loader size={"xs"}></Loader> : undefined
+          }
+          searchable
+          searchValue={searchValue}
+          onSearchChange={setSearchValue}
+          type="subjects"
+          id="subjects"
+          data={
+            subjectsData?.items.map((subject) => ({
+              label: subject.name,
+              value: String(subject.id),
+            })) || []
+          }
+          {...form.getInputProps("subjectIDs")}
+        />
       </div>
 
-      <div className="space-y-4 border-t pt-4">
+      <div className="space-y-4">
         <Title order={3}>توافر المعلم</Title>
+        <Text color="red">{form.errors.workDates}</Text>
         <Tabs defaultValue={"SUNDAY"}>
           <Tabs.List>
             {days.map((day) => {
@@ -200,7 +199,7 @@ export function TeacherForm({ onSubmit, initialValues }: TeacherFormProps) {
 
           {days.map((day, index) => {
             return (
-              <Tabs.Panel key={day + "tabPanel"} value={day} pt="md">
+              <Tabs.Panel key={day + "tabPanel"} value={day} pt="md" className="space-y-4">
                 <div className="flex justify-between">
                   <div>
                     <Title order={4}>

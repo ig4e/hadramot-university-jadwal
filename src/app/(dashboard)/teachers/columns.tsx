@@ -18,7 +18,7 @@ declare module "@tanstack/react-table" {
 }
 
 const teacherWithSubjects = Prisma.validator<Prisma.TeacherDefaultArgs>()({
-  include: { subjects: true },
+  include: { subjects: true, workDates: true },
 });
 
 export type TeacherWithSubjects = Prisma.TeacherGetPayload<
@@ -44,6 +44,21 @@ export const columns: ColumnDef<TeacherWithSubjects>[] = [
         <div className="flex flex-wrap gap-2">
           {subjects.map((subject) => (
             <Badge>{subject.name}</Badge>
+          ))}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "workDates",
+    header: "مواعيد العمل",
+    cell: ({ getValue }) => {
+      const workDates = getValue<TeacherWithSubjects["workDates"]>();
+
+      return (
+        <div className="flex flex-wrap gap-2">
+          {workDates.map((workDate) => (
+            <Badge variant={"outline"}>{workDate.endsAt}-{workDate.startsAt}</Badge>
           ))}
         </div>
       );
@@ -100,46 +115,50 @@ export const columns: ColumnDef<TeacherWithSubjects>[] = [
       });
 
       return (
-        <Menu>
-          <Menu.Target>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <IconDotsVertical className="h-4 w-4" />
-            </Button>
-          </Menu.Target>
-          <Menu.Dropdown>
-            <Menu.Label>الأوامر</Menu.Label>
-            <Menu.Item
-              onClick={() => navigator.clipboard.writeText(String(teacher.id))}
-            >
-              نسخ الرقم التسلسلى
-            </Menu.Item>
-            <Menu.Divider />
-            <Menu.Item
-              component={Link}
-              href={`/teachers/edit/${teacher.id}`}
-              leftSection={<PencilSquareIcon className="h-4 w-4" />}
-            >
-              تعديل
-            </Menu.Item>
-            <DangerModal
-              title="حذف التخصص"
-              description="هل انت متأكد من حذف هذة التخصص؟"
-              onSubmit={(result) => {
-                if (result) {
-                  deleteTeacher.mutate(teacher.id);
-                }
-              }}
-            >
+        <div className="flex w-full justify-end">
+          <Menu position="bottom-end" keepMounted>
+            <Menu.Target>
+              <Button variant="light" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <IconDotsVertical className="h-4 w-4" />
+              </Button>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <Menu.Label>الأوامر</Menu.Label>
               <Menu.Item
-                leftSection={<TrashIcon className="h-4 w-4" />}
-                color="red"
+                onClick={() =>
+                  navigator.clipboard.writeText(String(teacher.id))
+                }
               >
-                حذف
+                نسخ الرقم التسلسلى
               </Menu.Item>
-            </DangerModal>
-          </Menu.Dropdown>
-        </Menu>
+              <Menu.Divider />
+              <Menu.Item
+                component={Link}
+                href={`/teachers/edit/${teacher.id}`}
+                leftSection={<PencilSquareIcon className="h-4 w-4" />}
+              >
+                تعديل
+              </Menu.Item>
+              <DangerModal
+                title="حذف المعلم"
+                description="هل انت متأكد من حذف هذا المعلم؟"
+                onSubmit={(result) => {
+                  if (result) {
+                    deleteTeacher.mutate(teacher.id);
+                  }
+                }}
+              >
+                <Menu.Item
+                  leftSection={<TrashIcon className="h-4 w-4" />}
+                  color="red"
+                >
+                  حذف
+                </Menu.Item>
+              </DangerModal>
+            </Menu.Dropdown>
+          </Menu>
+        </div>
       );
     },
   },

@@ -21,7 +21,7 @@ export default function Home() {
     page: 1,
   });
 
-  const { data, isLoading, isFetching, isError, refetch } =
+  const { data, isLoading, isFetching, isError, refetch, isPreviousData } =
     api.major.list.useQuery(
       {
         page: pageProps.page,
@@ -107,7 +107,7 @@ export default function Home() {
       </PageHeader>
 
       <InnerDataTable
-        isLoading={isLoading}
+        isLoading={isLoading || isPreviousData}
         table={table}
         additionalContext={{ refetch }}
       />

@@ -58,7 +58,9 @@ export const columns: ColumnDef<TeacherWithSubjects>[] = [
       return (
         <div className="flex flex-wrap gap-2">
           {workDates.map((workDate) => (
-            <Badge variant={"light"}>{workDate.endsAt}-{workDate.startsAt}</Badge>
+            <Badge variant={"light"}>
+              {workDate.endsAt}-{workDate.startsAt}
+            </Badge>
           ))}
         </div>
       );

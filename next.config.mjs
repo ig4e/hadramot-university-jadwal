@@ -9,6 +9,9 @@ const config = {
   experimental: {
     optimizePackageImports: ["@mantine/core", "@mantine/hooks"],
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default config;

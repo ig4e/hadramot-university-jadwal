@@ -5,7 +5,7 @@ export interface NavItem {
   external?: boolean;
   icon?: any;
   label?: string;
-  sub?: boolean
+  sub?: boolean;
 }
 
 export interface NavItemWithChildren extends NavItem {
